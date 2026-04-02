@@ -47,7 +47,8 @@
   --color-brand-black: oklch(0 0 0);
   --color-brand-cream: oklch(0.95 0.01 90);
 
-  --font-heading: 'Playfair Display', Georgia, serif;
+  /* Brand Fonts: Abril Fatface (Cheese Sauce substitute) for big headings, Playfair Display for editorial, DM Sans (Rockyeah Sans substitute) for body */
+  --font-heading: 'Abril Fatface', 'Playfair Display', Georgia, serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
 }
 

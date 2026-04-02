@@ -2,9 +2,10 @@
  * Services — Smokehouse Editorial Design
  * Black background section with service cards.
  * Each card has a photo, gold border accent, and hover lift.
+ * BRAND FONTS: Abril Fatface for headings, DM Sans for body.
+ * BRAND COLORS: Red #D82E2B, Gold #ECA241, Black #000, Cream #F3F1E9.
  */
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Users, Building2, PartyPopper, ChefHat, TreePine } from "lucide-react";
 
@@ -69,7 +70,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
         {/* Icon badge */}
-        <div className="absolute bottom-4 left-4 w-12 h-12 bg-[#D82E2B] flex items-center justify-center">
+        <div className="absolute bottom-4 left-4 w-12 h-12 bg-[#D82E2B] flex items-center justify-center shadow-lg shadow-[#D82E2B]/30">
           <Icon size={22} className="text-white" />
         </div>
       </div>
@@ -79,9 +80,13 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
         <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-[#F3F1E9] mb-3 group-hover:text-[#ECA241] transition-colors duration-300">
           {service.title}
         </h3>
-        <p className="text-[#F3F1E9]/60 text-sm leading-relaxed">
+        <p className="text-[#F3F1E9]/60 text-sm leading-relaxed font-[family-name:var(--font-body)]">
           {service.description}
         </p>
+        <div className="mt-5 flex items-center gap-2 text-[#ECA241]/70 group-hover:text-[#ECA241] transition-colors duration-300">
+          <span className="text-xs tracking-widest uppercase font-semibold font-[family-name:var(--font-body)]">Learn More</span>
+          <span className="text-base">→</span>
+        </div>
       </div>
 
       {/* Bottom gold accent line */}
@@ -107,15 +112,15 @@ export default function Services() {
         >
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-10 h-[2px] bg-[#ECA241]" />
-            <span className="text-[#ECA241] text-sm font-semibold tracking-[0.3em] uppercase">
+            <span className="text-[#ECA241] text-sm font-semibold tracking-[0.3em] uppercase font-[family-name:var(--font-body)]">
               What We Offer
             </span>
             <div className="w-10 h-[2px] bg-[#ECA241]" />
           </div>
           <h2 className="font-[family-name:var(--font-heading)] text-4xl sm:text-5xl lg:text-6xl font-bold text-[#F3F1E9] leading-tight">
-            Our <span className="text-[#D82E2B] italic">Services</span>
+            Our <span className="text-[#D82E2B]">Services</span>
           </h2>
-          <p className="mt-5 text-[#F3F1E9]/60 text-lg max-w-2xl mx-auto">
+          <p className="mt-5 text-[#F3F1E9]/60 text-lg max-w-2xl mx-auto font-[family-name:var(--font-body)]">
             From intimate gatherings to grand celebrations, we bring the full restaurant experience to your chosen venue.
           </p>
         </motion.div>

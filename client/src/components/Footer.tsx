@@ -1,7 +1,9 @@
 /*
  * Footer — Smokehouse Editorial Design
- * Black background with logo, nav links, social icons, copyright.
- * Gold accent dividers.
+ * Black background with LARGE logo, nav links, social icons, copyright.
+ * Gold accent dividers. Logo is a prominent brand signature.
+ * BRAND FONTS: Abril Fatface for headings/brand name, DM Sans for body.
+ * BRAND COLORS: Red #D82E2B, Gold #ECA241, Black #000, Cream #F3F1E9.
  */
 import { Instagram, Facebook, Phone, Mail } from "lucide-react";
 
@@ -32,9 +34,9 @@ const footerLinks = [
 ];
 
 const socialLinks = [
-  { icon: Instagram, href: "https://instagram.com/thepplschef", label: "Instagram" },
+  { icon: Instagram, href: "https://instagram.com/thepplschef", label: "Instagram", isCustom: false },
   { icon: TikTokIcon, href: "https://tiktok.com/@thepplschef", label: "TikTok", isCustom: true },
-  { icon: Facebook, href: "https://facebook.com/thepplschef", label: "Facebook" },
+  { icon: Facebook, href: "https://facebook.com/thepplschef", label: "Facebook", isCustom: false },
   { icon: XIcon, href: "https://x.com/thepplschef", label: "X", isCustom: true },
 ];
 
@@ -49,30 +51,39 @@ export default function Footer() {
       {/* Gold line */}
       <div className="h-[2px] bg-gradient-to-r from-transparent via-[#ECA241] to-transparent" />
 
-      <div className="container py-16">
+      {/* LARGE LOGO BRAND SIGNATURE — centered above footer content */}
+      <div className="flex flex-col items-center pt-16 pb-4">
+        <img
+          src={LOGO_URL}
+          alt="The PPL's Chef Logo"
+          className="h-24 w-24 rounded-full object-cover border-4 border-[#ECA241] shadow-2xl shadow-[#ECA241]/20 mb-4"
+        />
+        <h2 className="font-[family-name:var(--font-heading)] text-3xl font-bold text-[#F3F1E9] tracking-wide text-center">
+          The PPL's <span className="text-[#ECA241]">Chef</span>
+        </h2>
+        <p className="text-[#ECA241]/60 text-xs tracking-[0.3em] uppercase font-[family-name:var(--font-body)] mt-1">
+          The People's Chef
+        </p>
+        {/* Decorative divider */}
+        <div className="flex items-center gap-4 mt-6">
+          <div className="w-16 h-[1px] bg-[#ECA241]/30" />
+          <div className="w-2 h-2 bg-[#D82E2B] rotate-45" />
+          <div className="w-16 h-[1px] bg-[#ECA241]/30" />
+        </div>
+      </div>
+
+      <div className="container py-10">
         <div className="grid md:grid-cols-3 gap-12 items-start">
-          {/* Logo & Tagline */}
+          {/* Tagline */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <img
-                src={LOGO_URL}
-                alt="The PPL's Chef Logo"
-                className="h-12 w-12 rounded-full object-cover border-2 border-[#ECA241]"
-              />
-              <div>
-                <span className="font-[family-name:var(--font-heading)] text-xl font-bold text-[#F3F1E9]">
-                  The PPL's <span className="text-[#ECA241]">Chef</span>
-                </span>
-              </div>
-            </div>
-            <p className="text-[#F3F1E9]/50 text-sm leading-relaxed max-w-xs">
-              Creating restaurant-quality dining experiences in the location of the host's choosing.
+            <p className="text-[#F3F1E9]/50 text-sm leading-relaxed max-w-xs font-[family-name:var(--font-body)]">
+              Creating restaurant-quality dining experiences in the location of the host's choosing. Every event is a unique canvas.
             </p>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h4 className="text-[#ECA241] text-xs tracking-[0.3em] uppercase font-semibold mb-5">
+          <div className="flex flex-col items-start md:items-center">
+            <h4 className="text-[#ECA241] text-xs tracking-[0.3em] uppercase font-semibold mb-5 font-[family-name:var(--font-body)]">
               Quick Links
             </h4>
             <nav className="flex flex-col gap-3">
@@ -81,7 +92,7 @@ export default function Footer() {
                   key={link.href}
                   href={link.href}
                   onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
-                  className="text-[#F3F1E9]/60 hover:text-[#ECA241] text-sm transition-colors duration-300"
+                  className="text-[#F3F1E9]/60 hover:text-[#ECA241] text-sm transition-colors duration-300 font-[family-name:var(--font-body)]"
                 >
                   {link.label}
                 </a>
@@ -91,15 +102,15 @@ export default function Footer() {
 
           {/* Contact & Social */}
           <div>
-            <h4 className="text-[#ECA241] text-xs tracking-[0.3em] uppercase font-semibold mb-5">
+            <h4 className="text-[#ECA241] text-xs tracking-[0.3em] uppercase font-semibold mb-5 font-[family-name:var(--font-body)]">
               Reach Out
             </h4>
             <div className="space-y-3 mb-6">
-              <a href="tel:725-212-2236" className="flex items-center gap-3 text-[#F3F1E9]/60 hover:text-[#ECA241] text-sm transition-colors">
+              <a href="tel:725-212-2236" className="flex items-center gap-3 text-[#F3F1E9]/60 hover:text-[#ECA241] text-sm transition-colors font-[family-name:var(--font-body)]">
                 <Phone size={16} />
                 725-212-2236
               </a>
-              <a href="mailto:info@thepplschef.com" className="flex items-center gap-3 text-[#F3F1E9]/60 hover:text-[#ECA241] text-sm transition-colors">
+              <a href="mailto:info@thepplschef.com" className="flex items-center gap-3 text-[#F3F1E9]/60 hover:text-[#ECA241] text-sm transition-colors font-[family-name:var(--font-body)]">
                 <Mail size={16} />
                 info@thepplschef.com
               </a>
@@ -115,11 +126,7 @@ export default function Footer() {
                   className="w-10 h-10 border border-[#ECA241]/20 flex items-center justify-center text-[#F3F1E9]/60 hover:bg-[#D82E2B] hover:border-[#D82E2B] hover:text-white transition-all duration-300"
                   aria-label={social.label}
                 >
-                  {social.isCustom ? (
-                    <social.icon size={16} />
-                  ) : (
-                    <social.icon size={16} />
-                  )}
+                  <social.icon size={16} />
                 </a>
               ))}
             </div>
@@ -128,10 +135,10 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-[#ECA241]/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[#F3F1E9]/30 text-xs tracking-wider">
+          <p className="text-[#F3F1E9]/30 text-xs tracking-wider font-[family-name:var(--font-body)]">
             &copy; {new Date().getFullYear()} The PPL's Chef. All rights reserved.
           </p>
-          <p className="text-[#F3F1E9]/20 text-xs tracking-wider">
+          <p className="text-[#F3F1E9]/20 text-xs tracking-wider font-[family-name:var(--font-body)]">
             Full-Service Catering &mdash; Las Vegas & Beyond
           </p>
         </div>

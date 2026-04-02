@@ -1,25 +1,641 @@
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Services from "@/components/Services";
+/**
+ * Home — Premium landing page for The PPL's Chef
+ * Sections: Hero, Brand Intro, Services, Why Choose Us, Signature Experience,
+ * Featured Dishes, 3-Step Process, Testimonials, Final CTA, About the Chef
+ */
+import Layout from "@/components/Layout";
 import Gallery from "@/components/Gallery";
-import Testimonials from "@/components/Testimonials";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+import { motion, useInView } from "framer-motion";
+import { useRef, useState } from "react";
+import { Link } from "wouter";
+import { Star, Quote, ChefHat, Users, Utensils, Clock, Award, Heart, ArrowRight, Phone, Mail, Instagram, Facebook, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
+import {
+  LOGO, HERO_BG, ABOUT_CHEF, CHEF_OUTDOOR, CHEF_PLATING,
+  SEAFOOD_BOWLS, PLATED_SALAD, GRILLED_ROMAINE, DESSERT_OVERHEAD,
+  ELEGANT_TABLE, BUFFET_SERVICE, CARVING_STATION,
+  GEN_PRIVATE_DINING, GEN_MEAL_BOX, GEN_SPECIAL_EVENTS, GEN_CORPORATE,
+  OUTDOOR_PARTY, GALLERY_IMAGES
+} from "@/lib/images";
+import { AnimatePresence } from "framer-motion";
 
+/* ─── Fade-in wrapper ─── */
+function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/* ─── Section Header ─── */
+function SectionHeader({ label, title, titleAccent, subtitle, dark = false }: {
+  label: string; title: string; titleAccent?: string; subtitle?: string; dark?: boolean;
+}) {
+  return (
+    <FadeIn className="text-center mb-14 lg:mb-20">
+      <div className="flex items-center justify-center gap-3 mb-4">
+        <div className={`w-8 h-[1px] ${dark ? "bg-[#ECA241]" : "bg-[#D82E2B]"}`} />
+        <span className={`brand-label ${dark ? "text-[#ECA241]" : "text-[#D82E2B]"}`}>{label}</span>
+        <div className={`w-8 h-[1px] ${dark ? "bg-[#ECA241]" : "bg-[#D82E2B]"}`} />
+      </div>
+      <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl leading-tight">
+        {title}{" "}
+        {titleAccent && <span className={dark ? "text-[#ECA241]" : "text-[#D82E2B]"}>{titleAccent}</span>}
+      </h2>
+      {subtitle && (
+        <p className={`mt-4 text-base lg:text-lg max-w-2xl mx-auto leading-relaxed ${dark ? "text-[#F3F1E9]/55" : "text-black/55"}`} style={{ fontFamily: "var(--font-body)" }}>
+          {subtitle}
+        </p>
+      )}
+    </FadeIn>
+  );
+}
+
+/* ─── TikTok / X icons ─── */
+function TikTokIcon({ size = 18 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.73a8.19 8.19 0 004.76 1.52v-3.4a4.85 4.85 0 01-1-.16z" /></svg>;
+}
+function XIcon({ size = 18 }: { size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>;
+}
+
+/* ─── Service data ─── */
+const serviceCards = [
+  { title: "Private Chef", slug: "private-chef", image: GEN_PRIVATE_DINING, desc: "Intimate, chef-driven dining in the comfort of your home." },
+  { title: "Catering", slug: "catering", image: BUFFET_SERVICE, desc: "Full-service catering for events of every scale." },
+  { title: "Meal Boxes", slug: "meal-boxes", image: GEN_MEAL_BOX, desc: "Chef-crafted meals delivered fresh to your door." },
+  { title: "Special Events", slug: "special-events", image: GEN_SPECIAL_EVENTS, desc: "Unforgettable celebrations with bespoke menus." },
+  { title: "Corporate Dining", slug: "corporate", image: GEN_CORPORATE, desc: "Elevate your business events with premium dining." },
+];
+
+/* ─── Why Choose Us data ─── */
+const whyItems = [
+  { icon: ChefHat, title: "Chef-Crafted Menus", desc: "Every menu is custom-designed by our chef to match your vision, dietary needs, and occasion." },
+  { icon: Award, title: "Restaurant Quality", desc: "We bring five-star plating, flavor, and presentation to every event — no matter the venue." },
+  { icon: Users, title: "Full-Service Team", desc: "From setup to cleanup, our professional team handles every detail so you can enjoy the moment." },
+  { icon: Heart, title: "Personal Touch", desc: "We treat every event like it's our own. Your satisfaction and your guests' experience come first." },
+];
+
+/* ─── Testimonials ─── */
+const testimonials = [
+  { name: "Jessica M.", role: "40th Birthday Celebration", text: "The PPL's Chef transformed my birthday into an unforgettable culinary experience. Every dish was beautifully presented and absolutely delicious. Our guests are still talking about it weeks later.", rating: 5 },
+  { name: "David & Sarah K.", role: "Anniversary Dinner", text: "We hired The PPL's Chef for an intimate anniversary dinner at home. The attention to detail — from the custom menu to the impeccable service — made us feel like we were at a five-star restaurant.", rating: 5 },
+  { name: "Marcus T.", role: "Corporate Event Series", text: "Our company has used The PPL's Chef for three corporate events now, and each time they exceed expectations. The food quality is consistently outstanding, and the team is incredibly professional.", rating: 5 },
+];
+
+/* ─── Featured dishes ─── */
+const featuredDishes = [
+  { src: SEAFOOD_BOWLS, label: "Signature Seafood" },
+  { src: GRILLED_ROMAINE, label: "Grilled Romaine" },
+  { src: PLATED_SALAD, label: "Artisan Salads" },
+  { src: DESSERT_OVERHEAD, label: "Curated Desserts" },
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME PAGE
+   ═══════════════════════════════════════════════════════════════ */
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-black">
-      <Navbar />
-      <main>
-        <Hero />
-        <About />
-        <Services />
-        <Gallery />
-        <Testimonials />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
+    <Layout>
+      <HeroSection />
+      <BrandIntro />
+      <ServicesSection />
+      <WhyChooseUs />
+      <SignatureExperience />
+      <FeaturedDishes />
+      <Gallery />
+      <BookingProcess />
+      <TestimonialsSection />
+      <FinalCTA />
+      <AboutChef />
+      <ContactSection />
+    </Layout>
+  );
+}
+
+/* ─── 1. HERO ─── */
+function HeroSection() {
+  return (
+    <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${HERO_BG})` }} />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#ECA241]/50 to-transparent" />
+
+      <div className="relative z-10 container py-32 lg:py-0">
+        <div className="max-w-3xl">
+          <motion.img
+            src={LOGO}
+            alt="The PPL's Chef"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7 }}
+            className="h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover border-[3px] border-[#ECA241] shadow-2xl shadow-[#ECA241]/20 mb-8"
+          />
+
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-[1px] bg-[#ECA241]" />
+            <span className="brand-label">Las Vegas Private Chef & Catering</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] text-[#F3F1E9] leading-[1.05] mb-6"
+          >
+            Restaurant-Quality Experiences in the Comfort of{" "}
+            <span className="text-[#ECA241]">Your Chosen Space</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.7 }}
+            className="text-[#F3F1E9]/70 text-lg sm:text-xl leading-relaxed mb-10 max-w-xl"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            From intimate private dinners to grand celebrations, we bring the full culinary experience to any venue you choose.
+          </motion.p>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.7 }} className="flex flex-wrap gap-4">
+            <Link href="/book" className="btn-primary">Book Your Experience</Link>
+            <a href="#services" onClick={(e) => { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); }} className="btn-outline">
+              Plan Your Event
+            </a>
+          </motion.div>
+        </div>
+      </div>
+
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+        <span className="text-[#ECA241]/40 text-[10px] tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-body)" }}>Scroll</span>
+        <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-[1px] h-6 bg-gradient-to-b from-[#ECA241]/40 to-transparent" />
+      </motion.div>
+    </section>
+  );
+}
+
+/* ─── 2. BRAND INTRO ─── */
+function BrandIntro() {
+  return (
+    <section className="section-cream py-20 lg:py-28">
+      <div className="container">
+        <FadeIn className="max-w-3xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-8 h-[1px] bg-[#D82E2B]" />
+            <span className="brand-label text-[#D82E2B]">Welcome</span>
+            <div className="w-8 h-[1px] bg-[#D82E2B]" />
+          </div>
+          <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-black leading-tight mb-6">
+            The PPL's <span className="text-[#D82E2B]">Chef</span>
+          </h2>
+          <p className="text-black/60 text-lg lg:text-xl leading-relaxed mb-8" style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}>
+            At The PPL'S Chef, we believe extraordinary food has the power to transform any gathering into a lasting memory. Based in Las Vegas, we specialize in bringing restaurant-quality dining directly to you — whether it's a private dinner for two, a corporate luncheon for fifty, or a celebration for hundreds.
+          </p>
+          <p className="text-black/50 text-base leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+            Every menu is custom-crafted. Every detail is considered. Every guest leaves impressed.
+          </p>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+/* ─── 3. SERVICES ─── */
+function ServicesSection() {
+  return (
+    <section id="services" className="section-dark py-24 lg:py-32">
+      <div className="container">
+        <SectionHeader
+          label="Our Services"
+          title="What We"
+          titleAccent="Offer"
+          subtitle="Five distinct culinary experiences, each tailored to your occasion and crafted with the same commitment to excellence."
+          dark
+        />
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {serviceCards.slice(0, 3).map((s, i) => (
+            <ServiceCard key={s.slug} s={s} i={i} />
+          ))}
+        </div>
+        <div className="grid sm:grid-cols-2 gap-5 mt-5 max-w-[calc(66.666%+0.625rem)] mx-auto">
+          {serviceCards.slice(3).map((s, i) => (
+            <ServiceCard key={s.slug} s={s} i={i + 3} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ServiceCard({ s, i }: { s: typeof serviceCards[0]; i: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  return (
+    <motion.div ref={ref} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: i * 0.08 }}>
+      <Link href={`/services/${s.slug}`} className="group block relative overflow-hidden bg-[#0a0a0a] border border-white/5 hover:border-[#ECA241]/30 transition-all duration-500">
+        <div className="relative h-52 overflow-hidden">
+          <img src={s.image} alt={s.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+        </div>
+        <div className="p-6">
+          <h3 className="font-[family-name:var(--font-display)] text-lg text-[#F3F1E9] mb-2 group-hover:text-[#ECA241] transition-colors duration-300">{s.title}</h3>
+          <p className="text-[#F3F1E9]/45 text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-body)" }}>{s.desc}</p>
+          <span className="text-[#ECA241]/60 group-hover:text-[#ECA241] text-xs tracking-widest uppercase font-semibold transition-colors flex items-center gap-2" style={{ fontFamily: "var(--font-body)" }}>
+            Learn More <ArrowRight size={14} />
+          </span>
+        </div>
+        <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#ECA241] group-hover:w-full transition-all duration-500" />
+      </Link>
+    </motion.div>
+  );
+}
+
+/* ─── 4. WHY CHOOSE US ─── */
+function WhyChooseUs() {
+  return (
+    <section className="section-cream py-24 lg:py-32">
+      <div className="container">
+        <SectionHeader
+          label="The Difference"
+          title="Why Choose"
+          titleAccent="The PPL's Chef"
+          subtitle="We're not just caterers — we're culinary partners dedicated to making your event extraordinary."
+        />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {whyItems.map((item, i) => (
+            <FadeIn key={item.title} delay={i * 0.1}>
+              <div className="text-center group">
+                <div className="w-16 h-16 mx-auto mb-5 border border-[#D82E2B]/20 flex items-center justify-center group-hover:bg-[#D82E2B] group-hover:border-[#D82E2B] transition-all duration-400">
+                  <item.icon size={24} className="text-[#D82E2B] group-hover:text-white transition-colors duration-400" />
+                </div>
+                <h3 className="font-[family-name:var(--font-display)] text-lg mb-3">{item.title}</h3>
+                <p className="text-black/50 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{item.desc}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── 5. SIGNATURE EXPERIENCE ─── */
+function SignatureExperience() {
+  return (
+    <section className="relative overflow-hidden">
+      <div className="grid lg:grid-cols-2 min-h-[600px]">
+        <div className="relative">
+          <img src={ELEGANT_TABLE} alt="Elegant table setting by The PPL's Chef" className="w-full h-full object-cover min-h-[400px]" />
+          <div className="absolute inset-0 bg-black/20" />
+        </div>
+        <div className="bg-black flex items-center py-16 lg:py-0">
+          <FadeIn className="px-8 lg:px-16 max-w-lg">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-8 h-[1px] bg-[#ECA241]" />
+              <span className="brand-label">The Experience</span>
+            </div>
+            <h2 className="font-[family-name:var(--font-display)] text-3xl lg:text-4xl text-[#F3F1E9] leading-tight mb-6">
+              More Than a Meal — It's a <span className="text-[#ECA241]">Moment</span>
+            </h2>
+            <p className="text-[#F3F1E9]/55 text-base leading-relaxed mb-5" style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}>
+              What sets The PPL's Chef apart is our unwavering commitment to creating not just meals, but memories. Every ingredient is hand-selected. Every plate is composed with intention. Every guest is treated like family.
+            </p>
+            <p className="text-[#F3F1E9]/40 text-sm leading-relaxed mb-8" style={{ fontFamily: "var(--font-body)" }}>
+              We bring the warmth of Southern hospitality, the precision of fine dining, and the creativity of a personal chef — all to the location of your choosing.
+            </p>
+            <Link href="/book" className="btn-primary">Start Planning</Link>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── 6. FEATURED DISHES ─── */
+function FeaturedDishes() {
+  return (
+    <section className="section-cream py-24 lg:py-32">
+      <div className="container">
+        <SectionHeader
+          label="From Our Kitchen"
+          title="Signature"
+          titleAccent="Dishes"
+          subtitle="A glimpse into the culinary artistry we bring to every event."
+        />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {featuredDishes.map((d, i) => (
+            <FadeIn key={d.label} delay={i * 0.1}>
+              <div className="group relative overflow-hidden aspect-[4/5]">
+                <img src={d.src} alt={d.label} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <p className="text-[#F3F1E9] text-sm font-semibold tracking-wider uppercase" style={{ fontFamily: "var(--font-body)" }}>{d.label}</p>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── 7. BOOKING PROCESS ─── */
+function BookingProcess() {
+  const steps = [
+    { num: "01", title: "Tell Us About Your Event", desc: "Share your vision, guest count, date, and any special requests through our inquiry form." },
+    { num: "02", title: "We Craft the Experience", desc: "Our chef designs a custom menu and plan tailored to your event, preferences, and budget." },
+    { num: "03", title: "You Enjoy the Moment", desc: "We handle everything — setup, cooking, service, and cleanup. You simply enjoy the experience." },
+  ];
+
+  return (
+    <section className="section-dark py-24 lg:py-32">
+      <div className="container">
+        <SectionHeader
+          label="How It Works"
+          title="Three Simple"
+          titleAccent="Steps"
+          subtitle="Booking your culinary experience is effortless."
+          dark
+        />
+        <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+          {steps.map((step, i) => (
+            <FadeIn key={step.num} delay={i * 0.15}>
+              <div className="text-center">
+                <div className="font-[family-name:var(--font-display)] text-5xl text-[#ECA241]/20 mb-4">{step.num}</div>
+                <h3 className="font-[family-name:var(--font-display)] text-xl text-[#F3F1E9] mb-3">{step.title}</h3>
+                <p className="text-[#F3F1E9]/45 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{step.desc}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+        <FadeIn className="text-center mt-14" delay={0.4}>
+          <Link href="/book" className="btn-primary">Get Started</Link>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+/* ─── 8. TESTIMONIALS ─── */
+function TestimonialsSection() {
+  return (
+    <section id="testimonials" className="section-cream py-24 lg:py-32">
+      <div className="container">
+        <SectionHeader
+          label="Client Experiences"
+          title="What Our Clients"
+          titleAccent="Say"
+        />
+        <div className="grid md:grid-cols-3 gap-8">
+          {testimonials.map((t, i) => (
+            <FadeIn key={t.name} delay={i * 0.12}>
+              <div className="bg-white p-8 shadow-sm border border-black/5 group hover:shadow-lg transition-shadow duration-400 h-full flex flex-col">
+                <Quote className="text-[#ECA241]/20 mb-3" size={32} />
+                <div className="flex gap-1 mb-4">
+                  {Array.from({ length: t.rating }).map((_, j) => (
+                    <Star key={j} size={14} className="text-[#ECA241] fill-[#ECA241]" />
+                  ))}
+                </div>
+                <p className="text-black/65 text-sm leading-relaxed mb-6 flex-1" style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "0.95rem" }}>
+                  "{t.text}"
+                </p>
+                <div className="border-t border-black/5 pt-4">
+                  <div className="font-[family-name:var(--font-display)] text-sm text-black">{t.name}</div>
+                  <div className="text-[#D82E2B]/60 text-xs tracking-wider uppercase mt-0.5" style={{ fontFamily: "var(--font-body)" }}>{t.role}</div>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── 9. FINAL CTA ─── */
+function FinalCTA() {
+  return (
+    <section className="relative py-24 lg:py-32 overflow-hidden">
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${OUTDOOR_PARTY})` }} />
+      <div className="absolute inset-0 bg-black/75" />
+      <div className="relative z-10 container text-center">
+        <FadeIn>
+          <img src={LOGO} alt="The PPL's Chef" className="h-16 w-16 rounded-full object-cover border-2 border-[#ECA241] mx-auto mb-6 shadow-xl" />
+          <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-[#F3F1E9] leading-tight mb-5">
+            Ready to Create Something <span className="text-[#ECA241]">Extraordinary?</span>
+          </h2>
+          <p className="text-[#F3F1E9]/55 text-base lg:text-lg max-w-xl mx-auto mb-10 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+            Let us bring the restaurant to you. Tell us about your event and we'll craft a custom experience your guests will never forget.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link href="/book" className="btn-primary">Book Your Experience</Link>
+            <a href="tel:725-212-2236" className="btn-outline">Call 725-212-2236</a>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+/* ─── 10. ABOUT THE CHEF ─── */
+function AboutChef() {
+  return (
+    <section id="about" className="section-cream py-24 lg:py-32">
+      <div className="container">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <FadeIn>
+            <div className="relative">
+              <img src={ABOUT_CHEF} alt="The Chef preparing food at an outdoor event" className="w-full h-[500px] lg:h-[600px] object-cover" />
+              <div className="absolute -bottom-6 -right-4 lg:-right-6 w-44 h-44 lg:w-52 lg:h-52 border-4 border-[#F3F1E9] shadow-2xl">
+                <img src={CHEF_OUTDOOR} alt="Chef in action" className="w-full h-full object-cover" />
+              </div>
+              <div className="absolute top-4 left-4 w-14 h-14 border-t-2 border-l-2 border-[#ECA241]" />
+            </div>
+          </FadeIn>
+
+          <FadeIn delay={0.2} className="pb-10 lg:pb-0">
+            <div className="flex items-center gap-4 mb-6">
+              <img src={LOGO} alt="Logo" className="h-14 w-14 rounded-full object-cover border-2 border-[#D82E2B] shadow-lg" />
+              <div>
+                <div className="font-[family-name:var(--font-display)] text-lg text-black">The PPL's <span className="text-[#D82E2B]">Chef</span></div>
+                <div className="text-[#D82E2B]/60 text-[10px] tracking-[0.25em] uppercase" style={{ fontFamily: "var(--font-body)" }}>The People's Chef</div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-8 h-[1px] bg-[#D82E2B]" />
+              <span className="brand-label text-[#D82E2B]">Our Story</span>
+            </div>
+
+            <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-black leading-tight mb-6">
+              Rooted in Passion, Driven by <span className="text-[#D82E2B]">Flavor</span>
+            </h2>
+
+            <div className="space-y-4 text-black/60 text-base leading-relaxed" style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}>
+              <p>
+                The PPL's Chef was born from a deep love of food, community, and the belief that everyone deserves a restaurant-quality dining experience — no matter the setting. With roots in Southern cooking and a passion for elevated hospitality, our chef brings warmth, creativity, and precision to every plate.
+              </p>
+              <p>
+                What started as cooking for friends and family has grown into a full-service culinary brand serving Las Vegas and beyond. From intimate home dinners to large-scale celebrations, we approach every event with the same dedication: fresh ingredients, custom menus, and an unwavering commitment to making your guests feel like the most important people in the room.
+              </p>
+              <p>
+                This isn't just catering. This is hospitality, crafted with heart.
+              </p>
+            </div>
+
+            <div className="mt-8 flex gap-10 lg:gap-14">
+              {[
+                { num: "500+", label: "Events Served" },
+                { num: "15k+", label: "Happy Guests" },
+                { num: "5★", label: "Client Rating" },
+              ].map((s) => (
+                <div key={s.label}>
+                  <div className="font-[family-name:var(--font-display)] text-2xl lg:text-3xl text-[#D82E2B]">{s.num}</div>
+                  <div className="text-black/40 text-xs mt-1 tracking-wide" style={{ fontFamily: "var(--font-body)" }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── 11. CONTACT SECTION ─── */
+function ContactSection() {
+  const [form, setForm] = useState({ name: "", email: "", phone: "", eventType: "", message: "" });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast.success("Thank you! We'll be in touch within 24 hours.");
+    setForm({ name: "", email: "", phone: "", eventType: "", message: "" });
+  };
+
+  const socials = [
+    { icon: Instagram, href: "https://instagram.com/thepplschef", label: "Instagram" },
+    { icon: TikTokIcon, href: "https://tiktok.com/@thepplschef", label: "TikTok" },
+    { icon: Facebook, href: "https://facebook.com/thepplschef", label: "Facebook" },
+    { icon: XIcon, href: "https://x.com/thepplschef", label: "X" },
+  ];
+
+  return (
+    <section id="contact" className="section-dark py-24 lg:py-32">
+      <div className="container">
+        <SectionHeader label="Get In Touch" title="Book Your" titleAccent="Event" subtitle="Ready to create an unforgettable dining experience? Reach out and let's start planning." dark />
+
+        <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
+          <FadeIn className="lg:col-span-2 space-y-8">
+            <div>
+              <h3 className="font-[family-name:var(--font-display)] text-xl text-[#F3F1E9] mb-6">Contact Information</h3>
+              <div className="space-y-4">
+                <a href="tel:725-212-2236" className="flex items-center gap-4 group">
+                  <div className="w-11 h-11 bg-[#D82E2B] flex items-center justify-center group-hover:bg-[#ECA241] transition-colors duration-300">
+                    <Phone size={18} className="text-white" />
+                  </div>
+                  <div>
+                    <div className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase" style={{ fontFamily: "var(--font-body)" }}>Phone</div>
+                    <div className="text-[#F3F1E9] font-medium text-base" style={{ fontFamily: "var(--font-body)" }}>725-212-2236</div>
+                  </div>
+                </a>
+                <a href="mailto:info@thepplschef.com" className="flex items-center gap-4 group">
+                  <div className="w-11 h-11 bg-[#D82E2B] flex items-center justify-center group-hover:bg-[#ECA241] transition-colors duration-300">
+                    <Mail size={18} className="text-white" />
+                  </div>
+                  <div>
+                    <div className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase" style={{ fontFamily: "var(--font-body)" }}>Email</div>
+                    <div className="text-[#F3F1E9] font-medium text-base" style={{ fontFamily: "var(--font-body)" }}>info@thepplschef.com</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-body)" }}>Follow Us</h4>
+              <div className="flex gap-2.5">
+                {socials.map((s) => (
+                  <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-[#ECA241]/15 flex items-center justify-center text-[#F3F1E9]/50 hover:bg-[#D82E2B] hover:border-[#D82E2B] hover:text-white transition-all duration-300" aria-label={s.label}>
+                    <s.icon size={16} />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-l-2 border-[#ECA241]/30 pl-5">
+              <p className="font-[family-name:var(--font-serif)] text-[#F3F1E9]/40 italic text-base leading-relaxed">
+                "Great food is the foundation of genuine happiness."
+              </p>
+            </div>
+          </FadeIn>
+
+          <FadeIn className="lg:col-span-3" delay={0.2}>
+            <form onSubmit={handleSubmit} className="bg-[#0a0a0a] border border-white/5 p-8 lg:p-10">
+              <h3 className="font-[family-name:var(--font-display)] text-xl text-[#F3F1E9] mb-8">Send an Inquiry</h3>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  { label: "Full Name", key: "name", type: "text", placeholder: "Your name", required: true },
+                  { label: "Email", key: "email", type: "email", placeholder: "your@email.com", required: true },
+                  { label: "Phone", key: "phone", type: "tel", placeholder: "(555) 123-4567", required: false },
+                ].map((f) => (
+                  <div key={f.key}>
+                    <label className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase block mb-2" style={{ fontFamily: "var(--font-body)" }}>{f.label} {f.required && "*"}</label>
+                    <input
+                      type={f.type}
+                      required={f.required}
+                      value={(form as any)[f.key]}
+                      onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                      className="w-full px-4 py-3 bg-black border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm"
+                      style={{ fontFamily: "var(--font-body)" }}
+                      placeholder={f.placeholder}
+                    />
+                  </div>
+                ))}
+                <div>
+                  <label className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase block mb-2" style={{ fontFamily: "var(--font-body)" }}>Event Type</label>
+                  <select
+                    value={form.eventType}
+                    onChange={(e) => setForm({ ...form, eventType: e.target.value })}
+                    className="w-full px-4 py-3 bg-black border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm"
+                    style={{ fontFamily: "var(--font-body)" }}
+                  >
+                    <option value="">Select type</option>
+                    <option value="private-chef">Private Chef</option>
+                    <option value="catering">Catering</option>
+                    <option value="meal-boxes">Meal Boxes</option>
+                    <option value="special-events">Special Events</option>
+                    <option value="corporate">Corporate Dining</option>
+                  </select>
+                </div>
+              </div>
+              <div className="mt-4">
+                <label className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase block mb-2" style={{ fontFamily: "var(--font-body)" }}>Tell Us About Your Event *</label>
+                <textarea
+                  required
+                  rows={4}
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  className="w-full px-4 py-3 bg-black border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm resize-none"
+                  style={{ fontFamily: "var(--font-body)" }}
+                  placeholder="Date, guest count, dietary needs, vision for the event..."
+                />
+              </div>
+              <button type="submit" className="mt-6 w-full btn-primary">Send Inquiry</button>
+            </form>
+          </FadeIn>
+        </div>
+      </div>
+    </section>
   );
 }

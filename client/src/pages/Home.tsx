@@ -15,7 +15,8 @@ import {
   SEAFOOD_BOWLS, PLATED_SALAD, GRILLED_ROMAINE, DESSERT_OVERHEAD,
   ELEGANT_TABLE, BUFFET_SERVICE, CARVING_STATION,
   GEN_PRIVATE_DINING, GEN_MEAL_BOX, GEN_SPECIAL_EVENTS, GEN_CORPORATE,
-  OUTDOOR_PARTY, GALLERY_IMAGES
+  OUTDOOR_PARTY, GALLERY_IMAGES,
+  CHEF_PORTRAIT_1, CHEF_PORTRAIT_2
 } from "@/lib/images";
 import { AnimatePresence } from "framer-motion";
 
@@ -457,9 +458,9 @@ function AboutChef() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <FadeIn>
             <div className="relative">
-              <img src={ABOUT_CHEF} alt="The Chef preparing food at an outdoor event" className="w-full h-[500px] lg:h-[600px] object-cover" />
+              <img src={CHEF_PORTRAIT_1} alt="The PPL's Chef - Professional portrait" className="w-full h-[500px] lg:h-[600px] object-cover" />
               <div className="absolute -bottom-6 -right-4 lg:-right-6 w-44 h-44 lg:w-52 lg:h-52 border-4 border-[#F3F1E9] shadow-2xl">
-                <img src={CHEF_OUTDOOR} alt="Chef in action" className="w-full h-full object-cover" />
+                <img src={CHEF_PORTRAIT_2} alt="The PPL's Chef" className="w-full h-full object-cover" />
               </div>
               <div className="absolute top-4 left-4 w-14 h-14 border-t-2 border-l-2 border-[#ECA241]" />
             </div>

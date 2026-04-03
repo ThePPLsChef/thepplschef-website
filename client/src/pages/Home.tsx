@@ -16,7 +16,9 @@ import {
   ELEGANT_TABLE, BUFFET_SERVICE, CARVING_STATION,
   GEN_PRIVATE_DINING, GEN_MEAL_BOX, GEN_SPECIAL_EVENTS, GEN_CORPORATE,
   OUTDOOR_PARTY, GALLERY_IMAGES,
-  CHEF_PORTRAIT_1, CHEF_PORTRAIT_2
+  CHEF_PORTRAIT_1, CHEF_PORTRAIT_2,
+  CHEF_REAL_PORTRAIT_1, CHEF_REAL_PORTRAIT_2,
+  BEET_SALAD_SIDE, SHRIMP_CREAM_SAUCE, GLAZED_RIBS, PASTRY_TURNOVER, DEVILED_EGGS_2
 } from "@/lib/images";
 import { AnimatePresence } from "framer-motion";
 
@@ -95,10 +97,12 @@ const testimonials = [
 
 /* ─── Featured dishes ─── */
 const featuredDishes = [
-  { src: SEAFOOD_BOWLS, label: "Signature Seafood" },
-  { src: GRILLED_ROMAINE, label: "Grilled Romaine" },
-  { src: PLATED_SALAD, label: "Artisan Salads" },
-  { src: DESSERT_OVERHEAD, label: "Curated Desserts" },
+  { src: BEET_SALAD_SIDE, label: "Roasted Beet Salad" },
+  { src: SHRIMP_CREAM_SAUCE, label: "Jumbo Shrimp" },
+  { src: DEVILED_EGGS_2, label: "Elevated Deviled Eggs" },
+  { src: GLAZED_RIBS, label: "Signature Ribs" },
+  { src: PASTRY_TURNOVER, label: "Flaky Pastry" },
+  { src: SEAFOOD_BOWLS, label: "Gourmet Seafood" },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -458,9 +462,9 @@ function AboutChef() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <FadeIn>
             <div className="relative">
-              <img src={CHEF_PORTRAIT_1} alt="The PPL's Chef - Professional portrait" className="w-full h-[500px] lg:h-[600px] object-cover" />
+              <img src={CHEF_REAL_PORTRAIT_1} alt="Stephen Austin — CEO & Director of Culinary Operations, The PPL's Chef" className="w-full h-[500px] lg:h-[600px] object-cover object-top" />
               <div className="absolute -bottom-6 -right-4 lg:-right-6 w-44 h-44 lg:w-52 lg:h-52 border-4 border-[#F3F1E9] shadow-2xl">
-                <img src={CHEF_PORTRAIT_2} alt="The PPL's Chef" className="w-full h-full object-cover" />
+                <img src={CHEF_REAL_PORTRAIT_2} alt="Stephen Austin — The People's Chef" className="w-full h-full object-cover object-top" />
               </div>
               <div className="absolute top-4 left-4 w-14 h-14 border-t-2 border-l-2 border-[#ECA241]" />
             </div>

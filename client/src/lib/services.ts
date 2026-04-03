@@ -10,11 +10,16 @@ import {
   SALAD_LINE, PREP_TABLE, SEAFOOD_BOWLS,
   DESSERT_TABLE, OUTDOOR_PARTY, ELEGANT_TABLE,
   GREEN_BEANS, MASHED_POTATOES, DESSERT_OVERHEAD,
-  // New batch photos
+  // Batch 2 photos
   CHEF_PORTRAIT_1, CHEF_PORTRAIT_2,
   EVENT_2025_OCT, EVENT_2025_APR, EVENT_2025_SEP, EVENT_SPREAD_2020,
   NEW_FOOD_1, NEW_FOOD_2,
   NEW_EVENT_1, NEW_EVENT_2, NEW_EVENT_3, NEW_EVENT_4, NEW_EVENT_5, NEW_EVENT_6,
+  // Batch 3 — real chef portraits and plated dish photos
+  CHEF_REAL_PORTRAIT_1, CHEF_REAL_PORTRAIT_2,
+  BEET_SALAD_SIDE, BEET_SALAD_OVERHEAD, BEET_SALAD_CLOSE,
+  DEVILED_EGGS_1, DEVILED_EGGS_2,
+  PASTRY_TURNOVER, SHRIMP_CREAM_SAUCE, GLAZED_RIBS, CAST_IRON_DISH,
 } from "./images";
 
 export interface ServiceData {
@@ -36,8 +41,8 @@ export const services: ServiceData[] = [
     slug: "private-chef",
     title: "Private Chef Experience",
     tagline: "Fine dining, delivered to your doorstep.",
-    // Use real chef portrait as hero for the Private Chef page
-    heroImage: CHEF_PORTRAIT_1,
+    // Use REAL chef portrait as hero for the Private Chef page
+    heroImage: CHEF_REAL_PORTRAIT_2,
     overview: "Transform your home into a five-star restaurant. Our Private Chef Experience brings a dedicated chef to your space, where they'll prepare a multi-course meal crafted exclusively for you and your guests. From ingredient sourcing to plating and cleanup, we handle every detail — you simply enjoy the evening.",
     included: [
       "Personal consultation and custom menu design",
@@ -61,10 +66,10 @@ export const services: ServiceData[] = [
       "Brunch Party for 8"
     ],
     galleryImages: [
-      { src: CHEF_PORTRAIT_2, alt: "The PPL's Chef in action" },
-      { src: CHEF_PLATING, alt: "Chef plating a course with precision" },
-      { src: GRILLED_ROMAINE, alt: "Grilled romaine dish" },
-      { src: PLATED_SALAD, alt: "Beautifully plated salad" },
+      { src: CHEF_REAL_PORTRAIT_1, alt: "Stephen Austin — The People's Chef, side profile" },
+      { src: BEET_SALAD_SIDE, alt: "Roasted beet salad with citrus and goat cheese" },
+      { src: SHRIMP_CREAM_SAUCE, alt: "Jumbo shrimp in house cream sauce" },
+      { src: DEVILED_EGGS_2, alt: "Elevated deviled eggs with tobiko" },
     ],
     metaTitle: "Private Chef Experience | The PPL's Chef | Las Vegas",
     metaDescription: "Hire a private chef in Las Vegas for an unforgettable in-home dining experience. Custom menus, premium ingredients, and full service. Book today."
@@ -109,7 +114,7 @@ export const services: ServiceData[] = [
     slug: "meal-boxes",
     title: "Chef-Crafted Meal Boxes",
     tagline: "Restaurant-quality meals, ready when you are.",
-    heroImage: NEW_FOOD_1,
+    heroImage: BEET_SALAD_OVERHEAD,
     overview: "Enjoy chef-crafted meals without the event. Our Meal Box service delivers freshly prepared, restaurant-quality dishes straight to your door. Perfect for busy professionals, health-conscious families, or anyone who wants to eat exceptionally well without the hassle of cooking. Each box is prepared with the same care and quality as our catered events.",
     included: [
       "Weekly or one-time meal box options",
@@ -133,10 +138,10 @@ export const services: ServiceData[] = [
       "Date Night Dinner Box for Two"
     ],
     galleryImages: [
-      { src: NEW_FOOD_2, alt: "Artisan food plating" },
-      { src: SALAD_LINE, alt: "Fresh salad preparation" },
-      { src: SEAFOOD_BOWLS, alt: "Gourmet seafood bowls" },
-      { src: PREP_TABLE, alt: "Ingredient prep" },
+      { src: BEET_SALAD_CLOSE, alt: "Close-up beet salad" },
+      { src: PASTRY_TURNOVER, alt: "Golden pastry turnover with dipping sauce" },
+      { src: DEVILED_EGGS_1, alt: "Gourmet deviled eggs" },
+      { src: CAST_IRON_DISH, alt: "Cast iron meatball dish" },
     ],
     metaTitle: "Meal Boxes & Meal Prep | The PPL's Chef | Las Vegas",
     metaDescription: "Chef-crafted meal boxes delivered in Las Vegas. Fresh, healthy, restaurant-quality meals for busy professionals and families. Order your meal box today."
@@ -206,7 +211,7 @@ export const services: ServiceData[] = [
     ],
     galleryImages: [
       { src: NEW_EVENT_4, alt: "Corporate catering spread" },
-      { src: GREEN_BEANS, alt: "Seasoned green beans" },
+      { src: GLAZED_RIBS, alt: "Glazed ribs — signature dish" },
       { src: MASHED_POTATOES, alt: "Creamy mashed potatoes" },
       { src: CARVING_STATION, alt: "Carving station" },
     ],

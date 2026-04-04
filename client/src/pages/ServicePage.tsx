@@ -10,7 +10,7 @@ import { motion, useInView } from "framer-motion";
 import { ArrowRight, Check, Users, ChevronLeft } from "lucide-react";
 import Layout from "@/components/Layout";
 import { getServiceBySlug, services } from "@/lib/services";
-import { LOGO } from "@/lib/images";
+import { LOGO_TRANSPARENT } from "@/lib/images";
 
 function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef(null);
@@ -168,7 +168,7 @@ export default function ServicePage() {
       <section className="section-cream py-20 lg:py-28">
         <div className="container text-center">
           <FadeIn>
-            <img src={LOGO} alt="The PPL's Chef" className="h-14 w-14 rounded-full object-cover border-2 border-[#D82E2B] mx-auto mb-5 shadow-lg" />
+            <img src={LOGO_TRANSPARENT} alt="The PPL's Chef" className="h-14 w-14 object-contain drop-shadow-lg mx-auto mb-5" />
             <h2 className="font-[family-name:var(--font-display)] text-3xl lg:text-4xl text-black mb-4">
               Ready to Book Your <span className="text-[#D82E2B]">{service.title}?</span>
             </h2>

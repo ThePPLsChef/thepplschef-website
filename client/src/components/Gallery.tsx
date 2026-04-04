@@ -7,7 +7,7 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { LOGO, GALLERY_IMAGES } from "@/lib/images";
+import { LOGO_TRANSPARENT, GALLERY_IMAGES } from "@/lib/images";
 
 export default function Gallery() {
   const headerRef = useRef(null);
@@ -26,7 +26,7 @@ export default function Gallery() {
 
       {/* Logo watermark */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none z-0">
-        <img src={LOGO} alt="" className="w-[500px] h-[500px] object-contain" />
+        <img src={LOGO_TRANSPARENT} alt="" className="w-[500px] h-[500px] object-contain" />
       </div>
 
       <div className="container relative z-10">

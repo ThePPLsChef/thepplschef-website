@@ -444,7 +444,7 @@ function FinalCTA() {
       <div className="absolute inset-0 bg-black/75" />
       <div className="relative z-10 container text-center">
         <FadeIn>
-          <img src={LOGO} alt="The PPL's Chef" className="h-16 w-16 rounded-full object-cover border-2 border-[#ECA241] mx-auto mb-6 shadow-xl" />
+          <img src={LOGO_TRANSPARENT} alt="The PPL's Chef" className="h-16 w-16 object-contain mx-auto mb-6 drop-shadow-xl" />
           <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-[#F3F1E9] leading-tight mb-5">
             Ready to Create Something <span className="text-[#ECA241]">Extraordinary?</span>
           </h2>
@@ -484,7 +484,7 @@ function AboutChef() {
 
           <FadeIn delay={0.2} className="pb-10 lg:pb-0">
             <div className="flex items-center gap-4 mb-6">
-              <img src={LOGO} alt="Logo" className="h-14 w-14 rounded-full object-cover border-2 border-[#D82E2B] shadow-lg" />
+              <img src={LOGO_TRANSPARENT} alt="Logo" className="h-14 w-14 object-contain drop-shadow-lg" />
               <div>
                 <div className="font-[family-name:var(--font-display)] text-lg text-black">The PPL's <span className="text-[#D82E2B]">Chef</span></div>
                 <div className="text-[#D82E2B]/60 text-[10px] tracking-[0.25em] uppercase" style={{ fontFamily: "var(--font-body)" }}>The People's Chef</div>

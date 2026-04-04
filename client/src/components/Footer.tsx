@@ -5,7 +5,7 @@
  */
 import { Link } from "wouter";
 import { Instagram, Facebook, Phone, Mail, MapPin } from "lucide-react";
-import { LOGO } from "@/lib/images";
+import { LOGO_TRANSPARENT } from "@/lib/images";
 
 function TikTokIcon({ size = 16 }: { size?: number }) {
   return (
@@ -46,9 +46,9 @@ export default function Footer() {
       {/* Logo signature */}
       <div className="flex flex-col items-center pt-16 pb-6">
         <img
-          src={LOGO}
+          src={LOGO_TRANSPARENT}
           alt="The PPL's Chef"
-          className="h-20 w-20 rounded-full object-cover border-[3px] border-[#ECA241] shadow-xl shadow-[#ECA241]/15 mb-4"
+          className="h-20 w-20 object-contain drop-shadow-xl mb-4"
         />
         <h2 className="font-[family-name:var(--font-display)] text-2xl text-[#F3F1E9] tracking-wide text-center">
           The PPL's <span className="text-[#ECA241]">Chef</span>

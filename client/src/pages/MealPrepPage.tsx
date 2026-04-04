@@ -11,7 +11,7 @@ import { motion, useInView } from "framer-motion";
 import { ChevronLeft, ChefHat, Flame, CalendarCheck, Truck, Check } from "lucide-react";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
-import { LOGO_TRANSPARENT } from "@/lib/images";
+import { LOGO_ALT_HORIZONTAL } from "@/lib/images";
 import {
   MEAL_PREP_OVERHEAD_MULTI,
   MEAL_PREP_GRILLED_CHICKEN,
@@ -522,7 +522,7 @@ export default function MealPrepPage() {
             {/* Sidebar */}
             <div className="lg:col-span-2">
               <FadeIn>
-                <img src={LOGO_TRANSPARENT} alt="The PPL's Chef" className="h-14 w-14 object-contain drop-shadow-xl mb-5" />
+                <img src={LOGO_ALT_HORIZONTAL} alt="The PPL's Chef" className="h-16 w-auto object-contain drop-shadow-xl mb-5" />
                 <h2 className="font-[family-name:var(--font-display)] text-2xl lg:text-3xl text-[#F3F1E9] mb-4">
                   Start Your <span className="text-[#ECA241]">Meal Plan</span>
                 </h2>
@@ -577,7 +577,7 @@ export default function MealPrepPage() {
       <section className="section-cream py-20 lg:py-28">
         <div className="container text-center">
           <FadeIn>
-            <img src={LOGO_TRANSPARENT} alt="The PPL's Chef" className="h-14 w-14 object-contain drop-shadow-lg mx-auto mb-5" />
+            <img src={LOGO_ALT_HORIZONTAL} alt="The PPL's Chef" className="h-16 w-auto object-contain drop-shadow-lg mx-auto mb-5" />
             <h2 className="font-[family-name:var(--font-display)] text-3xl lg:text-4xl text-black mb-4">
               Ready to Eat <span className="text-[#D82E2B]">Better?</span>
             </h2>

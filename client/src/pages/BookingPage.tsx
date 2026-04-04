@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import { Phone, Mail, Instagram, Facebook, ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
-import { LOGO_TRANSPARENT, HERO_BG } from "@/lib/images";
+import { LOGO_PRIMARY, HERO_BG } from "@/lib/images";
 
 function TikTokIcon({ size = 16 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.73a8.19 8.19 0 004.76 1.52v-3.4a4.85 4.85 0 01-1-.16z" /></svg>;
@@ -89,10 +89,7 @@ export default function BookingPage() {
             {/* Sidebar */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-8">
               <div>
-                <img src={LOGO_TRANSPARENT} alt="The PPL's Chef" className="h-16 w-16 object-contain drop-shadow-xl mb-4" />
-                <h3 className="font-[family-name:var(--font-display)] text-xl text-[#F3F1E9] mb-2">
-                  The PPL's <span className="text-[#ECA241]">Chef</span>
-                </h3>
+                <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain drop-shadow-xl mb-4" />
                 <p className="text-[#F3F1E9]/40 text-sm leading-relaxed" style={fontBody}>
                   Fill out the form and we'll respond within 24 hours with a custom proposal for your event.
                 </p>

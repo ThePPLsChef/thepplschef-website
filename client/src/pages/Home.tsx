@@ -11,7 +11,7 @@ import { Link } from "wouter";
 import { Star, Quote, ChefHat, Users, Utensils, Clock, Award, Heart, ArrowRight, Phone, Mail, Instagram, Facebook, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import {
-  LOGO, LOGO_TRANSPARENT, HERO_BG, ABOUT_CHEF, CHEF_OUTDOOR, CHEF_PLATING,
+  LOGO, LOGO_TRANSPARENT, LOGO_PRIMARY, LOGO_P_ICON, HERO_BG, ABOUT_CHEF, CHEF_OUTDOOR, CHEF_PLATING,
   SEAFOOD_BOWLS, PLATED_SALAD, GRILLED_ROMAINE, DESSERT_OVERHEAD,
   ELEGANT_TABLE, BUFFET_SERVICE, CARVING_STATION,
   GEN_PRIVATE_DINING, GEN_MEAL_BOX, GEN_SPECIAL_EVENTS, GEN_CORPORATE,
@@ -144,12 +144,12 @@ function HeroSection() {
       <div className="relative z-10 container py-32 flex flex-col items-center text-center">
         {/* Transparent logo — no box, no border, no background */}
         <motion.img
-          src={LOGO_TRANSPARENT}
+          src={LOGO_PRIMARY}
           alt="The PPL's Chef"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
-          className="h-28 w-28 sm:h-36 sm:w-36 object-contain mb-8 drop-shadow-2xl"
+          className="h-32 w-auto sm:h-44 object-contain mb-8 drop-shadow-2xl"
         />
 
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="flex items-center gap-3 mb-6">
@@ -444,7 +444,7 @@ function FinalCTA() {
       <div className="absolute inset-0 bg-black/75" />
       <div className="relative z-10 container text-center">
         <FadeIn>
-          <img src={LOGO_TRANSPARENT} alt="The PPL's Chef" className="h-16 w-16 object-contain mx-auto mb-6 drop-shadow-xl" />
+          <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain mx-auto mb-6 drop-shadow-xl" />
           <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-[#F3F1E9] leading-tight mb-5">
             Ready to Create Something <span className="text-[#ECA241]">Extraordinary?</span>
           </h2>
@@ -484,7 +484,7 @@ function AboutChef() {
 
           <FadeIn delay={0.2} className="pb-10 lg:pb-0">
             <div className="flex items-center gap-4 mb-6">
-              <img src={LOGO_TRANSPARENT} alt="Logo" className="h-14 w-14 object-contain drop-shadow-lg" />
+              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-16 w-auto object-contain drop-shadow-lg" />
               <div>
                 <div className="font-[family-name:var(--font-display)] text-lg text-black">The PPL's <span className="text-[#D82E2B]">Chef</span></div>
                 <div className="text-[#D82E2B]/60 text-[10px] tracking-[0.25em] uppercase" style={{ fontFamily: "var(--font-body)" }}>The People's Chef</div>

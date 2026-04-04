@@ -9,6 +9,10 @@ const CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ
 // Brand
 export const LOGO = `${CDN}/photo_AQAD2gtrG-WvaEZ-_2eac18e2.jpg`;
 export const LOGO_TRANSPARENT = `${CDN}/logo_transparent_d4eeeef8.png`;  // White logo on transparent background
+// Three-logo system
+export const LOGO_PRIMARY = `${CDN}/logo_primary_a1adc3ca.png`;          // Full PPL's Chef wordmark — navbar, hero, footer, about
+export const LOGO_P_ICON = `${CDN}/logo_p_icon_5a0514c3.png`;            // P+chef hat icon — Private Chef & Catering section badges
+export const LOGO_ALT_HORIZONTAL = `${CDN}/logo_alt_horizontal_v4_4ad3d7b5.png`; // Horizontal alt logo — Meal Prep section badge
 
 // Generated hero/feature images
 export const HERO_BG = `${CDN}/fd4_2e47d6f7.jpg`;  // Overhead family-style dinner — people eating, passing food, warm festive atmosphere

@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LOGO } from "@/lib/images";
+import { LOGO_TRANSPARENT } from "@/lib/images";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -68,10 +68,10 @@ export default function Navbar() {
           className="flex items-center gap-3 group"
         >
           <img
-            src={LOGO}
+            src={LOGO_TRANSPARENT}
             alt="The PPL's Chef"
-            className={`rounded-full object-cover border-2 border-[#ECA241]/80 group-hover:border-[#ECA241] transition-all duration-300 shadow-lg shadow-black/30 ${
-              scrolled ? "h-10 w-10" : "h-12 w-12"
+            className={`object-contain transition-all duration-300 drop-shadow-lg ${
+              scrolled ? "h-9 w-9" : "h-11 w-11"
             }`}
           />
           <div className="hidden sm:block">
@@ -141,7 +141,7 @@ export default function Navbar() {
               <X size={30} />
             </button>
 
-            <img src={LOGO} alt="Logo" className="h-16 w-16 rounded-full object-cover border-3 border-[#ECA241] mb-4" style={{ borderWidth: "3px" }} />
+            <img src={LOGO_TRANSPARENT} alt="Logo" className="h-16 w-16 object-contain mb-4 drop-shadow-lg" />
 
             {navLinks.map((link, i) => (
               <motion.button

@@ -18,7 +18,8 @@ import {
   OUTDOOR_PARTY, GALLERY_IMAGES,
   CHEF_PORTRAIT_1, CHEF_PORTRAIT_2,
   CHEF_REAL_PORTRAIT_1, CHEF_REAL_PORTRAIT_2,
-  BEET_SALAD_SIDE, SHRIMP_CREAM_SAUCE, GLAZED_RIBS, PASTRY_TURNOVER, DEVILED_EGGS_2
+  BEET_SALAD_SIDE, SHRIMP_CREAM_SAUCE, GLAZED_RIBS, PASTRY_TURNOVER, DEVILED_EGGS_2,
+  CHEF_BW_PORTRAIT
 } from "@/lib/images";
 import { AnimatePresence } from "framer-motion";
 
@@ -462,11 +463,16 @@ function AboutChef() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <FadeIn>
             <div className="relative">
-              <img src={CHEF_REAL_PORTRAIT_1} alt="Stephen Austin — CEO & Director of Culinary Operations, The PPL's Chef" className="w-full h-[500px] lg:h-[600px] object-cover object-top" />
-              <div className="absolute -bottom-6 -right-4 lg:-right-6 w-44 h-44 lg:w-52 lg:h-52 border-4 border-[#F3F1E9] shadow-2xl">
-                <img src={CHEF_REAL_PORTRAIT_2} alt="Stephen Austin — The People's Chef" className="w-full h-full object-cover object-top" />
-              </div>
+              {/* Primary portrait: dramatic B&W headshot */}
+              <img
+                src={CHEF_BW_PORTRAIT}
+                alt="Chef Stephen Austin — CEO & Director of Culinary Operations, The PPL's Chef"
+                className="w-full h-[520px] lg:h-[640px] object-cover object-top"
+              />
+              {/* Gold corner accent */}
               <div className="absolute top-4 left-4 w-14 h-14 border-t-2 border-l-2 border-[#ECA241]" />
+              {/* Red accent bar at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#D82E2B]" />
             </div>
           </FadeIn>
 
@@ -481,29 +487,38 @@ function AboutChef() {
 
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-[1px] bg-[#D82E2B]" />
-              <span className="brand-label text-[#D82E2B]">Our Story</span>
+              <span className="brand-label text-[#D82E2B]">Meet the Chef</span>
             </div>
 
-            <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-black leading-tight mb-6">
-              Rooted in Passion, Driven by <span className="text-[#D82E2B]">Flavor</span>
+            <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-black leading-tight mb-2">
+              Chef Stephen <span className="text-[#D82E2B]">Austin</span>
             </h2>
+            <p className="text-[#ECA241] text-sm tracking-widest uppercase mb-6" style={{ fontFamily: "var(--font-body)", fontWeight: 600 }}>CEO &amp; Director of Culinary Operations</p>
 
             <div className="space-y-4 text-black/60 text-base leading-relaxed" style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}>
               <p>
-                The PPL's Chef was born from a deep love of food, community, and the belief that everyone deserves a restaurant-quality dining experience — no matter the setting. With roots in Southern cooking and a passion for elevated hospitality, our chef brings warmth, creativity, and precision to every plate.
+                Chef Stephen Austin is the founder and culinary force behind The PPL's Chef — Las Vegas's premier private chef and catering experience. Born and raised in Georgia, Chef Stephen spent over 25 years immersed in professional kitchens, learning and mastering every aspect of the culinary craft from the ground up.
               </p>
               <p>
-                What started as cooking for friends and family has grown into a full-service culinary brand serving Las Vegas and beyond. From intimate home dinners to large-scale celebrations, we approach every event with the same dedication: fresh ingredients, custom menus, and an unwavering commitment to making your guests feel like the most important people in the room.
+                After relocating to Las Vegas, he formalized his training at the College of Southern Nevada, where he sharpened his technical skills and deepened his passion for creating exceptional dining experiences. That passion became a mission: to bring restaurant-quality food directly to the people — in their homes, at their events, and in their most meaningful moments.
               </p>
               <p>
-                This isn't just catering. This is hospitality, crafted with heart.
+                Today, The PPL's Chef serves clients across the Las Vegas Valley with custom menus, full-service catering, and intimate private dining experiences that turn every occasion into an unforgettable memory.
               </p>
             </div>
 
+            {/* Pull quote */}
+            <blockquote className="mt-7 border-l-4 border-[#D82E2B] pl-5">
+              <p className="text-black/70 text-base italic leading-relaxed" style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}>
+                "I spent my life in kitchens learning and training so people can enjoy moments with food."
+              </p>
+              <footer className="mt-2 text-[#D82E2B] text-xs tracking-widest uppercase" style={{ fontFamily: "var(--font-body)", fontWeight: 600 }}>— Chef Stephen Austin</footer>
+            </blockquote>
+
             <div className="mt-8 flex gap-10 lg:gap-14">
               {[
+                { num: "25+", label: "Years Experience" },
                 { num: "500+", label: "Events Served" },
-                { num: "15k+", label: "Happy Guests" },
                 { num: "5★", label: "Client Rating" },
               ].map((s) => (
                 <div key={s.label}>

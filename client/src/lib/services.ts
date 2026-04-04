@@ -1,7 +1,7 @@
 /**
  * Service data — The PPL's Chef
  * Defines all 5 service categories with content for dedicated pages.
- * Updated with new real photos from batch 2.
+ * Updated with new real photos from batch 2, 3, and 4 (meal prep).
  */
 import {
   GEN_MEAL_BOX, GEN_CORPORATE,
@@ -20,6 +20,14 @@ import {
   BEET_SALAD_SIDE, BEET_SALAD_OVERHEAD, BEET_SALAD_CLOSE,
   DEVILED_EGGS_1, DEVILED_EGGS_2,
   PASTRY_TURNOVER, SHRIMP_CREAM_SAUCE, GLAZED_RIBS, CAST_IRON_DISH,
+  // Batch 4 — meal prep photos
+  MEAL_PREP_OVERHEAD_MULTI,
+  MEAL_PREP_GRILLED_CHICKEN,
+  MEAL_PREP_GLAZED_SALMON,
+  MEAL_PREP_SHRIMP_FAJITA,
+  MEAL_PREP_CHICKEN_FAJITA,
+  MEAL_PREP_TAMALES,
+  MEAL_PREP_4BOX_SPREAD,
 } from "./images";
 
 export interface ServiceData {
@@ -114,7 +122,8 @@ export const services: ServiceData[] = [
     slug: "meal-boxes",
     title: "Chef-Crafted Meal Boxes",
     tagline: "Restaurant-quality meals, ready when you are.",
-    heroImage: BEET_SALAD_OVERHEAD,
+    // Hero: overhead shot of multiple meal prep containers
+    heroImage: MEAL_PREP_OVERHEAD_MULTI,
     overview: "Enjoy chef-crafted meals without the event. Our Meal Box service delivers freshly prepared, restaurant-quality dishes straight to your door. Perfect for busy professionals, health-conscious families, or anyone who wants to eat exceptionally well without the hassle of cooking. Each box is prepared with the same care and quality as our catered events.",
     included: [
       "Weekly or one-time meal box options",
@@ -137,11 +146,15 @@ export const services: ServiceData[] = [
       "Post-Op Recovery Meal Plan",
       "Date Night Dinner Box for Two"
     ],
+    // All 7 new real meal prep photos — replaces all previous placeholder images
     galleryImages: [
-      { src: BEET_SALAD_CLOSE, alt: "Close-up beet salad" },
-      { src: PASTRY_TURNOVER, alt: "Golden pastry turnover with dipping sauce" },
-      { src: DEVILED_EGGS_1, alt: "Gourmet deviled eggs" },
-      { src: CAST_IRON_DISH, alt: "Cast iron meatball dish" },
+      { src: MEAL_PREP_4BOX_SPREAD,     alt: "Chef-crafted meal prep — 4-box overhead spread of grilled protein meals" },
+      { src: MEAL_PREP_GLAZED_SALMON,   alt: "Glazed salmon with sesame rice and roasted vegetables" },
+      { src: MEAL_PREP_GRILLED_CHICKEN, alt: "Grilled chicken with fresh lime and seasoned green beans" },
+      { src: MEAL_PREP_SHRIMP_FAJITA,   alt: "Shrimp fajita bowl with cilantro rice and warm tortilla" },
+      { src: MEAL_PREP_CHICKEN_FAJITA,  alt: "Grilled chicken fajita bowl with peppers and rice" },
+      { src: MEAL_PREP_TAMALES,         alt: "House-made tamales with elote corn salad" },
+      { src: MEAL_PREP_OVERHEAD_MULTI,  alt: "Weekly meal prep — overhead view of tamale, salmon, and chicken containers" },
     ],
     metaTitle: "Meal Boxes & Meal Prep | The PPL's Chef | Las Vegas",
     metaDescription: "Chef-crafted meal boxes delivered in Las Vegas. Fresh, healthy, restaurant-quality meals for busy professionals and families. Order your meal box today."

@@ -76,6 +76,21 @@ export const SHRIMP_CREAM_SAUCE = `${CDN}/20250619_160948_585a0118.jpg`;     // 
 export const GLAZED_RIBS        = `${CDN}/20250507_173917_2abd28d2.jpg`;     // Glazed ribs
 export const CAST_IRON_DISH     = `${CDN}/20250507_175445_b7cb9ef4.jpg`;     // Cast iron meatball dish
 
+// ── BATCH 4 — MEAL PREP PHOTOS ────────────────────────────────────────────────
+// Real meal prep containers showing weekly meal box service offerings
+export const MEAL_PREP_OVERHEAD_MULTI  = `${CDN}/1000009793_640d446d.jpg`;  // Overhead: tamale, salmon, chicken containers
+export const MEAL_PREP_GRILLED_CHICKEN = `${CDN}/1000009791_6a881b13.jpg`;  // Grilled chicken with lime & green beans
+export const MEAL_PREP_GLAZED_SALMON   = `${CDN}/1000009792_bc162e7d.jpg`;  // Glazed salmon with sesame rice & veggies
+export const MEAL_PREP_SHRIMP_FAJITA   = `${CDN}/1000009788_97b94012.jpg`;  // Shrimp fajita bowl with rice & tortilla
+export const MEAL_PREP_CHICKEN_FAJITA  = `${CDN}/1000009787_517505cb.jpg`;  // Grilled chicken fajita bowl
+export const MEAL_PREP_TAMALES         = `${CDN}/1000009790_10b5bab1.jpg`;  // Tamales with elote corn salad
+export const MEAL_PREP_4BOX_SPREAD     = `${CDN}/1000009786_f0a488b3.jpg`;  // 4-box overhead spread of grilled protein meals
+
+// ── CHEF PORTRAIT — B&W HEADSHOT ──────────────────────────────────────────────
+// Dramatic black & white studio headshot — no glasses, direct gaze
+// PRIMARY portrait for About the Chef section on homepage and about page
+export const CHEF_BW_PORTRAIT = `${CDN}/1000009505_9a592248.jpg`;
+
 // Gallery collection — all real photos (original 16 + 12 batch 2 + 9 batch 3 food photos)
 export const GALLERY_IMAGES = [
   // Batch 3 — newest, most polished plated dishes first

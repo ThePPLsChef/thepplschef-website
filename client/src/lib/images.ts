@@ -8,9 +8,10 @@ const CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ
 
 // Brand
 export const LOGO = `${CDN}/photo_AQAD2gtrG-WvaEZ-_2eac18e2.jpg`;
+export const LOGO_TRANSPARENT = `${CDN}/logo_transparent_d4eeeef8.png`;  // White logo on transparent background
 
 // Generated hero/feature images
-export const HERO_BG = `${CDN}/hero-bg-XjpAAtRn8oMGwPsg6kzbmK.webp`;
+export const HERO_BG = `${CDN}/pexels_c_141637bf.jpg`;  // Overhead communal dining — people around table, hands reaching
 export const ABOUT_CHEF = `${CDN}/about-chef-QVjiLWLps5DMyMxX7uAGJz.webp`;
 export const GEN_PRIVATE = `${CDN}/services-private-TzcXY4W8pCFoiekAcqNa5M.webp`;
 export const GEN_CORPORATE = `${CDN}/services-corporate-aKhbmwwfW9YkL5HLY6hDhV.webp`;

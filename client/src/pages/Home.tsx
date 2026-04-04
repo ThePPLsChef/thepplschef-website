@@ -11,7 +11,7 @@ import { Link } from "wouter";
 import { Star, Quote, ChefHat, Users, Utensils, Clock, Award, Heart, ArrowRight, Phone, Mail, Instagram, Facebook, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import {
-  LOGO, HERO_BG, ABOUT_CHEF, CHEF_OUTDOOR, CHEF_PLATING,
+  LOGO, LOGO_TRANSPARENT, HERO_BG, ABOUT_CHEF, CHEF_OUTDOOR, CHEF_PLATING,
   SEAFOOD_BOWLS, PLATED_SALAD, GRILLED_ROMAINE, DESSERT_OVERHEAD,
   ELEGANT_TABLE, BUFFET_SERVICE, CARVING_STATION,
   GEN_PRIVATE_DINING, GEN_MEAL_BOX, GEN_SPECIAL_EVENTS, GEN_CORPORATE,
@@ -131,60 +131,66 @@ export default function Home() {
 /* ─── 1. HERO ─── */
 function HeroSection() {
   return (
-    <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${HERO_BG})` }} />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#ECA241]/50 to-transparent" />
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background: overhead communal dining — people around table, hands reaching */}
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${HERO_BG})` }} />
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50" />
+      {/* Gold accent line at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#ECA241]/60 to-transparent" />
 
-      <div className="relative z-10 container py-32 lg:py-0">
-        <div className="max-w-3xl">
-          <motion.img
-            src={LOGO}
-            alt="The PPL's Chef"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7 }}
-            className="h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover border-[3px] border-[#ECA241] shadow-2xl shadow-[#ECA241]/20 mb-8"
-          />
+      {/* Centered content */}
+      <div className="relative z-10 container py-32 flex flex-col items-center text-center">
+        {/* Transparent logo — no box, no border, no background */}
+        <motion.img
+          src={LOGO_TRANSPARENT}
+          alt="The PPL's Chef"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7 }}
+          className="h-28 w-28 sm:h-36 sm:w-36 object-contain mb-8 drop-shadow-2xl"
+        />
 
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-[1px] bg-[#ECA241]" />
-            <span className="brand-label">Las Vegas Private Chef & Catering</span>
-          </motion.div>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-[1px] bg-[#ECA241]" />
+          <span className="brand-label">Las Vegas Private Chef & Catering</span>
+          <div className="w-10 h-[1px] bg-[#ECA241]" />
+        </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] text-[#F3F1E9] leading-[1.05] mb-6"
-          >
-            Restaurant-Quality Experiences in the Comfort of{" "}
-            <span className="text-[#ECA241]">Your Chosen Space</span>
-          </motion.h1>
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+          className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] text-[#F3F1E9] leading-[1.05] mb-6 max-w-3xl"
+        >
+          Everybody Deserves to Have a{" "}
+          <span className="text-[#ECA241]">Chef.</span>
+        </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.7 }}
-            className="text-[#F3F1E9]/70 text-lg sm:text-xl leading-relaxed mb-10 max-w-xl"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            From intimate private dinners to grand celebrations, we bring the full culinary experience to any venue you choose.
-          </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.7 }}
+          className="text-[#F3F1E9]/80 text-lg sm:text-xl leading-relaxed mb-10 max-w-xl"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          Las Vegas’s premier private chef and catering experience — restaurant-quality dining in the comfort of your chosen space.
+        </motion.p>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.7 }} className="flex flex-wrap gap-4">
-            <Link href="/book" className="btn-primary">Book Your Experience</Link>
-            <a href="#services" onClick={(e) => { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); }} className="btn-outline">
-              Plan Your Event
-            </a>
-          </motion.div>
-        </div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.7 }} className="flex flex-wrap gap-4 justify-center">
+          <Link href="/book" className="px-10 py-4 bg-[#ECA241] text-black text-base font-semibold tracking-wider uppercase hover:bg-[#f0b050] transition-all duration-300 shadow-lg shadow-[#ECA241]/30" style={{ fontFamily: "var(--font-body)" }}>
+            Book Your Experience
+          </Link>
+          <a href="#services" onClick={(e) => { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); }} className="btn-outline">
+            Our Services
+          </a>
+        </motion.div>
       </div>
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <span className="text-[#ECA241]/40 text-[10px] tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-body)" }}>Scroll</span>
-        <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-[1px] h-6 bg-gradient-to-b from-[#ECA241]/40 to-transparent" />
+        <span className="text-[#ECA241]/50 text-[10px] tracking-[0.3em] uppercase" style={{ fontFamily: "var(--font-body)" }}>Scroll</span>
+        <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-[1px] h-6 bg-gradient-to-b from-[#ECA241]/50 to-transparent" />
       </motion.div>
     </section>
   );

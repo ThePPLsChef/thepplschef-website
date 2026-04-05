@@ -1,7 +1,6 @@
 /**
  * BookingPage — Premium inquiry form for The PPL's Chef
- * Collects: name, email, phone, event date, event time, location, guests,
- * service type, food wishlist, dietary restrictions, budget, notes.
+ * Enhanced fields: date picker, guest count dropdown, budget range, referral source.
  * BRAND: Abril Fatface headings, DM Sans body, Black/Cream/Red/Gold.
  */
 import { useState } from "react";
@@ -31,13 +30,14 @@ interface FormData {
   foodWishlist: string;
   dietary: string;
   budget: string;
+  referral: string;
   notes: string;
 }
 
 const initialForm: FormData = {
   name: "", email: "", phone: "", eventDate: "", eventTime: "",
   location: "", guests: "", serviceType: "", foodWishlist: "",
-  dietary: "", budget: "", notes: "",
+  dietary: "", budget: "", referral: "", notes: "",
 };
 
 export default function BookingPage() {
@@ -187,7 +187,7 @@ export default function BookingPage() {
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div>
-                        <label className={labelClass} style={fontBody}>Event Date *</label>
+                        <label className={labelClass} style={fontBody}>Preferred Event Date *</label>
                         <input type="date" required value={form.eventDate} onChange={(e) => update("eventDate", e.target.value)} className={inputClass} style={fontBody} />
                       </div>
                       <div>
@@ -196,9 +196,16 @@ export default function BookingPage() {
                       </div>
                       <div>
                         <label className={labelClass} style={fontBody}>Number of Guests *</label>
-                        <input type="number" required min="1" value={form.guests} onChange={(e) => update("guests", e.target.value)} className={inputClass} style={fontBody} placeholder="e.g. 25" />
+                        <select required value={form.guests} onChange={(e) => update("guests", e.target.value)} className={inputClass} style={fontBody}>
+                          <option value="">Select guest count</option>
+                          <option value="2-10">2 – 10 guests</option>
+                          <option value="11-25">11 – 25 guests</option>
+                          <option value="26-50">26 – 50 guests</option>
+                          <option value="51-100">51 – 100 guests</option>
+                          <option value="100+">100+ guests</option>
+                        </select>
                       </div>
-                      <div className="sm:col-span-2 lg:col-span-1">
+                      <div>
                         <label className={labelClass} style={fontBody}>Event Location *</label>
                         <input type="text" required value={form.location} onChange={(e) => update("location", e.target.value)} className={inputClass} style={fontBody} placeholder="Address or venue name" />
                       </div>
@@ -208,21 +215,20 @@ export default function BookingPage() {
                           <option value="">Select service</option>
                           <option value="private-chef">Private Chef Experience</option>
                           <option value="catering">Full-Service Catering</option>
-                          <option value="meal-boxes">Meal Boxes</option>
-                          <option value="special-events">Special Events</option>
-                          <option value="corporate">Corporate / Group Dining</option>
+                          <option value="meal-boxes">Chef-Crafted Meal Boxes</option>
+                          <option value="special-events">Special Events & Celebrations</option>
+                          <option value="corporate">Corporate & Group Dining</option>
                         </select>
                       </div>
                       <div>
-                        <label className={labelClass} style={fontBody}>Estimated Budget</label>
-                        <select value={form.budget} onChange={(e) => update("budget", e.target.value)} className={inputClass} style={fontBody}>
-                          <option value="">Select range</option>
+                        <label className={labelClass} style={fontBody}>Budget Range *</label>
+                        <select required value={form.budget} onChange={(e) => update("budget", e.target.value)} className={inputClass} style={fontBody}>
+                          <option value="">Select budget</option>
                           <option value="under-500">Under $500</option>
                           <option value="500-1000">$500 – $1,000</option>
                           <option value="1000-2500">$1,000 – $2,500</option>
                           <option value="2500-5000">$2,500 – $5,000</option>
-                          <option value="5000-10000">$5,000 – $10,000</option>
-                          <option value="10000+">$10,000+</option>
+                          <option value="5000+">$5,000+</option>
                         </select>
                       </div>
                     </div>
@@ -246,10 +252,32 @@ export default function BookingPage() {
                     </div>
                   </div>
 
-                  {/* Additional Notes */}
+                  {/* Additional Info */}
                   <div className="mb-8">
-                    <label className={labelClass} style={fontBody}>Additional Notes</label>
-                    <textarea rows={4} value={form.notes} onChange={(e) => update("notes", e.target.value)} className={`${inputClass} resize-none`} style={fontBody} placeholder="Anything else we should know about your event..." />
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="w-5 h-[1px] bg-[#ECA241]" />
+                      <span className="text-[#ECA241] text-[10px] tracking-[0.2em] uppercase font-semibold" style={fontBody}>Additional Info</span>
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className={labelClass} style={fontBody}>How Did You Hear About Us?</label>
+                        <select value={form.referral} onChange={(e) => update("referral", e.target.value)} className={inputClass} style={fontBody}>
+                          <option value="">Select one</option>
+                          <option value="instagram">Instagram</option>
+                          <option value="tiktok">TikTok</option>
+                          <option value="facebook">Facebook</option>
+                          <option value="google">Google Search</option>
+                          <option value="referral">Friend / Family Referral</option>
+                          <option value="event">Attended a Previous Event</option>
+                          <option value="yelp">Yelp</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className={labelClass} style={fontBody}>Additional Notes</label>
+                      <textarea rows={4} value={form.notes} onChange={(e) => update("notes", e.target.value)} className={`${inputClass} resize-none`} style={fontBody} placeholder="Anything else we should know about your event — theme, special requests, vision..." />
+                    </div>
                   </div>
 
                   <button type="submit" className="w-full btn-primary text-center justify-center py-4">

@@ -64,7 +64,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Services */}
+          {/* Services & Pages */}
           <div>
             <h4 className="text-[#ECA241] text-[11px] tracking-[0.25em] uppercase font-semibold mb-5" style={{ fontFamily: "var(--font-body)" }}>
               Services
@@ -80,6 +80,13 @@ export default function Footer() {
                   {s.label}
                 </Link>
               ))}
+              <Link
+                href="/menus"
+                className="text-[#F3F1E9]/55 hover:text-[#ECA241] text-sm transition-colors duration-300 mt-1"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                Sample Menus
+              </Link>
             </nav>
           </div>
 
@@ -95,8 +102,9 @@ export default function Footer() {
               <a href="mailto:info@thepplschef.com" className="flex items-center gap-3 text-[#F3F1E9]/55 hover:text-[#ECA241] text-sm transition-colors" style={{ fontFamily: "var(--font-body)" }}>
                 <Mail size={14} className="shrink-0" /> info@thepplschef.com
               </a>
-              <div className="flex items-center gap-3 text-[#F3F1E9]/55 text-sm" style={{ fontFamily: "var(--font-body)" }}>
-                <MapPin size={14} className="shrink-0" /> Las Vegas, Nevada
+              <div className="flex items-start gap-3 text-[#F3F1E9]/55 text-sm" style={{ fontFamily: "var(--font-body)" }}>
+                <MapPin size={14} className="shrink-0 mt-0.5" />
+                <span>Las Vegas, NV 89101<br />Serving the entire Las Vegas Valley</span>
               </div>
             </div>
           </div>

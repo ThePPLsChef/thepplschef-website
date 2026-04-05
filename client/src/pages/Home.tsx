@@ -5,6 +5,7 @@
  */
 import Layout from "@/components/Layout";
 import Gallery from "@/components/Gallery";
+import FAQ from "@/components/FAQ";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Link } from "wouter";
@@ -123,6 +124,7 @@ export default function Home() {
       <TestimonialsSection />
       <FinalCTA />
       <AboutChef />
+      <FAQ />
       <ContactSection />
     </Layout>
   );

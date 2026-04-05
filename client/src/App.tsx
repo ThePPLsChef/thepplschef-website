@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import ServicePage from "./pages/ServicePage";
 import BookingPage from "./pages/BookingPage";
 import MealPrepPage from "./pages/MealPrepPage";
+import MenusPage from "./pages/MenusPage";
 
 function Router() {
   return (
@@ -15,6 +16,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/services/meal-boxes" component={MealPrepPage} />
       <Route path="/services/:slug" component={ServicePage} />
+      <Route path="/menus" component={MenusPage} />
       <Route path="/book" component={BookingPage} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

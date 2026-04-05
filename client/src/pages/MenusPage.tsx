@@ -9,6 +9,7 @@ import { Link } from "wouter";
 import { motion, useInView } from "framer-motion";
 import { ChevronLeft, ChefHat, Users, UtensilsCrossed } from "lucide-react";
 import Layout from "@/components/Layout";
+import Pricing from "@/components/Pricing";
 import { LOGO_PRIMARY, HERO_BG } from "@/lib/images";
 
 const fontBody = { fontFamily: "var(--font-body)" };
@@ -310,6 +311,9 @@ export default function MenusPage() {
           </FadeIn>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <Pricing />
     </Layout>
   );
 }

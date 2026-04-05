@@ -1,6 +1,7 @@
 /**
  * BookingPage — Premium inquiry form for The PPL's Chef
  * Enhanced fields: date picker, guest count dropdown, budget range, referral source.
+ * EmailJS integration sends form data to info@thepplschef.com
  * BRAND: Abril Fatface headings, DM Sans body, Black/Cream/Red/Gold.
  */
 import { useState } from "react";
@@ -8,8 +9,15 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Phone, Mail, Instagram, Facebook, ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
+import emailjs from "@emailjs/browser";
 import Layout from "@/components/Layout";
 import { LOGO_PRIMARY, HERO_BG } from "@/lib/images";
+
+// Initialize EmailJS (using public key only for client-side)
+emailjs.init({
+  publicKey: "YOUR_PUBLIC_KEY_HERE", // User will need to set this
+  limitRate: { id: "app", throttle: 300 },
+});
 
 function TikTokIcon({ size = 16 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.73a8.19 8.19 0 004.76 1.52v-3.4a4.85 4.85 0 01-1-.16z" /></svg>;
@@ -43,13 +51,45 @@ const initialForm: FormData = {
 export default function BookingPage() {
   const [form, setForm] = useState<FormData>(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const update = (key: keyof FormData, value: string) => setForm((f) => ({ ...f, [key]: value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    toast.success("Thank you! We'll be in touch within 24 hours to discuss your event.");
+    setLoading(true);
+
+    try {
+      // Send email via EmailJS
+      await emailjs.send(
+        "YOUR_SERVICE_ID_HERE", // User will set this
+        "YOUR_TEMPLATE_ID_HERE", // User will set this
+        {
+          to_email: "info@thepplschef.com",
+          from_name: form.name,
+          from_email: form.email,
+          phone: form.phone,
+          event_date: form.eventDate,
+          event_time: form.eventTime,
+          location: form.location,
+          guests: form.guests,
+          service_type: form.serviceType,
+          food_wishlist: form.foodWishlist,
+          dietary: form.dietary,
+          budget: form.budget,
+          referral: form.referral,
+          notes: form.notes,
+        }
+      );
+
+      setSubmitted(true);
+      toast.success("Thank you! We'll be in touch within 24 hours to discuss your event.");
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      toast.error("Failed to send inquiry. Please try again or call 725-212-2236.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass = "w-full px-4 py-3.5 bg-black border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm placeholder:text-white/20";
@@ -207,7 +247,7 @@ export default function BookingPage() {
                       </div>
                       <div>
                         <label className={labelClass} style={fontBody}>Event Location *</label>
-                        <input type="text" required value={form.location} onChange={(e) => update("location", e.target.value)} className={inputClass} style={fontBody} placeholder="Address or venue name" />
+                        <input type="text" required value={form.location} onChange={(e) => update("location", e.target.value)} className={inputClass} style={fontBody} placeholder="Your venue or address" />
                       </div>
                       <div>
                         <label className={labelClass} style={fontBody}>Service Type *</label>
@@ -221,8 +261,8 @@ export default function BookingPage() {
                         </select>
                       </div>
                       <div>
-                        <label className={labelClass} style={fontBody}>Budget Range *</label>
-                        <select required value={form.budget} onChange={(e) => update("budget", e.target.value)} className={inputClass} style={fontBody}>
+                        <label className={labelClass} style={fontBody}>Budget Range</label>
+                        <select value={form.budget} onChange={(e) => update("budget", e.target.value)} className={inputClass} style={fontBody}>
                           <option value="">Select budget</option>
                           <option value="under-500">Under $500</option>
                           <option value="500-1000">$500 – $1,000</option>
@@ -234,58 +274,51 @@ export default function BookingPage() {
                     </div>
                   </div>
 
-                  {/* Menu Preferences */}
+                  {/* Preferences */}
                   <div className="mb-8">
                     <div className="flex items-center gap-3 mb-5">
                       <div className="w-5 h-[1px] bg-[#ECA241]" />
-                      <span className="text-[#ECA241] text-[10px] tracking-[0.2em] uppercase font-semibold" style={fontBody}>Menu Preferences</span>
+                      <span className="text-[#ECA241] text-[10px] tracking-[0.2em] uppercase font-semibold" style={fontBody}>Preferences</span>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
-                        <label className={labelClass} style={fontBody}>Food Wishlist</label>
-                        <textarea rows={3} value={form.foodWishlist} onChange={(e) => update("foodWishlist", e.target.value)} className={`${inputClass} resize-none`} style={fontBody} placeholder="Dishes, cuisines, or flavors you'd love..." />
+                        <label className={labelClass} style={fontBody}>Food Wishlist / Cuisine Preferences</label>
+                        <input type="text" value={form.foodWishlist} onChange={(e) => update("foodWishlist", e.target.value)} className={inputClass} style={fontBody} placeholder="e.g., Italian, seafood, no shellfish" />
                       </div>
                       <div>
                         <label className={labelClass} style={fontBody}>Dietary Restrictions</label>
-                        <textarea rows={3} value={form.dietary} onChange={(e) => update("dietary", e.target.value)} className={`${inputClass} resize-none`} style={fontBody} placeholder="Allergies, vegan, gluten-free, halal, etc." />
+                        <input type="text" value={form.dietary} onChange={(e) => update("dietary", e.target.value)} className={inputClass} style={fontBody} placeholder="e.g., vegan, gluten-free, allergies" />
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Additional Info */}
-                  <div className="mb-8">
-                    <div className="flex items-center gap-3 mb-5">
-                      <div className="w-5 h-[1px] bg-[#ECA241]" />
-                      <span className="text-[#ECA241] text-[10px] tracking-[0.2em] uppercase font-semibold" style={fontBody}>Additional Info</span>
-                    </div>
-                    <div className="grid sm:grid-cols-2 gap-4 mb-4">
                       <div>
-                        <label className={labelClass} style={fontBody}>How Did You Hear About Us?</label>
+                        <label className={labelClass} style={fontBody}>How did you hear about us?</label>
                         <select value={form.referral} onChange={(e) => update("referral", e.target.value)} className={inputClass} style={fontBody}>
-                          <option value="">Select one</option>
+                          <option value="">Select source</option>
                           <option value="instagram">Instagram</option>
-                          <option value="tiktok">TikTok</option>
                           <option value="facebook">Facebook</option>
                           <option value="google">Google Search</option>
-                          <option value="referral">Friend / Family Referral</option>
-                          <option value="event">Attended a Previous Event</option>
-                          <option value="yelp">Yelp</option>
+                          <option value="referral">Referral from friend</option>
+                          <option value="event">At an event</option>
                           <option value="other">Other</option>
                         </select>
                       </div>
                     </div>
-                    <div>
-                      <label className={labelClass} style={fontBody}>Additional Notes</label>
-                      <textarea rows={4} value={form.notes} onChange={(e) => update("notes", e.target.value)} className={`${inputClass} resize-none`} style={fontBody} placeholder="Anything else we should know about your event — theme, special requests, vision..." />
-                    </div>
                   </div>
 
-                  <button type="submit" className="w-full btn-primary text-center justify-center py-4">
-                    Submit Inquiry
+                  {/* Notes */}
+                  <div className="mb-8">
+                    <label className={labelClass} style={fontBody}>Additional Notes</label>
+                    <textarea value={form.notes} onChange={(e) => update("notes", e.target.value)} className={`${inputClass} resize-none`} style={fontBody} placeholder="Tell us anything else about your event..." rows={4} />
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-4 bg-[#D82E2B] text-white font-bold tracking-wider uppercase hover:bg-[#ECA241] hover:text-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={fontBody}
+                  >
+                    {loading ? "Sending..." : "Send Inquiry"}
                   </button>
-                  <p className="text-[#F3F1E9]/20 text-xs text-center mt-4" style={fontBody}>
-                    We'll respond within 24 hours with a custom proposal.
-                  </p>
                 </form>
               )}
             </motion.div>

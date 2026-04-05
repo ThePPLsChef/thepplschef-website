@@ -6,6 +6,8 @@
 import Layout from "@/components/Layout";
 import Gallery from "@/components/Gallery";
 import FAQ from "@/components/FAQ";
+import Pricing from "@/components/Pricing";
+import ClientReviews from "@/components/ClientReviews";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Link } from "wouter";
@@ -116,12 +118,13 @@ export default function Home() {
       <HeroSection />
       <BrandIntro />
       <ServicesSection />
+      <Pricing />
       <WhyChooseUs />
       <SignatureExperience />
       <FeaturedDishes />
       <Gallery />
       <BookingProcess />
-      <TestimonialsSection />
+      <ClientReviews />
       <FinalCTA />
       <AboutChef />
       <FAQ />

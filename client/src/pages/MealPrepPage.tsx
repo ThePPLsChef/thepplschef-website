@@ -10,6 +10,7 @@ import { Link } from "wouter";
 import { motion, useInView } from "framer-motion";
 import { ChevronLeft, ChefHat, Flame, CalendarCheck, Truck, Check } from "lucide-react";
 import { toast } from "sonner";
+import emailjs from "@emailjs/browser";
 import Layout from "@/components/Layout";
 import { LOGO_ALT_HORIZONTAL } from "@/lib/images";
 import {
@@ -112,7 +113,7 @@ function MealOrderForm() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.email || !form.phone) {
       toast.error("Please fill in your name, email, and phone number.");
@@ -126,7 +127,34 @@ function MealOrderForm() {
       toast.error("Please select at least one flavor style.");
       return;
     }
-    toast.success("Your meal plan request has been submitted! We'll reach out within 24 hours.");
+
+    try {
+      // Send email via EmailJS
+      await emailjs.send(
+        "YOUR_SERVICE_ID_HERE",
+        "YOUR_TEMPLATE_ID_HERE",
+        {
+          to_email: "info@thepplschef.com",
+          from_name: form.name,
+          from_email: form.email,
+          phone: form.phone,
+          address: form.address,
+          num_meals: form.numMeals,
+          proteins: form.proteins.join(", "),
+          styles: form.styles.join(", "),
+          dietary: form.dietary,
+          spice: form.spice,
+          portion: form.portion,
+          order_type: form.orderType,
+          delivery_type: form.delivery,
+          notes: form.notes,
+        }
+      );
+      toast.success("Your meal plan request has been submitted! We'll reach out within 24 hours.");
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      toast.error("Failed to submit. Please call 725-212-2236 to order.");
+    }
   };
 
   const inputClass =

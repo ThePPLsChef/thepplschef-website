@@ -9,15 +9,8 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Phone, Mail, Instagram, Facebook, ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
-import emailjs from "@emailjs/browser";
 import Layout from "@/components/Layout";
 import { LOGO_PRIMARY, HERO_BG } from "@/lib/images";
-
-// Initialize EmailJS (using public key only for client-side)
-emailjs.init({
-  publicKey: "YOUR_PUBLIC_KEY_HERE", // User will need to set this
-  limitRate: { id: "app", throttle: 300 },
-});
 
 function TikTokIcon({ size = 16 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.73a8.19 8.19 0 004.76 1.52v-3.4a4.85 4.85 0 01-1-.16z" /></svg>;
@@ -59,37 +52,9 @@ export default function BookingPage() {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      // Send email via EmailJS
-      await emailjs.send(
-        "YOUR_SERVICE_ID_HERE", // User will set this
-        "YOUR_TEMPLATE_ID_HERE", // User will set this
-        {
-          to_email: "info@thepplschef.com",
-          from_name: form.name,
-          from_email: form.email,
-          phone: form.phone,
-          event_date: form.eventDate,
-          event_time: form.eventTime,
-          location: form.location,
-          guests: form.guests,
-          service_type: form.serviceType,
-          food_wishlist: form.foodWishlist,
-          dietary: form.dietary,
-          budget: form.budget,
-          referral: form.referral,
-          notes: form.notes,
-        }
-      );
-
-      setSubmitted(true);
-      toast.success("Thank you! We'll be in touch within 24 hours to discuss your event.");
-    } catch (error) {
-      console.error("EmailJS error:", error);
-      toast.error("Failed to send inquiry. Please try again or call 725-212-2236.");
-    } finally {
-      setLoading(false);
-    }
+    setSubmitted(true);
+    toast.success("Thank you! We'll be in touch within 24 hours to discuss your event.");
+    setLoading(false);
   };
 
   const inputClass = "w-full px-4 py-3.5 bg-black border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm placeholder:text-white/20";

@@ -10,21 +10,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import { LOGO_PRIMARY } from "@/lib/images";
 
 const serviceLinks = [
-  { label: "Private Chef Experience", href: "/services/private-chef" },
-  { label: "Full-Service Catering", href: "/services/catering" },
-  { label: "Chef-Crafted Meal Boxes", href: "/services/meal-boxes" },
-  { label: "Special Events & Celebrations", href: "/services/special-events" },
-  { label: "Corporate & Group Dining", href: "/services/corporate" },
+  { label: "Private Chef Experience", href: "/private-chef-las-vegas" },
+  { label: "Full-Service Catering", href: "/catering-las-vegas" },
+  { label: "Chef-Crafted Meal Prep", href: "/meal-prep-las-vegas" },
+  { label: "Special Events & Celebrations", href: "/special-events-las-vegas" },
+  { label: "Corporate & Group Dining", href: "/corporate-catering-las-vegas" },
 ];
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/#about" },
+  { label: "About", href: "/about" },
   { label: "Services", href: "/#services", hasDropdown: true },
   { label: "Menus", href: "/menus" },
-  { label: "Gallery", href: "/#gallery" },
-  { label: "Testimonials", href: "/#testimonials" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
@@ -150,8 +150,8 @@ export default function Navbar() {
               );
             }
 
-            // Menus — direct link
-            if (link.href === "/menus") {
+            // Direct page links (About, Menus, Gallery, FAQ, Contact)
+            if (!link.href.startsWith("/#") && link.href !== "/") {
               return (
                 <Link
                   key={link.href}
@@ -189,7 +189,7 @@ export default function Navbar() {
 
           {/* Book Now CTA */}
           <Link
-            href="/book"
+            href="/contact"
             className="ml-1 px-6 py-2.5 bg-[#D82E2B] text-white text-[11px] font-bold tracking-[0.18em] uppercase hover:bg-[#ECA241] hover:text-black transition-all duration-300 shadow-lg shadow-[#D82E2B]/20"
             style={fontBody}
           >
@@ -277,7 +277,8 @@ export default function Navbar() {
                 );
               }
 
-              if (link.href === "/menus") {
+              // Direct page links
+              if (!link.href.startsWith("/#") && link.href !== "/") {
                 return (
                   <motion.div
                     key={link.href}
@@ -286,11 +287,11 @@ export default function Navbar() {
                     transition={{ delay: i * 0.06 }}
                   >
                     <Link
-                      href="/menus"
+                      href={link.href}
                       onClick={() => setMobileOpen(false)}
                       className="text-[#F3F1E9] text-xl font-[family-name:var(--font-display)] tracking-wide hover:text-[#ECA241] transition-colors"
                     >
-                      Menus
+                      {link.label}
                     </Link>
                   </motion.div>
                 );
@@ -326,7 +327,7 @@ export default function Navbar() {
               transition={{ delay: navLinks.length * 0.06 }}
             >
               <Link
-                href="/book"
+                href="/contact"
                 onClick={() => setMobileOpen(false)}
                 className="mt-2 px-10 py-3 bg-[#D82E2B] text-white text-sm font-bold tracking-wider uppercase hover:bg-[#ECA241] hover:text-black transition-all duration-300"
                 style={fontBody}

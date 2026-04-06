@@ -10,7 +10,7 @@ import { Link } from "wouter";
 import { motion, useInView } from "framer-motion";
 import { ChevronLeft, ChefHat, Flame, CalendarCheck, Truck, Check } from "lucide-react";
 import { toast } from "sonner";
-import emailjs from "@emailjs/browser";
+
 import Layout from "@/components/Layout";
 import { LOGO_ALT_HORIZONTAL } from "@/lib/images";
 import {
@@ -66,11 +66,10 @@ const steps = [
 
 /* ─── SAMPLE MEALS ─── */
 const sampleMeals = [
-  { name: "Mexican Chicken with Peppers & Cilantro Rice", img: MEAL_PREP_CHICKEN_FAJITA },
-  { name: "Garlic Butter Salmon with Rice & Green Beans", img: MEAL_PREP_GLAZED_SALMON },
-  { name: "Cajun Shrimp with Vegetable Fried Rice", img: MEAL_PREP_SHRIMP_FAJITA },
-  { name: "Italian Herb Chicken with Roasted Vegetables", img: MEAL_PREP_GRILLED_CHICKEN },
-  { name: "House-Made Pork Tamales with Fresh Corn Relish", img: MEAL_PREP_TAMALES },
+  { name: "Mexican chicken fajita with Spanish rice, grilled veggies, and tortillas and salsa", img: MEAL_PREP_CHICKEN_FAJITA },
+  { name: "Teriyaki salmon, furikaki rice, sweet and sour veg", img: MEAL_PREP_GLAZED_SALMON },
+  { name: "Cajun shrimp with dirty rice and salted veg", img: MEAL_PREP_SHRIMP_FAJITA },
+  { name: "Italian herbed chicken, garlic butter green beans", img: MEAL_PREP_GRILLED_CHICKEN },
 ];
 
 /* ─── GALLERY IMAGES ─── */
@@ -128,33 +127,12 @@ function MealOrderForm() {
       return;
     }
 
-    try {
-      // Send email via EmailJS
-      await emailjs.send(
-        "YOUR_SERVICE_ID_HERE",
-        "YOUR_TEMPLATE_ID_HERE",
-        {
-          to_email: "info@thepplschef.com",
-          from_name: form.name,
-          from_email: form.email,
-          phone: form.phone,
-          address: form.address,
-          num_meals: form.numMeals,
-          proteins: form.proteins.join(", "),
-          styles: form.styles.join(", "),
-          dietary: form.dietary,
-          spice: form.spice,
-          portion: form.portion,
-          order_type: form.orderType,
-          delivery_type: form.delivery,
-          notes: form.notes,
-        }
-      );
-      toast.success("Your meal plan request has been submitted! We'll reach out within 24 hours.");
-    } catch (error) {
-      console.error("EmailJS error:", error);
-      toast.error("Failed to submit. Please call 725-212-2236 to order.");
-    }
+    toast.success("Your meal plan request has been submitted! We'll reach out within 24 hours.");
+    setForm({
+      name: "", phone: "", email: "", address: "", numMeals: "5",
+      proteins: [], styles: [], dietary: "", spice: "Medium",
+      portion: "Regular", orderType: "one-time", delivery: "delivery", notes: "",
+    });
   };
 
   const inputClass =
@@ -490,7 +468,7 @@ export default function MealPrepPage() {
             </div>
           </FadeIn>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-2 gap-5">
             {sampleMeals.map((meal, i) => (
               <FadeIn key={meal.name} delay={i * 0.08}>
                 <div className="group overflow-hidden bg-white shadow-sm hover:shadow-lg transition-shadow duration-500">
@@ -535,7 +513,7 @@ export default function MealPrepPage() {
 
           <FadeIn delay={0.3}>
             <div className="text-center mt-10">
-              <Link href="/#gallery" className="inline-flex items-center gap-2 text-[#ECA241] text-sm tracking-widest uppercase hover:text-[#F3F1E9] transition-colors" style={fontBody}>
+              <Link href="/gallery" className="inline-flex items-center gap-2 text-[#ECA241] text-sm tracking-widest uppercase hover:text-[#F3F1E9] transition-colors" style={fontBody}>
                 View Full Gallery →
               </Link>
             </div>
@@ -544,7 +522,7 @@ export default function MealPrepPage() {
       </section>
 
       {/* ─── ORDER FORM ─── */}
-      <section className="section-dark py-20 lg:py-28 border-t border-white/5">
+      <section id="order-form" className="section-dark py-20 lg:py-28 border-t border-white/5">
         <div className="container">
           <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
             {/* Sidebar */}
@@ -613,7 +591,7 @@ export default function MealPrepPage() {
               Stop settling for ordinary. Let a professional chef handle your meals so you can focus on what matters.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <a href="#order-form" onClick={(e) => { e.preventDefault(); document.querySelector('.section-dark.border-t')?.scrollIntoView({ behavior: 'smooth' }); }} className="btn-primary">
+              <a href="#order-form" onClick={(e) => { e.preventDefault(); document.getElementById('order-form')?.scrollIntoView({ behavior: 'smooth' }); }} className="btn-primary">
                 Start My Meal Plan
               </a>
               <a href="tel:725-212-2236" className="btn-outline-dark">Call 725-212-2236</a>

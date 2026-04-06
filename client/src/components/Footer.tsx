@@ -24,11 +24,11 @@ function XIcon({ size = 16 }: { size?: number }) {
 }
 
 const services = [
-  { label: "Private Chef", href: "/services/private-chef" },
-  { label: "Catering", href: "/services/catering" },
-  { label: "Meal Boxes", href: "/services/meal-boxes" },
-  { label: "Special Events", href: "/services/special-events" },
-  { label: "Corporate Dining", href: "/services/corporate" },
+  { label: "Private Chef", href: "/private-chef-las-vegas" },
+  { label: "Catering", href: "/catering-las-vegas" },
+  { label: "Meal Prep", href: "/meal-prep-las-vegas" },
+  { label: "Special Events", href: "/special-events-las-vegas" },
+  { label: "Corporate Dining", href: "/corporate-catering-las-vegas" },
 ];
 
 const socials = [
@@ -87,6 +87,20 @@ export default function Footer() {
               >
                 Sample Menus
               </Link>
+              <Link
+                href="/gallery"
+                className="text-[#F3F1E9]/55 hover:text-[#ECA241] text-sm transition-colors duration-300"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                Gallery
+              </Link>
+              <Link
+                href="/faq"
+                className="text-[#F3F1E9]/55 hover:text-[#ECA241] text-sm transition-colors duration-300"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                FAQ
+              </Link>
             </nav>
           </div>
 
@@ -129,7 +143,7 @@ export default function Footer() {
               ))}
             </div>
             <Link
-              href="/book"
+              href="/contact"
               className="inline-block px-6 py-2.5 bg-[#D82E2B] text-white text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#ECA241] hover:text-black transition-all duration-300"
               style={{ fontFamily: "var(--font-body)" }}
             >

@@ -9,16 +9,37 @@ import ServicePage from "./pages/ServicePage";
 import BookingPage from "./pages/BookingPage";
 import MealPrepPage from "./pages/MealPrepPage";
 import MenusPage from "./pages/MenusPage";
+import AboutPage from "./pages/AboutPage";
+import GalleryPage from "./pages/GalleryPage";
+import FAQPage from "./pages/FAQPage";
+import ContactPage from "./pages/ContactPage";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/services/meal-boxes" component={MealPrepPage} />
-      <Route path="/services/:slug" component={ServicePage} />
+      {/* Dedicated pages */}
+      <Route path="/about" component={AboutPage} />
       <Route path="/menus" component={MenusPage} />
+      <Route path="/gallery" component={GalleryPage} />
+      <Route path="/faq" component={FAQPage} />
+      <Route path="/contact" component={ContactPage} />
       <Route path="/book" component={BookingPage} />
-      <Route path="/404" component={NotFound} />
+      {/* Service pages with SEO slugs */}
+      <Route path="/meal-prep-las-vegas" component={MealPrepPage} />
+      <Route path="/:slug">{(params) => {
+        // Handle service page slugs at top level
+        const servicePageSlugs = [
+          "private-chef-las-vegas",
+          "catering-las-vegas",
+          "special-events-las-vegas",
+          "corporate-catering-las-vegas",
+        ];
+        if (servicePageSlugs.includes(params.slug)) {
+          return <ServicePage />;
+        }
+        return <NotFound />;
+      }}</Route>
       <Route component={NotFound} />
     </Switch>
   );

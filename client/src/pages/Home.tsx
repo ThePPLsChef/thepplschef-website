@@ -4,7 +4,7 @@
  * Featured Dishes, 3-Step Process, Testimonials, Final CTA, About the Chef
  */
 import Layout from "@/components/Layout";
-import Gallery from "@/components/Gallery";
+
 import FAQ from "@/components/FAQ";
 import Pricing from "@/components/Pricing";
 import ClientReviews from "@/components/ClientReviews";
@@ -78,11 +78,11 @@ function XIcon({ size = 18 }: { size?: number }) {
 
 /* ─── Service data ─── */
 const serviceCards = [
-  { title: "Private Chef", slug: "private-chef", image: GEN_PRIVATE_DINING, desc: "Intimate, chef-driven dining in the comfort of your home." },
-  { title: "Catering", slug: "catering", image: BUFFET_SERVICE, desc: "Full-service catering for events of every scale." },
-  { title: "Meal Boxes", slug: "meal-boxes", image: GEN_MEAL_BOX, desc: "Chef-crafted meals delivered fresh to your door." },
-  { title: "Special Events", slug: "special-events", image: GEN_SPECIAL_EVENTS, desc: "Unforgettable celebrations with bespoke menus." },
-  { title: "Corporate Dining", slug: "corporate", image: GEN_CORPORATE, desc: "Elevate your business events with premium dining." },
+  { title: "Private Chef", slug: "private-chef-las-vegas", image: GEN_PRIVATE_DINING, desc: "Intimate, chef-driven dining in the comfort of your home." },
+  { title: "Catering", slug: "catering-las-vegas", image: BUFFET_SERVICE, desc: "Full-service catering for events of every scale." },
+  { title: "Meal Boxes", slug: "meal-prep-las-vegas", image: GEN_MEAL_BOX, desc: "Chef-crafted meals delivered fresh to your door." },
+  { title: "Special Events", slug: "special-events-las-vegas", image: GEN_SPECIAL_EVENTS, desc: "Unforgettable celebrations with bespoke menus." },
+  { title: "Corporate Dining", slug: "corporate-catering-las-vegas", image: GEN_CORPORATE, desc: "Elevate your business events with premium dining." },
 ];
 
 /* ─── Why Choose Us data ─── */
@@ -110,6 +110,51 @@ const featuredDishes = [
   { src: GLAZED_RIBS, label: "Signature Ribs" },
 ];
 
+/* ─── HOMEPAGE GALLERY PREVIEW (6 images + View Full Gallery) ─── */
+const galleryPreviewImages = [
+  { src: BEET_SALAD_SIDE, alt: "Roasted beet salad with citrus and goat cheese" },
+  { src: SHRIMP_CREAM_SAUCE, alt: "Jumbo shrimp in house cream sauce" },
+  { src: SEAFOOD_BOIL_CHEF, alt: "Chef Stephen's signature seafood boil" },
+  { src: GLAZED_RIBS, alt: "Fall-off-the-bone glazed ribs" },
+  { src: PASTRY_TURNOVER, alt: "Golden pastry turnover with dipping sauce" },
+  { src: ELEGANT_TABLE, alt: "Elegant table setting for a private dinner" },
+];
+
+function HomepageGalleryPreview() {
+  return (
+    <section id="gallery" className="section-cream py-24 lg:py-32 relative overflow-hidden">
+      <div className="h-[1px] bg-gradient-to-r from-transparent via-[#ECA241]/40 to-transparent absolute top-0 left-0 right-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none z-0">
+        <img src={LOGO_PRIMARY} alt="" className="w-[500px] h-auto object-contain" />
+      </div>
+      <div className="container relative z-10">
+        <SectionHeader
+          label="Our Work"
+          title="Event"
+          titleAccent="Gallery"
+          subtitle="A glimpse into the events, dishes, and experiences we've crafted for our clients."
+        />
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+          {galleryPreviewImages.map((img, i) => (
+            <FadeIn key={i} delay={i * 0.08}>
+              <div className="group relative overflow-hidden aspect-[4/5]">
+                <img src={img.src} alt={img.alt} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+        <FadeIn className="text-center mt-12" delay={0.4}>
+          <Link href="/gallery" className="inline-flex items-center gap-3 px-10 py-4 border-2 border-[#D82E2B] text-[#D82E2B] font-bold tracking-wider uppercase hover:bg-[#D82E2B] hover:text-white transition-all duration-300" style={{ fontFamily: "var(--font-body)" }}>
+            Explore Full Gallery <ArrowRight size={18} />
+          </Link>
+        </FadeIn>
+      </div>
+      <div className="h-[1px] bg-gradient-to-r from-transparent via-[#ECA241]/40 to-transparent absolute bottom-0 left-0 right-0" />
+    </section>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════
    HOME PAGE
    ═══════════════════════════════════════════════════════════════ */
@@ -123,7 +168,7 @@ export default function Home() {
       <WhyChooseUs />
       <SignatureExperience />
       <FeaturedDishes />
-      <Gallery />
+      <HomepageGalleryPreview />
       <BookingProcess />
       <ClientReviews />
       <FinalCTA />
@@ -185,7 +230,7 @@ function HeroSection() {
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.7 }} className="flex flex-wrap gap-4 justify-center">
-          <Link href="/book" className="px-10 py-4 bg-[#ECA241] text-black text-base font-semibold tracking-wider uppercase hover:bg-[#f0b050] transition-all duration-300 shadow-lg shadow-[#ECA241]/30" style={{ fontFamily: "var(--font-body)" }}>
+          <Link href="/contact" className="px-10 py-4 bg-[#ECA241] text-black text-base font-semibold tracking-wider uppercase hover:bg-[#f0b050] transition-all duration-300 shadow-lg shadow-[#ECA241]/30" style={{ fontFamily: "var(--font-body)" }}>
             Book Your Experience
           </Link>
           <a href="#services" onClick={(e) => { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); }} className="btn-outline">
@@ -261,7 +306,7 @@ function ServiceCard({ s, i }: { s: typeof serviceCards[0]; i: number }) {
   const inView = useInView(ref, { once: true, margin: "-40px" });
   return (
     <motion.div ref={ref} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: i * 0.08 }}>
-      <Link href={`/services/${s.slug}`} className="group block relative overflow-hidden bg-[#0a0a0a] border border-white/5 hover:border-[#ECA241]/30 transition-all duration-500">
+      <Link href={`/${s.slug}`} className="group block relative overflow-hidden bg-[#0a0a0a] border border-white/5 hover:border-[#ECA241]/30 transition-all duration-500">
         <div className="relative h-52 overflow-hidden">
           <img src={s.image} alt={s.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
@@ -332,7 +377,7 @@ function SignatureExperience() {
             <p className="text-[#F3F1E9]/40 text-sm leading-relaxed mb-8" style={{ fontFamily: "var(--font-body)" }}>
               We bring the warmth of Southern hospitality, the precision of fine dining, and the creativity of a personal chef — all to the location of your choosing.
             </p>
-            <Link href="/book" className="btn-primary">Start Planning</Link>
+            <Link href="/contact" className="btn-primary">Start Planning</Link>
           </FadeIn>
         </div>
       </div>
@@ -399,7 +444,7 @@ function BookingProcess() {
           ))}
         </div>
         <FadeIn className="text-center mt-14" delay={0.4}>
-          <Link href="/book" className="btn-primary">Get Started</Link>
+          <Link href="/contact" className="btn-primary">Get Started</Link>
         </FadeIn>
       </div>
     </section>
@@ -458,7 +503,7 @@ function FinalCTA() {
             Let us bring the restaurant to you. Tell us about your event and we'll craft a custom experience your guests will never forget.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/book" className="btn-primary">Book Your Experience</Link>
+            <Link href="/contact" className="btn-primary">Book Your Experience</Link>
             <a href="tel:725-212-2236" className="btn-outline">Call 725-212-2236</a>
           </div>
         </FadeIn>

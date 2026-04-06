@@ -1,7 +1,7 @@
 /**
  * Service data — The PPL's Chef
  * Defines all 5 service categories with content for dedicated pages.
- * Updated with new real photos from batch 2, 3, and 4 (meal prep).
+ * SEO-friendly slugs for Las Vegas market.
  */
 import {
   GEN_MEAL_BOX, GEN_CORPORATE,
@@ -10,17 +10,14 @@ import {
   SALAD_LINE, PREP_TABLE, SEAFOOD_BOWLS,
   DESSERT_TABLE, OUTDOOR_PARTY, ELEGANT_TABLE,
   GREEN_BEANS, MASHED_POTATOES, DESSERT_OVERHEAD,
-  // Batch 2 photos
   CHEF_PORTRAIT_1, CHEF_PORTRAIT_2,
   EVENT_2025_OCT, EVENT_2025_APR, EVENT_2025_SEP, EVENT_SPREAD_2020,
   NEW_FOOD_1, NEW_FOOD_2,
   NEW_EVENT_1, NEW_EVENT_2, NEW_EVENT_3, NEW_EVENT_4, NEW_EVENT_5, NEW_EVENT_6,
-  // Batch 3 — real chef portraits and plated dish photos
   CHEF_REAL_PORTRAIT_1, CHEF_REAL_PORTRAIT_2,
   BEET_SALAD_SIDE, BEET_SALAD_OVERHEAD, BEET_SALAD_CLOSE,
   DEVILED_EGGS_1, DEVILED_EGGS_2,
   PASTRY_TURNOVER, SHRIMP_CREAM_SAUCE, GLAZED_RIBS, CAST_IRON_DISH,
-  // Batch 4 — meal prep photos
   MEAL_PREP_OVERHEAD_MULTI,
   MEAL_PREP_GRILLED_CHICKEN,
   MEAL_PREP_GLAZED_SALMON,
@@ -46,10 +43,9 @@ export interface ServiceData {
 
 export const services: ServiceData[] = [
   {
-    slug: "private-chef",
+    slug: "private-chef-las-vegas",
     title: "Private Chef Experience",
     tagline: "Fine dining, delivered to your doorstep.",
-    // Use REAL chef portrait as hero for the Private Chef page
     heroImage: CHEF_REAL_PORTRAIT_2,
     overview: "Transform your home into a five-star restaurant. Our Private Chef Experience brings a dedicated chef to your space, where they'll prepare a multi-course meal crafted exclusively for you and your guests. From ingredient sourcing to plating and cleanup, we handle every detail — you simply enjoy the evening.",
     included: [
@@ -83,7 +79,7 @@ export const services: ServiceData[] = [
     metaDescription: "Hire a private chef in Las Vegas for an unforgettable in-home dining experience. Custom menus, premium ingredients, and full service. Book today."
   },
   {
-    slug: "catering",
+    slug: "catering-las-vegas",
     title: "Full-Service Catering",
     tagline: "Elevated catering for events of every scale.",
     heroImage: NEW_EVENT_1,
@@ -119,10 +115,9 @@ export const services: ServiceData[] = [
     metaDescription: "Full-service catering in Las Vegas for weddings, parties, and large events. Custom menus, professional staff, and restaurant-quality food. Get a quote."
   },
   {
-    slug: "meal-boxes",
+    slug: "meal-prep-las-vegas",
     title: "Chef-Crafted Meal Boxes",
     tagline: "Restaurant-quality meals, ready when you are.",
-    // Hero: overhead shot of multiple meal prep containers
     heroImage: MEAL_PREP_OVERHEAD_MULTI,
     overview: "Enjoy chef-crafted meals without the event. Our Meal Box service delivers freshly prepared, restaurant-quality dishes straight to your door. Perfect for busy professionals, health-conscious families, or anyone who wants to eat exceptionally well without the hassle of cooking. Each box is prepared with the same care and quality as our catered events.",
     included: [
@@ -146,21 +141,20 @@ export const services: ServiceData[] = [
       "Post-Op Recovery Meal Plan",
       "Date Night Dinner Box for Two"
     ],
-    // All 7 new real meal prep photos — replaces all previous placeholder images
     galleryImages: [
-      { src: MEAL_PREP_4BOX_SPREAD,     alt: "Chef-crafted meal prep — 4-box overhead spread of grilled protein meals" },
-      { src: MEAL_PREP_GLAZED_SALMON,   alt: "Glazed salmon with sesame rice and roasted vegetables" },
+      { src: MEAL_PREP_4BOX_SPREAD, alt: "Chef-crafted meal prep — 4-box overhead spread of grilled protein meals" },
+      { src: MEAL_PREP_GLAZED_SALMON, alt: "Glazed salmon with sesame rice and roasted vegetables" },
       { src: MEAL_PREP_GRILLED_CHICKEN, alt: "Grilled chicken with fresh lime and seasoned green beans" },
-      { src: MEAL_PREP_SHRIMP_FAJITA,   alt: "Shrimp fajita bowl with cilantro rice and warm tortilla" },
-      { src: MEAL_PREP_CHICKEN_FAJITA,  alt: "Grilled chicken fajita bowl with peppers and rice" },
-      { src: MEAL_PREP_TAMALES,         alt: "House-made tamales with elote corn salad" },
-      { src: MEAL_PREP_OVERHEAD_MULTI,  alt: "Weekly meal prep — overhead view of tamale, salmon, and chicken containers" },
+      { src: MEAL_PREP_SHRIMP_FAJITA, alt: "Shrimp fajita bowl with cilantro rice and warm tortilla" },
+      { src: MEAL_PREP_CHICKEN_FAJITA, alt: "Grilled chicken fajita bowl with peppers and rice" },
+      { src: MEAL_PREP_TAMALES, alt: "House-made tamales with elote corn salad" },
+      { src: MEAL_PREP_OVERHEAD_MULTI, alt: "Weekly meal prep — overhead view of tamale, salmon, and chicken containers" },
     ],
     metaTitle: "Meal Boxes & Meal Prep | The PPL's Chef | Las Vegas",
     metaDescription: "Chef-crafted meal boxes delivered in Las Vegas. Fresh, healthy, restaurant-quality meals for busy professionals and families. Order your meal box today."
   },
   {
-    slug: "special-events",
+    slug: "special-events-las-vegas",
     title: "Special Events & Celebrations",
     tagline: "Make your milestone unforgettable.",
     heroImage: EVENT_2025_OCT,
@@ -196,7 +190,7 @@ export const services: ServiceData[] = [
     metaDescription: "Special event catering in Las Vegas for birthdays, showers, engagements, and celebrations. Custom menus, dessert tables, and full-service hospitality."
   },
   {
-    slug: "corporate",
+    slug: "corporate-catering-las-vegas",
     title: "Corporate & Group Dining",
     tagline: "Impress your team. Elevate your brand.",
     heroImage: NEW_EVENT_3,

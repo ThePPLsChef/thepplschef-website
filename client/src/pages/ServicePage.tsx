@@ -76,7 +76,7 @@ export default function ServicePage() {
               <p className="text-black/60 text-base lg:text-lg leading-relaxed" style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}>
                 {service.overview}
               </p>
-              <Link href="/book" className="btn-primary mt-8 inline-flex">
+              <Link href="/contact" className="btn-primary mt-8 inline-flex">
                 Inquire About This Service
               </Link>
             </FadeIn>
@@ -176,7 +176,7 @@ export default function ServicePage() {
               Tell us about your event and we'll create a custom proposal tailored to your needs.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/book" className="btn-primary">Book This Service</Link>
+              <Link href="/contact" className="btn-primary">Book This Service</Link>
               <a href="tel:725-212-2236" className="btn-outline-dark">Call 725-212-2236</a>
             </div>
           </FadeIn>
@@ -191,7 +191,7 @@ export default function ServicePage() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {services.filter((s) => s.slug !== service.slug).map((s) => (
-              <Link key={s.slug} href={`/services/${s.slug}`} className="group relative overflow-hidden h-36 sm:h-44">
+              <Link key={s.slug} href={`/${s.slug}`} className="group relative overflow-hidden h-36 sm:h-44">
                 <img src={s.heroImage} alt={s.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                 <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-300" />
                 <div className="absolute inset-0 flex items-center justify-center p-3">

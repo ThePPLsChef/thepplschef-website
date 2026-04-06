@@ -142,7 +142,7 @@ export default function ClientReviews() {
             Ready to create your own unforgettable experience?
           </p>
           <a
-            href="/book"
+            href="/contact"
             className="inline-block px-10 py-4 bg-[#D82E2B] text-white font-bold tracking-wider uppercase hover:bg-[#ECA241] hover:text-black transition-all duration-300 shadow-lg shadow-[#D82E2B]/20"
             style={fontBody}
           >

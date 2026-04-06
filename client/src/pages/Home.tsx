@@ -21,7 +21,8 @@ import {
   OUTDOOR_PARTY, GALLERY_IMAGES,
   CHEF_PORTRAIT_1, CHEF_PORTRAIT_2,
   CHEF_REAL_PORTRAIT_1, CHEF_REAL_PORTRAIT_2,
-  BEET_SALAD_SIDE, SHRIMP_CREAM_SAUCE, GLAZED_RIBS, PASTRY_TURNOVER, DEVILED_EGGS_2,
+  BEET_SALAD_SIDE, SHRIMP_CREAM_SAUCE, GLAZED_RIBS, PASTRY_TURNOVER,
+  SEAFOOD_BOIL_CHEF, SEAFOOD_BOIL_CLOSE, SEAFOOD_BOIL_OVERHEAD, SEAFOOD_BOIL_CRAB,
   CHEF_BW_PORTRAIT
 } from "@/lib/images";
 import { AnimatePresence } from "framer-motion";
@@ -101,12 +102,12 @@ const testimonials = [
 
 /* ─── Featured dishes ─── */
 const featuredDishes = [
-  { src: BEET_SALAD_SIDE, label: "Roasted Beet Salad" },
+  { src: SEAFOOD_BOIL_CHEF, label: "Signature Seafood Boil" },
+  { src: SEAFOOD_BOIL_CRAB, label: "Crab & Shrimp Boil" },
+  { src: SEAFOOD_BOIL_OVERHEAD, label: "The Full Spread" },
+  { src: SEAFOOD_BOIL_CLOSE, label: "Mussels & Clams" },
   { src: SHRIMP_CREAM_SAUCE, label: "Jumbo Shrimp" },
-  { src: DEVILED_EGGS_2, label: "Elevated Deviled Eggs" },
   { src: GLAZED_RIBS, label: "Signature Ribs" },
-  { src: PASTRY_TURNOVER, label: "Flaky Pastry" },
-  { src: SEAFOOD_BOWLS, label: "Gourmet Seafood" },
 ];
 
 /* ═══════════════════════════════════════════════════════════════

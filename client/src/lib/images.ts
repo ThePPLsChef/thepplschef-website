@@ -96,6 +96,12 @@ export const MEAL_PREP_4BOX_SPREAD     = `${CDN}/1000009786_f0a488b3.jpg`;  // 4
 // PRIMARY portrait for About the Chef section on homepage and about page
 export const CHEF_BW_PORTRAIT = `${CDN}/1000009505_9a592248.jpg`;
 
+// ── BATCH 5 — SEAFOOD BOIL PHOTOS ────────────────────────────────────────────
+export const SEAFOOD_BOIL_CHEF     = `${CDN}/1000009775_f7ede7b2.jpg`;  // Chef in PPL's Chef coat behind full seafood boil spread (HERO)
+export const SEAFOOD_BOIL_CLOSE    = `${CDN}/1000009774_bb067ee5.jpg`;  // Close-up: mussels, clams, lemon, salad background
+export const SEAFOOD_BOIL_OVERHEAD = `${CDN}/1000009773_851cd885.jpg`;  // Overhead: shrimp, crab, newspaper spread
+export const SEAFOOD_BOIL_CRAB     = `${CDN}/1000009772_bccb8e36.jpg`;  // Close-up: crab claws, shrimp, lemon, Heineken
+
 // Gallery collection — all real photos (original 16 + 12 batch 2 + 9 batch 3 food photos)
 export const GALLERY_IMAGES = [
   // Batch 3 — newest, most polished plated dishes first

@@ -218,124 +218,188 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="lg:hidden fixed inset-0 bg-black/99 z-40 flex flex-col items-center justify-center gap-5 overflow-y-auto py-20"
+      {mobileOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.97)",
+            zIndex: 40,
+            overflowY: "auto",
+            paddingTop: "80px",
+            paddingBottom: "40px",
+          }}
+          className="lg:hidden"
+        >
+          {/* Close button */}
+          <button
+            onClick={() => setMobileOpen(false)}
+            style={{ position: "absolute", top: "20px", right: "20px", color: "#F3F1E9", background: "none", border: "none", cursor: "pointer" }}
+            aria-label="Close menu"
           >
-            <button
+            <X size={30} />
+          </button>
+
+          {/* Logo */}
+          <div style={{ textAlign: "center", marginBottom: "32px" }}>
+            <img src={LOGO_PRIMARY} alt="The PPL's Chef" style={{ height: "72px", width: "auto", display: "inline-block" }} />
+          </div>
+
+          {/* Nav items */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+
+            {/* Home */}
+            <a
+              href="/"
               onClick={() => setMobileOpen(false)}
-              className="absolute top-5 right-5 text-[#F3F1E9] hover:text-[#ECA241]"
-              aria-label="Close menu"
+              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
             >
-              <X size={30} />
-            </button>
+              Home
+            </a>
 
-            <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain mb-4 drop-shadow-lg" />
+            {/* About */}
+            <a
+              href="/about"
+              onClick={() => setMobileOpen(false)}
+              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+            >
+              About
+            </a>
 
-            {navLinks.map((link, i) => {
-              if (link.hasDropdown) {
-                return (
-                  <div key={link.href} className="flex flex-col items-center">
-                    <motion.button
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.06 }}
-                      onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
-                      className="text-[#F3F1E9] text-xl font-[family-name:var(--font-display)] tracking-wide hover:text-[#ECA241] transition-colors flex items-center gap-2"
-                    >
-                      Services
-                      <ChevronDown size={16} className={`transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`} />
-                    </motion.button>
-                    <div
-                      style={{
-                        maxHeight: mobileServicesOpen ? `${serviceLinks.length * 56}px` : "0px",
-                        overflow: "hidden",
-                        transition: "max-height 0.35s ease",
-                      }}
-                    >
-                      <div className="flex flex-col items-center gap-1 mt-3 pb-2">
-                        {serviceLinks.map((s) => (
-                          <Link
-                            key={s.href}
-                            href={s.href}
-                            onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
-                            className="block w-full text-center px-8 py-3 text-[#F3F1E9]/75 text-base font-[family-name:var(--font-body)] tracking-wide hover:text-[#ECA241] hover:bg-white/5 active:bg-white/10 transition-colors border-b border-white/5 last:border-b-0"
-                          >
-                            {s.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
+            {/* Services accordion */}
+            <div style={{ width: "100%", maxWidth: "320px" }}>
+              <button
+                onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                style={{
+                  width: "100%",
+                  background: "none",
+                  border: "none",
+                  color: "#F3F1E9",
+                  fontSize: "22px",
+                  fontFamily: "var(--font-display)",
+                  letterSpacing: "0.04em",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  padding: "8px 0",
+                }}
+              >
+                Services
+                <ChevronDown
+                  size={18}
+                  style={{ transform: mobileServicesOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+                />
+              </button>
 
-              // Direct page links
-              if (!link.href.startsWith("/#") && link.href !== "/") {
-                return (
-                  <motion.div
-                    key={link.href}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.06 }}
-                  >
-                    <Link
-                      href={link.href}
-                      onClick={() => setMobileOpen(false)}
-                      className="text-[#F3F1E9] text-xl font-[family-name:var(--font-display)] tracking-wide hover:text-[#ECA241] transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </motion.div>
-                );
-              }
-
-              return (
-                <motion.button
-                  key={link.href}
-                  onClick={() => handleNavClick(link.href)}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.06 }}
-                  className="text-[#F3F1E9] text-xl font-[family-name:var(--font-display)] tracking-wide hover:text-[#ECA241] transition-colors"
+              {mobileServicesOpen && (
+                <div
+                  style={{
+                    backgroundColor: "#1a1a1a",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    borderRadius: "4px",
+                    marginTop: "8px",
+                    overflow: "visible",
+                  }}
                 >
-                  {link.label}
-                </motion.button>
-              );
-            })}
+                  <a
+                    href="/private-chef-las-vegas"
+                    onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
+                    style={{ display: "block", color: "#FAF7F2", padding: "14px 20px", fontSize: "15px", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                  >
+                    Private Chef Experience
+                  </a>
+                  <a
+                    href="/catering-las-vegas"
+                    onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
+                    style={{ display: "block", color: "#FAF7F2", padding: "14px 20px", fontSize: "15px", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                  >
+                    Full-Service Catering
+                  </a>
+                  <a
+                    href="/meal-prep-las-vegas"
+                    onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
+                    style={{ display: "block", color: "#FAF7F2", padding: "14px 20px", fontSize: "15px", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                  >
+                    Chef-Crafted Meal Prep
+                  </a>
+                  <a
+                    href="/corporate-catering-las-vegas"
+                    onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
+                    style={{ display: "block", color: "#FAF7F2", padding: "14px 20px", fontSize: "15px", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                  >
+                    Corporate Dining
+                  </a>
+                  <a
+                    href="/menus"
+                    onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
+                    style={{ display: "block", color: "#FAF7F2", padding: "14px 20px", fontSize: "15px", textDecoration: "none" }}
+                  >
+                    Menus
+                  </a>
+                </div>
+              )}
+            </div>
 
-            {/* Mobile phone */}
+            {/* Menus */}
+            <a
+              href="/menus"
+              onClick={() => setMobileOpen(false)}
+              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+            >
+              Menus
+            </a>
+
+            {/* Gallery */}
+            <a
+              href="/gallery"
+              onClick={() => setMobileOpen(false)}
+              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+            >
+              Gallery
+            </a>
+
+            {/* FAQ */}
+            <a
+              href="/faq"
+              onClick={() => setMobileOpen(false)}
+              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+            >
+              FAQ
+            </a>
+
+            {/* Contact */}
+            <a
+              href="/contact"
+              onClick={() => setMobileOpen(false)}
+              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+            >
+              Contact
+            </a>
+
+            {/* Phone */}
             <a
               href="tel:725-212-2236"
-              className="flex items-center gap-2 text-[#ECA241] text-sm font-semibold tracking-wider mt-2"
-              style={fontBody}
+              style={{ color: "#ECA241", fontSize: "15px", fontFamily: "var(--font-body)", letterSpacing: "0.1em", textDecoration: "none", marginTop: "16px", display: "flex", alignItems: "center", gap: "6px" }}
             >
               <Phone size={14} />
               725-212-2236
             </a>
 
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: navLinks.length * 0.06 }}
+            {/* Book Now */}
+            <a
+              href="/contact"
+              onClick={() => setMobileOpen(false)}
+              style={{ marginTop: "16px", padding: "14px 40px", backgroundColor: "#D82E2B", color: "white", fontSize: "13px", fontFamily: "var(--font-body)", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", textDecoration: "none", display: "inline-block" }}
             >
-              <Link
-                href="/contact"
-                onClick={() => setMobileOpen(false)}
-                className="mt-2 px-10 py-3 bg-[#D82E2B] text-white text-sm font-bold tracking-wider uppercase hover:bg-[#ECA241] hover:text-black transition-all duration-300"
-                style={fontBody}
-              >
-                Book Now
-              </Link>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              Book Now
+            </a>
+
+          </div>
+        </div>
+      )}
+
     </nav>
   );
 }

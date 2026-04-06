@@ -251,28 +251,26 @@ export default function Navbar() {
                       Services
                       <ChevronDown size={16} className={`transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`} />
                     </motion.button>
-                    <AnimatePresence>
-                      {mobileServicesOpen && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="overflow-hidden flex flex-col items-center gap-2 mt-3"
-                        >
-                          {serviceLinks.map((s) => (
-                            <Link
-                              key={s.href}
-                              href={s.href}
-                              onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
-                              className="text-[#F3F1E9]/60 text-sm hover:text-[#ECA241] transition-colors"
-                              style={fontBody}
-                            >
-                              {s.label}
-                            </Link>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <div
+                      style={{
+                        maxHeight: mobileServicesOpen ? `${serviceLinks.length * 56}px` : "0px",
+                        overflow: "hidden",
+                        transition: "max-height 0.35s ease",
+                      }}
+                    >
+                      <div className="flex flex-col items-center gap-1 mt-3 pb-2">
+                        {serviceLinks.map((s) => (
+                          <Link
+                            key={s.href}
+                            href={s.href}
+                            onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
+                            className="block w-full text-center px-8 py-3 text-[#F3F1E9]/75 text-base font-[family-name:var(--font-body)] tracking-wide hover:text-[#ECA241] hover:bg-white/5 active:bg-white/10 transition-colors border-b border-white/5 last:border-b-0"
+                          >
+                            {s.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 );
               }

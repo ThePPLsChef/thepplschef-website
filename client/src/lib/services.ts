@@ -70,10 +70,11 @@ export const services: ServiceData[] = [
       "Brunch Party for 8"
     ],
     galleryImages: [
-      { src: CHEF_REAL_PORTRAIT_1, alt: "Stephen Austin — The People's Chef, side profile" },
-      { src: BEET_SALAD_SIDE, alt: "Roasted beet salad with citrus and goat cheese" },
-      { src: SHRIMP_CREAM_SAUCE, alt: "Jumbo shrimp in house cream sauce" },
-      { src: DEVILED_EGGS_2, alt: "Elevated deviled eggs with tobiko" },
+      { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009782_5e250fdb.jpg", alt: "Whole roasted lobster with arugula and feta — signature private chef dish" },
+      { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009779_dba1ce09.jpg", alt: "White celebration cake with fresh strawberries and gold candles" },
+      { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009757_cbeaad6b.jpg", alt: "Braised short ribs with creamy mashed potatoes and roasted carrots" },
+      { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009778_dd995839.jpg", alt: "Chef Stephen Austin brushing corn on the cob — branded action shot" },
+      { src: "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009777_38884111.jpg", alt: "Elegant private dining table setup with white roses and candles" },
     ],
     metaTitle: "Private Chef Experience | The PPL's Chef | Las Vegas",
     metaDescription: "Hire a private chef in Las Vegas for an unforgettable in-home dining experience. Custom menus, premium ingredients, and full service. Book today."

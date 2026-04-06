@@ -24,8 +24,21 @@ const fontBody = { fontFamily: "var(--font-body)" };
 
 type GalleryItem = { src: string; alt: string; category: string };
 
+const LOBSTER_ARUGULA = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009782_5e250fdb.jpg";
+const CAKE_STRAWBERRY_GOLD = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009779_dba1ce09.jpg";
+const SHORT_RIBS_MASH = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009757_cbeaad6b.jpg";
+const CHEF_CORN_ACTION = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009778_dd995839.jpg";
+const DINING_TABLE_ROSES = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009777_38884111.jpg";
+const LOBSTER_SALAD_PLATES = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009763_4409134e.jpg";
+const CHEF_PLATING_ACTION = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009764_5d202dab.jpg";
+const OYSTERS_LIME = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009758_0917ba42.jpg";
+
 const galleryItems: GalleryItem[] = [
   // Signature Dishes
+  { src: LOBSTER_ARUGULA, alt: "Whole roasted lobster with arugula and feta — signature private chef dish", category: "Signature Dishes" },
+  { src: SHORT_RIBS_MASH, alt: "Braised short ribs with creamy mashed potatoes and roasted carrots", category: "Signature Dishes" },
+  { src: OYSTERS_LIME, alt: "Fresh oysters on the half shell with mignonette and lime", category: "Signature Dishes" },
+  { src: CAKE_STRAWBERRY_GOLD, alt: "White celebration cake with fresh strawberries and gold candles", category: "Signature Dishes" },
   { src: BEET_SALAD_SIDE, alt: "Roasted beet salad with citrus and goat cheese", category: "Signature Dishes" },
   { src: SHRIMP_CREAM_SAUCE, alt: "Jumbo shrimp in house cream sauce with charred citrus", category: "Signature Dishes" },
   { src: GLAZED_RIBS, alt: "Fall-off-the-bone glazed ribs", category: "Signature Dishes" },
@@ -36,6 +49,8 @@ const galleryItems: GalleryItem[] = [
   { src: BEET_SALAD_OVERHEAD, alt: "Overhead beet salad with arugula and pistachios", category: "Signature Dishes" },
   { src: BEET_SALAD_CLOSE, alt: "Close-up beet salad with balsamic reduction", category: "Signature Dishes" },
   // Private Dining
+  { src: DINING_TABLE_ROSES, alt: "Elegant private dining table setup with white roses and candles", category: "Private Dining" },
+  { src: LOBSTER_SALAD_PLATES, alt: "Lobster with mixed greens salad — plated for private dinner service", category: "Private Dining" },
   { src: ELEGANT_TABLE, alt: "Elegant table setting for a private dinner event", category: "Private Dining" },
   { src: CARVING_STATION, alt: "Live carving station at a catered event", category: "Private Dining" },
   { src: CHEF_PLATING, alt: "Chef plating a dish with precision", category: "Private Dining" },
@@ -57,6 +72,8 @@ const galleryItems: GalleryItem[] = [
   { src: SEAFOOD_BOIL_CLOSE, alt: "Close-up of mussels, clams, and lemon", category: "Seafood Boil" },
   { src: SEAFOOD_BOIL_CRAB, alt: "Crab claws, shrimp, and lemon", category: "Seafood Boil" },
   // Behind the Scenes
+  { src: CHEF_CORN_ACTION, alt: "Chef Stephen Austin brushing corn on the cob — branded action shot", category: "Behind the Scenes" },
+  { src: CHEF_PLATING_ACTION, alt: "Chef Stephen plating lobster dishes in a private home kitchen", category: "Behind the Scenes" },
   { src: CHEF_REAL_PORTRAIT_1, alt: "Chef Stephen in branded PPL's Chef coat", category: "Behind the Scenes" },
   { src: CHEF_REAL_PORTRAIT_2, alt: "Chef Stephen — front facing portrait", category: "Behind the Scenes" },
   { src: OUTDOOR_COOKING, alt: "Outdoor cooking setup", category: "Behind the Scenes" },

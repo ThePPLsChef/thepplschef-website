@@ -78,7 +78,7 @@ function XIcon({ size = 18 }: { size?: number }) {
 
 /* ─── Service data ─── */
 const serviceCards = [
-  { title: "Private Chef", slug: "private-chef-las-vegas", image: GEN_PRIVATE_DINING, desc: "Intimate, chef-driven dining in the comfort of your home." },
+  { title: "Private Chef", slug: "private-chef-las-vegas", image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/1000009782_5e250fdb.jpg", desc: "Intimate, chef-driven dining in the comfort of your home." },
   { title: "Catering", slug: "catering-las-vegas", image: BUFFET_SERVICE, desc: "Full-service catering for events of every scale." },
   { title: "Meal Boxes", slug: "meal-prep-las-vegas", image: GEN_MEAL_BOX, desc: "Chef-crafted meals delivered fresh to your door." },
   { title: "Special Events", slug: "special-events-las-vegas", image: GEN_SPECIAL_EVENTS, desc: "Unforgettable celebrations with bespoke menus." },

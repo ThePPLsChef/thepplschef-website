@@ -8,6 +8,7 @@ import { useParams, Link, Redirect } from "wouter";
 import { useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { ArrowRight, Check, Users, ChevronLeft } from "lucide-react";
+import ServicePricingSection, { PricingTier } from "@/components/ServicePricingSection";
 import Layout from "@/components/Layout";
 import { getServiceBySlug, services } from "@/lib/services";
 import { LOGO_PRIMARY, LOGO_P_ICON } from "@/lib/images";
@@ -21,6 +22,129 @@ function FadeIn({ children, className = "", delay = 0 }: { children: React.React
     </motion.div>
   );
 }
+
+/* ─── Per-service pricing data ─── */
+const servicePricingData: Record<string, { tiers: PricingTier[]; ctaHref: string }> = {
+  "private-chef-las-vegas": {
+    ctaHref: "/contact",
+    tiers: [
+      {
+        name: "Signature Experience",
+        price: "$125",
+        period: "/person",
+        popular: false,
+        features: [
+          "Custom curated menu",
+          "On-site preparation",
+          "Professional plating",
+          "Ideal for intimate gatherings",
+        ],
+      },
+      {
+        name: "Elevated Experience",
+        price: "$165",
+        period: "/person",
+        popular: true,
+        features: [
+          "Multi-course dining experience",
+          "Enhanced presentation",
+          "Tableside finishing elements",
+          "Premium ingredient options",
+          "Ideal for special occasions",
+        ],
+      },
+      {
+        name: "Luxury Experience",
+        price: "$225",
+        period: "/person",
+        popular: false,
+        features: [
+          "Fully customized tasting menu",
+          "High-end ingredients (wagyu, lobster, etc.)",
+          "Interactive dining experience",
+          "VIP-level service and presentation",
+          "Ideal for milestone celebrations",
+        ],
+      },
+    ],
+  },
+  "catering-las-vegas": {
+    ctaHref: "/contact",
+    tiers: [
+      {
+        name: "Signature Catering",
+        price: "$45",
+        period: "/person",
+        popular: false,
+        features: [
+          "Buffet or family-style service",
+          "Crowd-pleasing menu selections",
+        ],
+      },
+      {
+        name: "Elevated Catering",
+        price: "$65",
+        period: "/person",
+        popular: true,
+        features: [
+          "Upgraded menu options",
+          "Enhanced presentation",
+          "Mix of passed and displayed items",
+        ],
+      },
+      {
+        name: "Luxury Catering",
+        price: "$95",
+        period: "/person",
+        popular: false,
+        features: [
+          "Fully customized menu",
+          "High-end presentation",
+          "Interactive stations or plated service",
+          "Premium ingredients",
+        ],
+      },
+    ],
+  },
+  "corporate-catering-las-vegas": {
+    ctaHref: "/contact",
+    tiers: [
+      {
+        name: "Signature Catering",
+        price: "$45",
+        period: "/person",
+        popular: false,
+        features: [
+          "Buffet or family-style service",
+          "Crowd-pleasing menu selections",
+        ],
+      },
+      {
+        name: "Elevated Catering",
+        price: "$65",
+        period: "/person",
+        popular: true,
+        features: [
+          "Upgraded menu options",
+          "Enhanced presentation",
+          "Mix of passed and displayed items",
+        ],
+      },
+      {
+        name: "Luxury Catering",
+        price: "$95",
+        period: "/person",
+        popular: false,
+        features: [
+          "Fully customized menu",
+          "High-end presentation",
+          "Interactive stations or plated service",
+          "Premium ingredients",
+        ],
+      },
+    ],
+  },
+};
 
 export default function ServicePage() {
   const params = useParams<{ slug: string }>();
@@ -163,6 +287,14 @@ export default function ServicePage() {
           </div>
         </div>
       </section>
+
+      {/* Pricing */}
+      {servicePricingData[service.slug] && (
+        <ServicePricingSection
+          tiers={servicePricingData[service.slug].tiers}
+          ctaHref={servicePricingData[service.slug].ctaHref}
+        />
+      )}
 
       {/* CTA */}
       <section className="section-cream py-20 lg:py-28">

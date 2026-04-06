@@ -12,6 +12,7 @@ import { ChevronLeft, ChefHat, Flame, CalendarCheck, Truck, Check } from "lucide
 import { toast } from "sonner";
 
 import Layout from "@/components/Layout";
+import ServicePricingSection from "@/components/ServicePricingSection";
 import { LOGO_ALT_HORIZONTAL } from "@/lib/images";
 import {
   MEAL_PREP_OVERHEAD_MULTI,
@@ -484,6 +485,46 @@ export default function MealPrepPage() {
           </div>
         </div>
       </section>
+
+      {/* ─── PRICING ─── */}
+      <ServicePricingSection
+        ctaHref="/meal-prep-las-vegas#order-form"
+        label="Meal Prep Pricing"
+        tiers={[
+          {
+            name: "Signature Meal Plan",
+            price: "$120",
+            period: "/week",
+            popular: false,
+            features: [
+              "Weekly rotating menu",
+              "Balanced, chef-prepared meals",
+            ],
+          },
+          {
+            name: "Elevated Meal Plan",
+            price: "$160",
+            period: "/week",
+            popular: true,
+            features: [
+              "Expanded menu options",
+              "Higher-end ingredients",
+              "Greater customization",
+            ],
+          },
+          {
+            name: "Luxury Meal Plan",
+            price: "$220",
+            period: "/week",
+            popular: false,
+            features: [
+              "Fully customized weekly plan",
+              "Premium ingredients",
+              "Personalized dietary optimization",
+            ],
+          },
+        ]}
+      />
 
       {/* ─── PHOTO GALLERY (6 images, clean grid) ─── */}
       <section className="section-dark py-20 lg:py-28">

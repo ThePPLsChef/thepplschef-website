@@ -29,7 +29,7 @@ function XIcon({ size = 20 }: { size?: number }) {
 }
 
 const socialLinks = [
-  { icon: Instagram, href: "https://instagram.com/thepplschef", label: "Instagram", isCustom: false },
+  { icon: Instagram, href: "https://www.instagram.com/thepplschef", label: "Instagram", isCustom: false },
   { icon: TikTokIcon, href: "https://tiktok.com/@thepplschef", label: "TikTok", isCustom: true },
   { icon: Facebook, href: "https://facebook.com/thepplschef", label: "Facebook", isCustom: false },
   { icon: XIcon, href: "https://x.com/thepplschef", label: "X", isCustom: true },

@@ -47,7 +47,7 @@ export default function ContactPage() {
   };
 
   const socials = [
-    { icon: Instagram, href: "https://instagram.com/thepplschef", label: "Instagram" },
+    { icon: Instagram, href: "https://www.instagram.com/thepplschef", label: "Instagram" },
     { icon: TikTokIcon, href: "https://tiktok.com/@thepplschef", label: "TikTok" },
     { icon: Facebook, href: "https://facebook.com/thepplschef", label: "Facebook" },
     { icon: XIcon, href: "https://x.com/thepplschef", label: "X" },

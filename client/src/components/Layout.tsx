@@ -34,7 +34,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
         <button
           onClick={scrollToBooking}
-          className="w-full py-4 bg-[#D82E2B] text-white text-sm font-semibold tracking-widest uppercase font-[family-name:var(--font-body)] shadow-[0_-4px_20px_rgba(0,0,0,0.3)]"
+          className="w-full py-4 bg-[#ECA241] text-black text-sm font-semibold tracking-widest uppercase font-[family-name:var(--font-body)] shadow-[0_-4px_20px_rgba(0,0,0,0.3)] hover:bg-[#f0b050] transition-colors duration-300"
         >
           Book Your Experience
         </button>

@@ -193,7 +193,7 @@ export default function Navbar() {
           {/* Book Now CTA */}
           <Link
             href="/contact"
-            className="ml-1 px-6 py-2.5 bg-[#D82E2B] text-white text-[11px] font-bold tracking-[0.18em] uppercase hover:bg-[#ECA241] hover:text-black transition-all duration-300 shadow-lg shadow-[#D82E2B]/20"
+            className="ml-1 px-6 py-2.5 bg-[#ECA241] text-black text-[11px] font-bold tracking-[0.18em] uppercase hover:bg-[#f0b050] hover:text-black transition-all duration-300 shadow-lg shadow-[#ECA241]/20"
             style={fontBody}
           >
             Book Now

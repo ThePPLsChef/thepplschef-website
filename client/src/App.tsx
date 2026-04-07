@@ -13,8 +13,9 @@ import AboutPage from "./pages/AboutPage";
 import GalleryPage from "./pages/GalleryPage";
 import FAQPage from "./pages/FAQPage";
 import ContactPage from "./pages/ContactPage";
-
+import AdminDashboard from "./pages/AdminDashboard";
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path="/" component={Home} />
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/faq" component={FAQPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/book" component={BookingPage} />
+      <Route path="/admin" component={AdminDashboard} />
       {/* Service pages with SEO slugs */}
       <Route path="/meal-prep-las-vegas" component={MealPrepPage} />
       <Route path="/:slug">{(params) => {

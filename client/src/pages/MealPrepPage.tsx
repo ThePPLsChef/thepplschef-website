@@ -10,6 +10,7 @@ import { Link } from "wouter";
 import { motion, useInView } from "framer-motion";
 import { ChevronLeft, ChefHat, Flame, CalendarCheck, Truck, Check } from "lucide-react";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
 import Layout from "@/components/Layout";
 import ServicePricingSection from "@/components/ServicePricingSection";
@@ -128,13 +129,43 @@ function MealOrderForm() {
       return;
     }
 
-    toast.success("Your meal plan request has been submitted! We'll reach out within 24 hours.");
-    setForm({
-      name: "", phone: "", email: "", address: "", numMeals: "5",
-      proteins: [], styles: [], dietary: "", spice: "Medium",
-      portion: "Regular", orderType: "one-time", delivery: "delivery", notes: "",
+    // Build a detailed notes field from the meal prep-specific fields
+    const mealDetails = [
+      `Meals per week: ${form.numMeals}`,
+      `Proteins: ${form.proteins.join(", ")}`,
+      `Flavor styles: ${form.styles.join(", ")}`,
+      `Spice level: ${form.spice}`,
+      `Portion size: ${form.portion}`,
+      `Order type: ${form.orderType}`,
+      `Delivery preference: ${form.delivery}`,
+      form.address ? `Address: ${form.address}` : "",
+      form.notes ? `Additional notes: ${form.notes}` : "",
+    ].filter(Boolean).join("\n");
+
+    submitMutation.mutate({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      serviceType: "Meal Prep",
+      foodPreferences: form.styles.join(", "),
+      allergies: form.dietary || undefined,
+      notes: mealDetails,
     });
   };
+
+  const submitMutation = trpc.inquiry.submit.useMutation({
+    onSuccess: () => {
+      toast.success("Your meal plan request has been submitted! We'll reach out within 24 hours.");
+      setForm({
+        name: "", phone: "", email: "", address: "", numMeals: "5",
+        proteins: [], styles: [], dietary: "", spice: "Medium",
+        portion: "Regular", orderType: "one-time", delivery: "delivery", notes: "",
+      });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Something went wrong. Please try again.");
+    },
+  });
 
   const inputClass =
     "w-full bg-[#0a0a0a] border border-white/10 text-[#F3F1E9] px-4 py-3 text-sm focus:outline-none focus:border-[#ECA241]/60 transition-colors placeholder:text-white/20";
@@ -326,10 +357,11 @@ function MealOrderForm() {
       <div>
         <button
           type="submit"
-          className="w-full bg-[#ECA241] text-black font-bold text-sm tracking-[0.15em] uppercase py-4 hover:bg-[#d4912e] transition-all duration-300"
+          disabled={submitMutation.isPending}
+          className="w-full bg-[#ECA241] text-black font-bold text-sm tracking-[0.15em] uppercase py-4 hover:bg-[#d4912e] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           style={fontBody}
         >
-          Start My Meal Plan
+          {submitMutation.isPending ? "Submitting..." : "Start My Meal Plan"}
         </button>
         <p className="text-[#F3F1E9]/30 text-xs text-center mt-3" style={fontBody}>
           We'll reach out within 24 hours to confirm your custom order.

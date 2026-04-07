@@ -10,6 +10,7 @@ import { Phone, Mail, MapPin, Clock, Instagram, Facebook } from "lucide-react";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
 import { LOGO_PRIMARY, HERO_BG } from "@/lib/images";
+import { trpc } from "@/lib/trpc";
 
 const fontBody = { fontFamily: "var(--font-body)" };
 
@@ -40,10 +41,36 @@ export default function ContactPage() {
     window.scrollTo(0, 0);
   }, []);
 
+  const SERVICE_TYPE_MAP: Record<string, string> = {
+    "private-chef": "Private Chef",
+    "catering": "Catering",
+    "meal-prep": "Meal Prep",
+    "special-events": "Special Events",
+    "corporate": "Corporate Dining",
+  };
+
+  const submitMutation = trpc.inquiry.submit.useMutation({
+    onSuccess: () => {
+      toast.success("Thank you! We'll be in touch within 24 hours to discuss your event.");
+      setForm({ name: "", email: "", phone: "", eventType: "", date: "", guestCount: "", location: "", message: "" });
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "Something went wrong. Please try again or call us directly.");
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Thank you! We'll be in touch within 24 hours to discuss your event.");
-    setForm({ name: "", email: "", phone: "", eventType: "", date: "", guestCount: "", location: "", message: "" });
+    submitMutation.mutate({
+      name: form.name,
+      email: form.email,
+      phone: form.phone || undefined,
+      serviceType: SERVICE_TYPE_MAP[form.eventType] || form.eventType || undefined,
+      eventDate: form.date || undefined,
+      guestCount: form.guestCount || undefined,
+      location: form.location || undefined,
+      notes: form.message || undefined,
+    });
   };
 
   const socials = [
@@ -194,7 +221,7 @@ export default function ContactPage() {
                   <textarea required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full px-4 py-3 bg-black border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm resize-none" style={fontBody} placeholder="Tell us about your event — dietary needs, vision, special requests..." />
                 </div>
 
-                <button type="submit" className="mt-6 w-full btn-primary">Send Inquiry</button>
+                <button type="submit" disabled={submitMutation.isPending} className="mt-6 w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed">{submitMutation.isPending ? "Sending..." : "Send Inquiry"}</button>
               </form>
             </FadeIn>
           </div>

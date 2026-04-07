@@ -1,0 +1,23 @@
+# Project TODO — Phase 1 Backend
+
+- [x] Resolve Home.tsx merge conflict (keep existing homepage)
+- [x] Build database schema with all 10 tables (users, eater_profiles, chef_profiles, service_types, inquiries, bookings, quotes, payments, reviews, notifications)
+- [x] Push database schema to MySQL/TiDB
+- [x] Write Drizzle relations for all tables
+- [x] Create db helper functions for inquiries (create, list, getById, updateStatus, getStats)
+- [x] Create tRPC inquiry router (public: submit inquiry; admin: list, detail, update status, stats)
+- [x] Seed service_types table with 5 core services
+- [x] Wire BookingPage form to tRPC inquiry.submit mutation
+- [x] Wire ContactPage form to tRPC inquiry.submit mutation
+- [x] Wire Contact component (homepage) form to tRPC inquiry.submit mutation
+- [x] Wire MealPrepPage form to tRPC inquiry.submit mutation
+- [x] Build admin dashboard page at /admin (custom layout with brand styling)
+- [x] Admin: inquiry list view (table with status, date, name, service type)
+- [x] Admin: inquiry detail view with full info
+- [x] Admin: status update functionality (new → reviewed → quoted → booked → cancelled)
+- [x] Admin: stats display (total inquiries, new count, this week's count)
+- [x] Admin: brand-styled with black, gold, red, cream colors
+- [x] Add /admin route to App.tsx
+- [x] Notify owner on new inquiry submission via notifyOwner helper
+- [x] Write vitest tests for inquiry procedures (17 tests passing)
+- [x] Verify full inquiry flow via browser (form submission → DB → admin view) — VERIFIED

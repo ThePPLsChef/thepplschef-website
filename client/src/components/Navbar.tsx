@@ -71,6 +71,9 @@ export default function Navbar() {
     } else if (href === "/") {
       if (location === "/") {
         window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        // Navigate to homepage from any other page
+        window.location.href = "/";
       }
     }
   };

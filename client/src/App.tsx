@@ -6,7 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import ServicePage from "./pages/ServicePage";
-import BookingPage from "./pages/BookingPage";
+import BookingWizard from "./pages/BookingWizard";
 import MealPrepPage from "./pages/MealPrepPage";
 import MenusPage from "./pages/MenusPage";
 import AboutPage from "./pages/AboutPage";
@@ -25,7 +25,7 @@ function Router() {
       <Route path="/gallery" component={GalleryPage} />
       <Route path="/faq" component={FAQPage} />
       <Route path="/contact" component={ContactPage} />
-      <Route path="/book" component={BookingPage} />
+      <Route path="/book" component={BookingWizard} />
       <Route path="/admin" component={AdminDashboard} />
       {/* Service pages with SEO slugs */}
       <Route path="/meal-prep-las-vegas" component={MealPrepPage} />

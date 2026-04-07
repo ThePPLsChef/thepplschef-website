@@ -21,3 +21,19 @@
 - [x] Notify owner on new inquiry submission via notifyOwner helper
 - [x] Write vitest tests for inquiry procedures (17 tests passing)
 - [x] Verify full inquiry flow via browser (form submission → DB → admin view) — VERIFIED
+
+## Multi-Step Booking Wizard
+
+- [x] Step 1: Service type selection with large clickable cards
+- [x] Step 2: Service-specific guest count / event type question
+- [x] Step 3: Date picker (service-specific label)
+- [x] Step 4: Dietary needs multi-select cards
+- [x] Step 5: Budget selection with service-specific ranges
+- [x] Step 6: Optional vision/notes textarea
+- [x] Step 7: Contact info (name, email, phone, referral source)
+- [x] Progress bar showing step X of 7
+- [x] Back button on each step
+- [x] Dark luxury aesthetic (dark bg, gold accents, smooth transitions)
+- [x] Success screen after submission
+- [x] Wire submission to /api/inquiries with error handling
+- [x] Preview only — NOT pushed to GitHub (owner review pending)

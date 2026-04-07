@@ -1,15 +1,17 @@
-import { eq, desc, sql, and, gte } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { eq, desc, sql, gte } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
 import { InsertUser, users, inquiries, InsertInquiry, serviceTypes, InsertServiceType } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
-export async function getDb() {
+export function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      const sql_client = neon(process.env.DATABASE_URL);
+      _db = drizzle(sql_client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -23,7 +25,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     throw new Error("User openId is required for upsert");
   }
 
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     console.warn("[Database] Cannot upsert user: database not available");
     return;
@@ -68,9 +70,13 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       updateSet.lastSignedIn = new Date();
     }
 
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
-      set: updateSet,
-    });
+    await db
+      .insert(users)
+      .values(values)
+      .onConflictDoUpdate({
+        target: users.openId,
+        set: updateSet,
+      });
   } catch (error) {
     console.error("[Database] Failed to upsert user:", error);
     throw error;
@@ -78,7 +84,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 }
 
 export async function getUserByOpenId(openId: string) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) {
     console.warn("[Database] Cannot get user: database not available");
     return undefined;
@@ -92,16 +98,15 @@ export async function getUserByOpenId(openId: string) {
 // ─── Inquiry helpers ───
 
 export async function createInquiry(data: InsertInquiry) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) throw new Error("Database not available");
 
-  const result = await db.insert(inquiries).values(data);
-  const insertId = result[0].insertId;
-  return { id: insertId };
+  const result = await db.insert(inquiries).values(data).returning({ id: inquiries.id });
+  return { id: result[0].id };
 }
 
 export async function listInquiries(limit = 100, offset = 0) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) throw new Error("Database not available");
 
   return db
@@ -113,7 +118,7 @@ export async function listInquiries(limit = 100, offset = 0) {
 }
 
 export async function getInquiryById(id: number) {
-  const db = await getDb();
+  const db = getDb();
   if (!db) throw new Error("Database not available");
 
   const result = await db.select().from(inquiries).where(eq(inquiries.id, id)).limit(1);
@@ -121,7 +126,7 @@ export async function getInquiryById(id: number) {
 }
 
 export async function updateInquiryStatus(id: number, status: "new" | "reviewed" | "quoted" | "booked" | "cancelled") {
-  const db = await getDb();
+  const db = getDb();
   if (!db) throw new Error("Database not available");
 
   await db.update(inquiries).set({ status }).where(eq(inquiries.id, id));
@@ -129,22 +134,22 @@ export async function updateInquiryStatus(id: number, status: "new" | "reviewed"
 }
 
 export async function getInquiryStats() {
-  const db = await getDb();
+  const db = getDb();
   if (!db) throw new Error("Database not available");
 
   // Total count
   const totalResult = await db.select({ count: sql<number>`count(*)` }).from(inquiries);
-  const total = totalResult[0]?.count ?? 0;
+  const total = Number(totalResult[0]?.count ?? 0);
 
   // New count
   const newResult = await db.select({ count: sql<number>`count(*)` }).from(inquiries).where(eq(inquiries.status, "new"));
-  const newCount = newResult[0]?.count ?? 0;
+  const newCount = Number(newResult[0]?.count ?? 0);
 
   // This week count (last 7 days)
   const weekAgo = new Date();
   weekAgo.setDate(weekAgo.getDate() - 7);
   const weekResult = await db.select({ count: sql<number>`count(*)` }).from(inquiries).where(gte(inquiries.createdAt, weekAgo));
-  const thisWeek = weekResult[0]?.count ?? 0;
+  const thisWeek = Number(weekResult[0]?.count ?? 0);
 
   // By status breakdown
   const byStatusResult = await db
@@ -157,7 +162,7 @@ export async function getInquiryStats() {
 
   const byStatus: Record<string, number> = {};
   for (const row of byStatusResult) {
-    byStatus[row.status] = row.count;
+    byStatus[row.status] = Number(row.count);
   }
 
   return { total, newCount, thisWeek, byStatus };
@@ -166,15 +171,18 @@ export async function getInquiryStats() {
 // ─── Service type helpers ───
 
 export async function getServiceTypes() {
-  const db = await getDb();
+  const db = getDb();
   if (!db) throw new Error("Database not available");
 
   return db.select().from(serviceTypes);
 }
 
 export async function seedServiceTypes() {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
+  const db = getDb();
+  if (!db) {
+    console.warn("[Seed] Database not available, skipping service type seeding");
+    return;
+  }
 
   const existing = await db.select().from(serviceTypes);
   if (existing.length > 0) return; // Already seeded

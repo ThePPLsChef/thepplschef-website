@@ -1,19 +1,11 @@
 {
   "version": "7",
-  "dialect": "mysql",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1775581881644,
-      "tag": "0000_thick_richard_fisk",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1775582124511,
-      "tag": "0001_worried_mariko_yashida",
+      "version": "7",
+      "when": 1775588921519,
+      "tag": "0000_slippery_colleen_wing",
       "breakpoints": true
     }
   ]

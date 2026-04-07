@@ -9,7 +9,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Phone, Mail, Instagram, Facebook } from "lucide-react";
 import { toast } from "sonner";
-import { trpc } from "@/lib/trpc";
+import { submitInquiry } from "@/lib/submitInquiry";
 
 // TikTok SVG icon
 function TikTokIcon({ size = 20 }: { size?: number }) {
@@ -47,25 +47,26 @@ export default function Contact() {
     message: "",
   });
 
-  const submitMutation = trpc.inquiry.submit.useMutation({
-    onSuccess: () => {
+  const [isPending, setIsPending] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsPending(true);
+    try {
+      await submitInquiry({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        serviceType: formData.eventType || undefined,
+        notes: formData.message || undefined,
+      });
       toast.success("Thank you for your inquiry! We'll be in touch within 24 hours.");
       setFormData({ name: "", email: "", phone: "", eventType: "", message: "" });
-    },
-    onError: (err: any) => {
+    } catch (err: any) {
       toast.error(err.message || "Something went wrong. Please try again.");
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    submitMutation.mutate({
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone || undefined,
-      serviceType: formData.eventType || undefined,
-      notes: formData.message || undefined,
-    });
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -254,10 +255,10 @@ export default function Contact() {
 
               <button
                 type="submit"
-                disabled={submitMutation.isPending}
+                disabled={isPending}
                 className="mt-6 w-full py-4 bg-[#D82E2B] text-white font-bold tracking-wider uppercase text-sm font-[family-name:var(--font-body)] hover:bg-[#ECA241] hover:text-black transition-all duration-400 shadow-lg shadow-[#D82E2B]/20 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitMutation.isPending ? "Sending..." : "Send Inquiry"}
+                {isPending ? "Sending..." : "Send Inquiry"}
               </button>
             </form>
           </motion.div>

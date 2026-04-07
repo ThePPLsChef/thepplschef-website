@@ -11,7 +11,7 @@ import { Phone, Mail, Instagram, Facebook, ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
 import { LOGO_PRIMARY, HERO_BG } from "@/lib/images";
-import { trpc } from "@/lib/trpc";
+import { submitInquiry } from "@/lib/submitInquiry";
 
 function TikTokIcon({ size = 16 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.34-6.34V8.73a8.19 8.19 0 004.76 1.52v-3.4a4.85 4.85 0 01-1-.16z" /></svg>;
@@ -54,38 +54,39 @@ export default function BookingPage() {
   const [form, setForm] = useState<FormData>(initialForm);
   const [submitted, setSubmitted] = useState(false);
 
-  const submitMutation = trpc.inquiry.submit.useMutation({
-    onSuccess: () => {
-      setSubmitted(true);
-      toast.success("Thank you! We'll be in touch within 24 hours to discuss your event.");
-    },
-    onError: (err) => {
-      toast.error(err.message || "Something went wrong. Please try again or call us directly.");
-    },
-  });
+  const [isPending, setIsPending] = useState(false);
 
   const update = (key: keyof FormData, value: string) => setForm((f) => ({ ...f, [key]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsPending(true);
 
     const referralNote = form.referral ? `Referral: ${form.referral}` : "";
     const combinedNotes = [form.notes, referralNote].filter(Boolean).join("\n");
 
-    submitMutation.mutate({
-      name: form.name,
-      email: form.email,
-      phone: form.phone || undefined,
-      serviceType: SERVICE_TYPE_MAP[form.serviceType] || form.serviceType || undefined,
-      eventDate: form.eventDate || undefined,
-      eventTime: form.eventTime || undefined,
-      location: form.location || undefined,
-      guestCount: form.guests || undefined,
-      budget: form.budget || undefined,
-      foodPreferences: form.foodWishlist || undefined,
-      allergies: form.dietary || undefined,
-      notes: combinedNotes || undefined,
-    });
+    try {
+      await submitInquiry({
+        name: form.name,
+        email: form.email,
+        phone: form.phone || undefined,
+        serviceType: SERVICE_TYPE_MAP[form.serviceType] || form.serviceType || undefined,
+        eventDate: form.eventDate || undefined,
+        eventTime: form.eventTime || undefined,
+        location: form.location || undefined,
+        guestCount: form.guests || undefined,
+        budget: form.budget || undefined,
+        foodPreferences: form.foodWishlist || undefined,
+        allergies: form.dietary || undefined,
+        notes: combinedNotes || undefined,
+      });
+      setSubmitted(true);
+      toast.success("Thank you! We'll be in touch within 24 hours to discuss your event.");
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong. Please try again or call us directly.");
+    } finally {
+      setIsPending(false);
+    }
   };
 
   const inputClass = "w-full px-4 py-3.5 bg-black border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm placeholder:text-white/20";
@@ -309,11 +310,11 @@ export default function BookingPage() {
                   {/* Submit */}
                   <button
                     type="submit"
-                    disabled={submitMutation.isPending}
+                    disabled={isPending}
                     className="w-full py-4 bg-[#D82E2B] text-white font-bold tracking-wider uppercase hover:bg-[#ECA241] hover:text-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     style={fontBody}
                   >
-                    {submitMutation.isPending ? "Sending..." : "Send Inquiry"}
+                    {isPending ? "Sending..." : "Send Inquiry"}
                   </button>
                 </form>
               )}

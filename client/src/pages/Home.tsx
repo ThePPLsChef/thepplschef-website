@@ -13,7 +13,7 @@ import { useRef, useState } from "react";
 import { Link } from "wouter";
 import { Star, Quote, ChefHat, Users, Utensils, Clock, Award, Heart, ArrowRight, Phone, Mail, Instagram, Facebook, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
-import { trpc } from "@/lib/trpc";
+import { submitInquiry } from "@/lib/submitInquiry";
 import {
   LOGO, LOGO_TRANSPARENT, LOGO_PRIMARY, LOGO_P_ICON, HERO_BG, ABOUT_CHEF, CHEF_OUTDOOR, CHEF_PLATING,
   SEAFOOD_BOWLS, PLATED_SALAD, GRILLED_ROMAINE, DESSERT_OVERHEAD,
@@ -604,25 +604,26 @@ const HOMEPAGE_SERVICE_MAP: Record<string, string> = {
 function ContactSection() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", eventType: "", message: "" });
 
-  const submitMutation = trpc.inquiry.submit.useMutation({
-    onSuccess: () => {
+  const [isPending, setIsPending] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsPending(true);
+    try {
+      await submitInquiry({
+        name: form.name,
+        email: form.email,
+        phone: form.phone || undefined,
+        serviceType: HOMEPAGE_SERVICE_MAP[form.eventType] || form.eventType || undefined,
+        notes: form.message || undefined,
+      });
       toast.success("Thank you! We'll be in touch within 24 hours.");
       setForm({ name: "", email: "", phone: "", eventType: "", message: "" });
-    },
-    onError: (err: any) => {
+    } catch (err: any) {
       toast.error(err.message || "Something went wrong. Please try again.");
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    submitMutation.mutate({
-      name: form.name,
-      email: form.email,
-      phone: form.phone || undefined,
-      serviceType: HOMEPAGE_SERVICE_MAP[form.eventType] || form.eventType || undefined,
-      notes: form.message || undefined,
-    });
+    } finally {
+      setIsPending(false);
+    }
   };
 
   const socials = [
@@ -732,7 +733,7 @@ function ContactSection() {
                   placeholder="Date, guest count, dietary needs, vision for the event..."
                 />
               </div>
-              <button type="submit" disabled={submitMutation.isPending} className="mt-6 w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed">{submitMutation.isPending ? "Sending..." : "Send Inquiry"}</button>
+              <button type="submit" disabled={isPending} className="mt-6 w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed">{isPending ? "Sending..." : "Send Inquiry"}</button>
             </form>
           </FadeIn>
         </div>

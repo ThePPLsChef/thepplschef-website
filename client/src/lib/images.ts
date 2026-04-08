@@ -15,7 +15,7 @@ export const LOGO_P_ICON = `${CDN}/logo_p_icon_5a0514c3.png`;            // P+ch
 export const LOGO_ALT_HORIZONTAL = `${CDN}/logo_alt_horizontal_v4_4ad3d7b5.png`; // Horizontal alt logo — Meal Prep section badge
 
 // Generated hero/feature images
-export const HERO_BG = `${CDN}/fd4_2e47d6f7.jpg`;  // Overhead family-style dinner — people eating, passing food, warm festive atmosphere
+export const HERO_BG = `https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/feast_hero_e50fe7a8.png`;  // Overhead feast — diverse group sharing many dishes, warm communal dining atmosphere
 export const ABOUT_CHEF = `${CDN}/about-chef-QVjiLWLps5DMyMxX7uAGJz.webp`;
 export const GEN_PRIVATE = `${CDN}/services-private-TzcXY4W8pCFoiekAcqNa5M.webp`;
 export const GEN_CORPORATE = `${CDN}/services-corporate-aKhbmwwfW9YkL5HLY6hDhV.webp`;

@@ -3,7 +3,7 @@
  * 7 steps with service-specific branching, large clickable cards,
  * progress bar, smooth transitions, dark luxury aesthetic.
  */
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -235,6 +235,17 @@ export default function BookingWizard() {
   const [isPending, setIsPending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  const wizardTopRef = useRef<HTMLDivElement>(null);
+
+  // Smooth scroll to wizard top on every step change
+  useEffect(() => {
+    if (wizardTopRef.current) {
+      wizardTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [step]);
+
   const fontBody = { fontFamily: "var(--font-body)" };
 
   const update = useCallback(<K extends keyof WizardData>(key: K, value: WizardData[K]) => {
@@ -408,7 +419,7 @@ export default function BookingWizard() {
         {/* Subtle background texture */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(236,162,65,0.04)_0%,transparent_50%)]" />
 
-        <div className="relative z-10 container max-w-3xl mx-auto px-4 pt-28 pb-20">
+        <div ref={wizardTopRef} className="relative z-10 container max-w-3xl mx-auto px-4 pt-28 pb-20">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}

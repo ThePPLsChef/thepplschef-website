@@ -37,3 +37,16 @@
 - [x] Success screen after submission
 - [x] Wire submission to /api/inquiries with error handling
 - [x] Preview only — NOT pushed to GitHub (owner review pending)
+
+## Booking Wizard Visual Overhaul
+
+- [x] Match homepage visual language (warm charcoal #1A1A1A bg, not pure black)
+- [x] Remove heavy dark overlay — lighter, warmer backgrounds
+- [x] Eliminate neon glow effects on selected cards
+- [x] Clean gold border + subtle warm tint for selected state
+- [x] Larger cards with more breathing room and padding
+- [x] Refined typography with bolder section headers
+- [x] Improved mobile readability with better spacing
+- [x] Premium selected state (warm amber accent, no gaming UI feel)
+- [x] Brand-consistent warmth (Gold #ECA241, Cream #F3F1E9, Charcoal #1A1A1A)
+- [x] Seamless transition from homepage into booking flow

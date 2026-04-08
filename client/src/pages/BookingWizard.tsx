@@ -1,16 +1,21 @@
 /**
  * BookingWizard — Multi-step "Find Your Chef Experience" wizard
  * 7 steps with service-specific branching, large clickable cards,
- * progress bar, smooth transitions, dark luxury aesthetic.
+ * progress bar, smooth transitions.
+ *
+ * VISUAL OVERHAUL: Warm premium aesthetic matching homepage —
+ * warm charcoal background (#1A1A1A), refined gold accents,
+ * clean card borders (no neon glow), elegant typography,
+ * seamless brand continuity with the rest of the site.
  */
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChefHat, Users, Utensils, PartyPopper, Building2,
-  CalendarDays, Leaf, DollarSign, MessageSquare, User,
+  CalendarDays, Leaf, DollarSign, User,
   ArrowLeft, ArrowRight, Check, Sparkles, Phone, Mail,
-  Instagram, Facebook, Heart, Star, Cake, Gift, TreePine, Gem, HelpCircle
+  Heart, Cake, TreePine, Gem, HelpCircle
 } from "lucide-react";
 import { toast } from "sonner";
 import Layout from "@/components/Layout";
@@ -73,7 +78,7 @@ const GUEST_OPTIONS: Record<ServiceType, { label: string; options: string[] }> =
   },
   "special-event": {
     label: "What type of special event?",
-    options: [], // handled separately
+    options: [],
   },
   "corporate": {
     label: "How many employees/guests?",
@@ -117,7 +122,7 @@ const TOTAL_STEPS = 7;
 /* ─── Animation variants ─── */
 const pageVariants = {
   enter: (direction: number) => ({
-    x: direction > 0 ? 80 : -80,
+    x: direction > 0 ? 60 : -60,
     opacity: 0,
   }),
   center: {
@@ -125,12 +130,15 @@ const pageVariants = {
     opacity: 1,
   },
   exit: (direction: number) => ({
-    x: direction > 0 ? -80 : 80,
+    x: direction > 0 ? -60 : 60,
     opacity: 0,
   }),
 };
 
-/* ─── Reusable Card Button ─── */
+/* ─── Reusable Selection Card ───
+   Clean, refined card — no neon glow, no gradients.
+   Selected state: warm gold border + very subtle gold tint.
+   Matches homepage service card language. */
 function SelectionCard({
   selected,
   onClick,
@@ -150,49 +158,44 @@ function SelectionCard({
     <motion.button
       type="button"
       onClick={onClick}
-      whileHover={{ scale: 1.03, y: -4 }}
-      whileTap={{ scale: 0.97 }}
-      transition={{ type: "spring", stiffness: 400, damping: 20 }}
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className={`
-        relative group text-left w-full transition-all duration-300 overflow-hidden
-        ${small ? "p-5" : "p-7"}
+        relative group text-left w-full transition-all duration-300
+        ${small ? "p-5 sm:p-6" : "p-6 sm:p-8"}
         ${selected
-          ? "border-2 border-[#ECA241] bg-gradient-to-br from-[#ECA241]/20 via-[#ECA241]/10 to-[#1a1200] rounded-md shadow-[0_0_35px_rgba(236,162,65,0.45),inset_0_1px_0_rgba(236,162,65,0.3)]"
-          : "border-2 border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent rounded-md hover:border-[#ECA241]/40 hover:bg-gradient-to-br hover:from-[#ECA241]/8 hover:to-transparent hover:shadow-[0_0_20px_rgba(236,162,65,0.15)]"
+          ? "border border-[#ECA241] bg-[#ECA241]/[0.07]"
+          : "border border-white/[0.08] bg-white/[0.02] hover:border-[#ECA241]/30 hover:bg-white/[0.04]"
         }
       `}
     >
-      {/* Shimmer overlay on selected */}
-      {selected && (
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#ECA241]/5 to-transparent pointer-events-none" />
-      )}
-
-      {/* Selection indicator — bold gold checkmark */}
+      {/* Selection indicator */}
       <div className={`
-        absolute top-4 right-4 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300
+        absolute top-4 right-4 w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-300
         ${selected
-          ? "border-[#ECA241] bg-[#ECA241] shadow-[0_0_12px_rgba(236,162,65,0.8)]"
-          : "border-white/20 group-hover:border-[#ECA241]/50"
+          ? "border-[#ECA241] bg-[#ECA241]"
+          : "border-white/15 group-hover:border-white/25"
         }
       `}>
-        {selected && <Check size={13} className="text-black" strokeWidth={3.5} />}
+        {selected && <Check size={12} className="text-black" strokeWidth={3} />}
       </div>
 
       {Icon && (
         <div className={`
-          flex items-center justify-center rounded-md mb-4 transition-all duration-300
-          ${small ? "w-11 h-11" : "w-14 h-14"}
+          flex items-center justify-center mb-4 transition-colors duration-300
+          ${small ? "w-10 h-10" : "w-12 h-12"}
           ${selected
-            ? "bg-[#ECA241]/25 text-[#ECA241] shadow-[0_0_16px_rgba(236,162,65,0.3)]"
-            : "bg-white/8 text-white/50 group-hover:bg-[#ECA241]/15 group-hover:text-[#ECA241]/80 group-hover:shadow-[0_0_10px_rgba(236,162,65,0.15)]"
+            ? "text-[#ECA241]"
+            : "text-[#F3F1E9]/40 group-hover:text-[#F3F1E9]/60"
           }
         `}>
-          <Icon size={small ? 22 : 26} />
+          <Icon size={small ? 22 : 26} strokeWidth={1.5} />
         </div>
       )}
       <div
-        className={`font-bold tracking-wide transition-colors duration-300
-          ${selected ? "text-[#ECA241]" : "text-[#F3F1E9] group-hover:text-white"}
+        className={`font-semibold tracking-wide transition-colors duration-300
+          ${selected ? "text-[#ECA241]" : "text-[#F3F1E9]/90 group-hover:text-[#F3F1E9]"}
           ${small ? "text-sm" : "text-base"}
         `}
         style={{ fontFamily: "var(--font-body)" }}
@@ -201,8 +204,8 @@ function SelectionCard({
       </div>
       {desc && (
         <div
-          className={`text-xs mt-2 leading-relaxed transition-colors duration-300
-            ${selected ? "text-[#ECA241]/60" : "text-white/35 group-hover:text-white/55"}
+          className={`text-[13px] mt-2 leading-relaxed transition-colors duration-300
+            ${selected ? "text-[#F3F1E9]/50" : "text-[#F3F1E9]/30 group-hover:text-[#F3F1E9]/45"}
           `}
           style={{ fontFamily: "var(--font-body)" }}
         >
@@ -227,21 +230,21 @@ function MultiSelectCard({
     <motion.button
       type="button"
       onClick={onClick}
-      whileHover={{ scale: 1.05, y: -2 }}
-      whileTap={{ scale: 0.95 }}
-      transition={{ type: "spring", stiffness: 400, damping: 20 }}
+      whileHover={{ y: -1 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className={`
-        relative px-6 py-4 rounded-md border-2 text-sm font-semibold tracking-wide transition-all duration-300
+        relative px-5 py-3.5 sm:px-6 sm:py-4 border text-sm font-medium tracking-wide transition-all duration-300
         ${selected
-          ? "border-[#ECA241] bg-gradient-to-br from-[#ECA241]/20 to-[#ECA241]/5 text-[#ECA241] shadow-[0_0_20px_rgba(236,162,65,0.35)]"
-          : "border-white/12 bg-white/[0.03] text-[#F3F1E9]/55 hover:border-[#ECA241]/40 hover:text-[#F3F1E9]/90 hover:bg-[#ECA241]/8 hover:shadow-[0_0_12px_rgba(236,162,65,0.12)]"
+          ? "border-[#ECA241] bg-[#ECA241]/[0.07] text-[#ECA241]"
+          : "border-white/[0.08] bg-white/[0.02] text-[#F3F1E9]/50 hover:border-[#ECA241]/25 hover:text-[#F3F1E9]/75 hover:bg-white/[0.04]"
         }
       `}
       style={{ fontFamily: "var(--font-body)" }}
     >
       {selected && (
-        <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#ECA241] rounded-full flex items-center justify-center shadow-[0_0_8px_rgba(236,162,65,0.8)]">
-          <Check size={11} className="text-black" strokeWidth={3.5} />
+        <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#ECA241] rounded-full flex items-center justify-center">
+          <Check size={10} className="text-black" strokeWidth={3} />
         </span>
       )}
       {label}
@@ -310,7 +313,7 @@ export default function BookingWizard() {
       case 3: return data.eventDate !== "";
       case 4: return data.dietaryNeeds.length > 0;
       case 5: return data.budget !== "";
-      case 6: return true; // optional
+      case 6: return true;
       case 7: return data.name.trim() !== "" && data.email.trim() !== "" && data.email.includes("@") && data.phone.trim() !== "";
       default: return false;
     }
@@ -374,24 +377,21 @@ export default function BookingWizard() {
   if (submitted) {
     return (
       <Layout>
-        <section className="min-h-screen bg-black flex items-center justify-center relative overflow-hidden">
-          {/* Subtle radial glow */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(236,162,65,0.08)_0%,transparent_70%)]" />
-
+        <section className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ backgroundColor: "#1A1A1A" }}>
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
             className="relative z-10 max-w-lg mx-auto px-6 text-center"
           >
-            {/* Animated check circle */}
+            {/* Check circle */}
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="w-24 h-24 bg-gradient-to-br from-[#ECA241] to-[#D4922A] rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_40px_rgba(236,162,65,0.3)]"
+              className="w-20 h-20 bg-[#ECA241] rounded-full flex items-center justify-center mx-auto mb-8"
             >
-              <Check size={40} className="text-black" strokeWidth={3} />
+              <Check size={36} className="text-black" strokeWidth={2.5} />
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
@@ -401,7 +401,7 @@ export default function BookingWizard() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}>
-              <p className="text-[#F3F1E9]/55 text-lg leading-relaxed mb-3" style={fontBody}>
+              <p className="text-[#F3F1E9]/60 text-lg leading-relaxed mb-3" style={fontBody}>
                 We've received your inquiry for a{" "}
                 <span className="text-[#ECA241] font-semibold">
                   {SERVICE_NAME_MAP[data.serviceType!]}
@@ -416,8 +416,7 @@ export default function BookingWizard() {
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="space-y-4">
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 px-10 py-4 bg-[#ECA241] text-black font-semibold tracking-wider uppercase text-sm hover:bg-[#f0b050] transition-all duration-300 shadow-lg shadow-[#ECA241]/20"
-                style={fontBody}
+                className="btn-primary inline-flex items-center gap-2"
               >
                 Return Home
               </Link>
@@ -439,45 +438,42 @@ export default function BookingWizard() {
   /* ─── Main Wizard ─── */
   return (
     <Layout>
-      <section className="min-h-screen bg-[#0a0800] relative overflow-hidden">
-        {/* Rich background gradients */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,rgba(236,162,65,0.10)_0%,transparent_55%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(216,46,43,0.05)_0%,transparent_50%)]" />
-        {/* Subtle gold grid texture */}
-        <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "linear-gradient(rgba(236,162,65,1) 1px, transparent 1px), linear-gradient(90deg, rgba(236,162,65,1) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+      <section className="min-h-screen relative overflow-hidden" style={{ backgroundColor: "#1A1A1A" }}>
+        {/* Very subtle warm radial — barely visible, just enough warmth */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,rgba(236,162,65,0.04)_0%,transparent_60%)]" />
 
-        <div ref={wizardTopRef} className="relative z-10 container max-w-3xl mx-auto px-4 pt-28 pb-20">
+        <div ref={wizardTopRef} className="relative z-10 container max-w-2xl mx-auto px-5 sm:px-6 pt-28 pb-24">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-10"
+            className="text-center mb-12"
           >
             <Link href="/" className="inline-block mb-6">
-              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-14 w-auto mx-auto object-contain drop-shadow-[0_0_20px_rgba(236,162,65,0.3)]" />
+              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-12 w-auto mx-auto object-contain" />
             </Link>
             <div className="flex items-center justify-center gap-3 mb-2">
-              <div className="w-10 h-[1px] bg-gradient-to-r from-transparent to-[#ECA241]/60" />
-              <span className="text-[#ECA241]/80 text-[10px] tracking-[0.3em] uppercase font-semibold" style={fontBody}>
+              <div className="w-8 h-[1px] bg-[#ECA241]/40" />
+              <span className="brand-label text-[#ECA241]" style={{ fontSize: "0.65rem" }}>
                 Find Your Chef Experience
               </span>
-              <div className="w-10 h-[1px] bg-gradient-to-l from-transparent to-[#ECA241]/60" />
+              <div className="w-8 h-[1px] bg-[#ECA241]/40" />
             </div>
           </motion.div>
 
-          {/* Progress Bar — bolder */}
+          {/* Progress Bar — clean, no glow */}
           <div className="mb-12">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[#F3F1E9]/50 text-xs tracking-wider uppercase font-semibold" style={fontBody}>
+              <span className="text-[#F3F1E9]/40 text-xs tracking-wider uppercase font-medium" style={fontBody}>
                 Step {step} of {TOTAL_STEPS}
               </span>
-              <span className="text-[#ECA241] text-xs font-bold" style={fontBody}>
+              <span className="text-[#ECA241]/80 text-xs font-semibold" style={fontBody}>
                 {Math.round((step / TOTAL_STEPS) * 100)}%
               </span>
             </div>
-            <div className="h-1 bg-white/8 rounded-full overflow-hidden">
+            <div className="h-[3px] bg-white/[0.06] rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-[#ECA241] via-[#f0b050] to-[#ECA241] rounded-full shadow-[0_0_8px_rgba(236,162,65,0.6)]"
+                className="h-full bg-[#ECA241] rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -486,7 +482,7 @@ export default function BookingWizard() {
           </div>
 
           {/* Step Content */}
-          <div className="min-h-[420px]">
+          <div className="min-h-[400px]">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={step}
@@ -495,28 +491,27 @@ export default function BookingWizard() {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={{ duration: 0.35, ease: "easeInOut" }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
               >
                 {/* Step Title */}
-                <div className="mb-8">
-                  <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl text-[#F3F1E9] leading-tight mb-2">
+                <div className="mb-8 sm:mb-10">
+                  <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl text-[#F3F1E9] leading-tight mb-3">
                     {stepTitles[step - 1]}
                   </h2>
-                  <p className="text-[#F3F1E9]/35 text-sm" style={fontBody}>
+                  <p className="text-[#F3F1E9]/40 text-sm sm:text-base leading-relaxed" style={fontBody}>
                     {stepSubtitles[step - 1]}
                   </p>
                 </div>
 
                 {/* ─── STEP 1: Service Type ─── */}
                 {step === 1 && (
-                  <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                     {SERVICES.map((s) => (
                       <SelectionCard
                         key={s.id}
                         selected={data.serviceType === s.id}
                         onClick={() => {
                           update("serviceType", s.id);
-                          // Reset dependent fields when service changes
                           update("guestCount", "");
                           update("specialEventType", null);
                           update("budget", "");
@@ -533,7 +528,7 @@ export default function BookingWizard() {
                 {step === 2 && data.serviceType && (
                   <div>
                     {data.serviceType === "special-event" ? (
-                      <div className="grid sm:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                         {SPECIAL_EVENT_TYPES.map((evt) => (
                           <SelectionCard
                             key={evt.id}
@@ -545,7 +540,7 @@ export default function BookingWizard() {
                         ))}
                       </div>
                     ) : (
-                      <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                         {GUEST_OPTIONS[data.serviceType].options.map((opt) => (
                           <SelectionCard
                             key={opt}
@@ -565,17 +560,17 @@ export default function BookingWizard() {
                 {step === 3 && (
                   <div className="max-w-sm">
                     <div className="relative">
-                      <CalendarDays size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ECA241]/50 pointer-events-none" />
+                      <CalendarDays size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ECA241]/40 pointer-events-none" />
                       <input
                         type="date"
                         value={data.eventDate}
                         onChange={(e) => update("eventDate", e.target.value)}
                         min={new Date().toISOString().split("T")[0]}
-                        className="w-full pl-12 pr-4 py-4 bg-white/[0.03] border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-base rounded-sm appearance-none [color-scheme:dark]"
+                        className="w-full pl-12 pr-4 py-4 bg-white/[0.03] border border-white/[0.08] text-[#F3F1E9] focus:border-[#ECA241]/60 focus:outline-none transition-colors text-base [color-scheme:dark]"
                         style={fontBody}
                       />
                     </div>
-                    <p className="text-white/25 text-xs mt-3" style={fontBody}>
+                    <p className="text-[#F3F1E9]/25 text-xs sm:text-sm mt-3 leading-relaxed" style={fontBody}>
                       Don't have an exact date? Pick an approximate date and we'll work with you.
                     </p>
                   </div>
@@ -583,7 +578,7 @@ export default function BookingWizard() {
 
                 {/* ─── STEP 4: Dietary Needs ─── */}
                 {step === 4 && (
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-2.5 sm:gap-3">
                     {DIETARY_OPTIONS.map((opt) => (
                       <MultiSelectCard
                         key={opt}
@@ -597,7 +592,7 @@ export default function BookingWizard() {
 
                 {/* ─── STEP 5: Budget ─── */}
                 {step === 5 && data.serviceType && (
-                  <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                     {BUDGET_OPTIONS[data.serviceType].map((opt) => (
                       <SelectionCard
                         key={opt}
@@ -614,18 +609,16 @@ export default function BookingWizard() {
                 {/* ─── STEP 6: Vision ─── */}
                 {step === 6 && (
                   <div>
-                    <div className="relative">
-                      <textarea
-                        value={data.vision}
-                        onChange={(e) => update("vision", e.target.value)}
-                        rows={6}
-                        placeholder="Tell us about your dream event — theme ideas, must-have dishes, special requests, anything that will help us create the perfect experience for you..."
-                        className="w-full px-5 py-4 bg-white/[0.03] border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm leading-relaxed rounded-sm resize-none placeholder:text-white/15"
-                        style={fontBody}
-                      />
-                    </div>
-                    <p className="text-white/25 text-xs mt-3 flex items-center gap-1.5" style={fontBody}>
-                      <Sparkles size={12} className="text-[#ECA241]/40" />
+                    <textarea
+                      value={data.vision}
+                      onChange={(e) => update("vision", e.target.value)}
+                      rows={6}
+                      placeholder="Tell us about your dream event — theme ideas, must-have dishes, special requests, anything that will help us create the perfect experience for you..."
+                      className="w-full px-5 py-4 bg-white/[0.03] border border-white/[0.08] text-[#F3F1E9] focus:border-[#ECA241]/60 focus:outline-none transition-colors text-sm sm:text-base leading-relaxed resize-none placeholder:text-[#F3F1E9]/15"
+                      style={fontBody}
+                    />
+                    <p className="text-[#F3F1E9]/25 text-xs sm:text-sm mt-3 flex items-center gap-1.5" style={fontBody}>
+                      <Sparkles size={12} className="text-[#ECA241]/30" />
                       This is optional — you can skip this step if you prefer.
                     </p>
                   </div>
@@ -633,83 +626,81 @@ export default function BookingWizard() {
 
                 {/* ─── STEP 7: Contact Info ─── */}
                 {step === 7 && (
-                  <div className="space-y-6">
-                    <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-5 sm:space-y-6">
+                    <div className="grid sm:grid-cols-2 gap-4 sm:gap-5">
                       <div>
-                        <label className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase block mb-2" style={fontBody}>
+                        <label className="text-[#F3F1E9]/40 text-[11px] tracking-wider uppercase block mb-2 font-medium" style={fontBody}>
                           Full Name *
                         </label>
                         <div className="relative">
-                          <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ECA241]/40 pointer-events-none" />
+                          <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ECA241]/30 pointer-events-none" />
                           <input
                             type="text"
                             required
                             value={data.name}
                             onChange={(e) => update("name", e.target.value)}
                             placeholder="Your full name"
-                            className="w-full pl-11 pr-4 py-3.5 bg-white/[0.03] border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm rounded-sm placeholder:text-white/15"
+                            className="w-full pl-11 pr-4 py-3.5 bg-white/[0.03] border border-white/[0.08] text-[#F3F1E9] focus:border-[#ECA241]/60 focus:outline-none transition-colors text-sm sm:text-base placeholder:text-[#F3F1E9]/15"
                             style={fontBody}
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase block mb-2" style={fontBody}>
+                        <label className="text-[#F3F1E9]/40 text-[11px] tracking-wider uppercase block mb-2 font-medium" style={fontBody}>
                           Phone *
                         </label>
                         <div className="relative">
-                          <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ECA241]/40 pointer-events-none" />
+                          <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ECA241]/30 pointer-events-none" />
                           <input
                             type="tel"
                             required
                             value={data.phone}
                             onChange={(e) => update("phone", e.target.value)}
                             placeholder="(555) 123-4567"
-                            className="w-full pl-11 pr-4 py-3.5 bg-white/[0.03] border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm rounded-sm placeholder:text-white/15"
+                            className="w-full pl-11 pr-4 py-3.5 bg-white/[0.03] border border-white/[0.08] text-[#F3F1E9] focus:border-[#ECA241]/60 focus:outline-none transition-colors text-sm sm:text-base placeholder:text-[#F3F1E9]/15"
                             style={fontBody}
                           />
                         </div>
                       </div>
                     </div>
                     <div>
-                      <label className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase block mb-2" style={fontBody}>
+                      <label className="text-[#F3F1E9]/40 text-[11px] tracking-wider uppercase block mb-2 font-medium" style={fontBody}>
                         Email *
                       </label>
                       <div className="relative">
-                        <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ECA241]/40 pointer-events-none" />
+                        <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#ECA241]/30 pointer-events-none" />
                         <input
                           type="email"
                           required
                           value={data.email}
                           onChange={(e) => update("email", e.target.value)}
                           placeholder="your@email.com"
-                          className="w-full pl-11 pr-4 py-3.5 bg-white/[0.03] border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm rounded-sm placeholder:text-white/15"
+                          className="w-full pl-11 pr-4 py-3.5 bg-white/[0.03] border border-white/[0.08] text-[#F3F1E9] focus:border-[#ECA241]/60 focus:outline-none transition-colors text-sm sm:text-base placeholder:text-[#F3F1E9]/15"
                           style={fontBody}
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase block mb-2" style={fontBody}>
+                      <label className="text-[#F3F1E9]/40 text-[11px] tracking-wider uppercase block mb-2 font-medium" style={fontBody}>
                         How did you hear about us?
                       </label>
                       <div className="flex flex-wrap gap-2">
                         {REFERRAL_OPTIONS.map((opt) => (
-                          <motion.button
+                          <button
                             key={opt}
                             type="button"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
                             onClick={() => update("referralSource", data.referralSource === opt ? "" : opt)}
                             className={`
-                              px-4 py-2 rounded-sm border text-xs font-medium transition-all duration-300
+                              px-4 py-2.5 border text-xs sm:text-sm font-medium transition-all duration-300
                               ${data.referralSource === opt
-                                ? "border-[#ECA241] bg-[#ECA241]/10 text-[#ECA241]"
-                                : "border-white/10 text-[#F3F1E9]/40 hover:border-white/20 hover:text-[#F3F1E9]/60"
+                                ? "border-[#ECA241] bg-[#ECA241]/[0.07] text-[#ECA241]"
+                                : "border-white/[0.08] text-[#F3F1E9]/35 hover:border-white/15 hover:text-[#F3F1E9]/55"
                               }
                             `}
                             style={fontBody}
                           >
                             {opt}
-                          </motion.button>
+                          </button>
                         ))}
                       </div>
                     </div>
@@ -720,51 +711,48 @@ export default function BookingWizard() {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center justify-between mt-10 pt-8 border-t border-white/5">
+          <div className="flex items-center justify-between mt-10 pt-8 border-t border-white/[0.06]">
             {step > 1 ? (
-              <motion.button
+              <button
                 type="button"
                 onClick={goBack}
-                whileHover={{ x: -3 }}
-                className="flex items-center gap-2 text-[#F3F1E9]/40 hover:text-[#F3F1E9]/70 text-sm transition-colors"
+                className="flex items-center gap-2 text-[#F3F1E9]/35 hover:text-[#F3F1E9]/60 text-sm transition-colors"
                 style={fontBody}
               >
                 <ArrowLeft size={16} /> Back
-              </motion.button>
+              </button>
             ) : (
-              <Link href="/" className="flex items-center gap-2 text-[#F3F1E9]/40 hover:text-[#F3F1E9]/70 text-sm transition-colors" style={fontBody}>
+              <Link href="/" className="flex items-center gap-2 text-[#F3F1E9]/35 hover:text-[#F3F1E9]/60 text-sm transition-colors" style={fontBody}>
                 <ArrowLeft size={16} /> Home
               </Link>
             )}
 
             {step < TOTAL_STEPS ? (
-              <motion.button
+              <button
                 type="button"
                 onClick={goNext}
                 disabled={!canProceed()}
-                whileHover={canProceed() ? { x: 3 } : {}}
                 className={`
                   flex items-center gap-2 px-8 py-3.5 text-sm font-semibold tracking-wider uppercase transition-all duration-300
                   ${canProceed()
-                    ? "bg-[#ECA241] text-black hover:bg-[#f0b050] shadow-lg shadow-[#ECA241]/20"
-                    : "bg-white/5 text-white/20 cursor-not-allowed"
+                    ? "bg-[#ECA241] text-black hover:bg-[#f0b050]"
+                    : "bg-white/[0.04] text-[#F3F1E9]/15 cursor-not-allowed"
                   }
                 `}
                 style={fontBody}
               >
                 Continue <ArrowRight size={16} />
-              </motion.button>
+              </button>
             ) : (
-              <motion.button
+              <button
                 type="button"
                 onClick={handleSubmit}
                 disabled={!canProceed() || isPending}
-                whileHover={canProceed() && !isPending ? { scale: 1.02 } : {}}
                 className={`
                   flex items-center gap-2 px-10 py-4 text-sm font-bold tracking-wider uppercase transition-all duration-300
                   ${canProceed() && !isPending
-                    ? "bg-gradient-to-r from-[#D82E2B] to-[#ECA241] text-white hover:shadow-lg hover:shadow-[#D82E2B]/30"
-                    : "bg-white/5 text-white/20 cursor-not-allowed"
+                    ? "bg-[#ECA241] text-black hover:bg-[#f0b050]"
+                    : "bg-white/[0.04] text-[#F3F1E9]/15 cursor-not-allowed"
                   }
                 `}
                 style={fontBody}
@@ -774,16 +762,16 @@ export default function BookingWizard() {
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                      className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
                     />
                     Submitting...
                   </>
                 ) : (
                   <>
-                    Submit Inquiry <Sparkles size={16} />
+                    Submit Inquiry <ArrowRight size={16} />
                   </>
                 )}
-              </motion.button>
+              </button>
             )}
           </div>
 
@@ -793,8 +781,8 @@ export default function BookingWizard() {
               <div
                 key={i}
                 className={`
-                  w-2 h-2 rounded-full transition-all duration-300
-                  ${i + 1 === step ? "bg-[#ECA241] w-6" : i + 1 < step ? "bg-[#ECA241]/40" : "bg-white/10"}
+                  h-1.5 rounded-full transition-all duration-300
+                  ${i + 1 === step ? "bg-[#ECA241] w-6" : i + 1 < step ? "bg-[#ECA241]/30 w-1.5" : "bg-white/[0.08] w-1.5"}
                 `}
               />
             ))}

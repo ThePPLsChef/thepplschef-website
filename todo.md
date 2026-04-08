@@ -56,3 +56,14 @@
 - [x] Change 1: Replace full 9-card pricing section with simplified 3-card starting-at teaser (homepage only)
 - [x] Change 2: Update Why Choose Us intro paragraph to new copy
 - [x] Change 3: Add "Every dish is crafted to your event" line + BUILD YOUR MENU CTA to Signature Dishes section
+
+## Meal Prep Wizard Branching Flow (Apr 8)
+
+- [x] Add MealPrepWizardData interface with all meal-prep-specific fields
+- [x] Add MEAL_PREP_TOTAL_STEPS = 8 constant and dynamic total steps logic
+- [x] Implement 6 new Meal Prep steps (2–7) with correct options per spec
+- [x] Update canProceed() to handle both standard and meal-prep paths
+- [x] Update progress bar to use dynamic total steps based on service selection
+- [x] Update step dots to reflect correct step count per path
+- [x] Update handleSubmit to include meal-prep-specific fields in inquiry
+- [x] Verify standard path (Private Chef, Catering, etc.) is completely unchanged

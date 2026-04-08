@@ -6,7 +6,7 @@
 import Layout from "@/components/Layout";
 
 import FAQ from "@/components/FAQ";
-import Pricing from "@/components/Pricing";
+// Pricing component replaced with inline HomePricingTeaser on homepage
 import ClientReviews from "@/components/ClientReviews";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
@@ -165,7 +165,7 @@ export default function Home() {
       <HeroSection />
       <BrandIntro />
       <ServicesSection />
-      <Pricing />
+      <HomePricingTeaser />
       <WhyChooseUs />
       <SignatureExperience />
       <FeaturedDishes />
@@ -334,7 +334,7 @@ function WhyChooseUs() {
           label="The Difference"
           title="Why Choose"
           titleAccent="The PPL's Chef"
-          subtitle="We're not just caterers — we're culinary partners dedicated to making your event extraordinary."
+          subtitle="Most people think a private chef is out of reach. We built The PPL'S Chef to change that — bringing restaurant-quality dining to everyday moments and once-in-a-lifetime celebrations alike. This is for the people."
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {whyItems.map((item, i) => (
@@ -397,6 +397,14 @@ function FeaturedDishes() {
           titleAccent="Dishes"
           subtitle="A glimpse into the culinary artistry we bring to every event."
         />
+        <FadeIn className="text-center mb-10" delay={0.1}>
+          <p className="text-black/60 text-base lg:text-lg mb-5" style={{ fontFamily: "var(--font-body)" }}>
+            Every dish is crafted to your event. Tell us what you're craving.
+          </p>
+          <Link href="/book" className="btn-primary">
+            Build Your Menu <ArrowRight size={16} className="inline ml-1" />
+          </Link>
+        </FadeIn>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {featuredDishes.map((d, i) => (
             <FadeIn key={d.label} delay={i * 0.1}>
@@ -406,6 +414,73 @@ function FeaturedDishes() {
                 <div className="absolute bottom-0 left-0 right-0 p-5">
                   <p className="text-[#F3F1E9] text-sm font-semibold tracking-wider uppercase" style={{ fontFamily: "var(--font-body)" }}>{d.label}</p>
                 </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── 3.5. HOMEPAGE PRICING TEASER ─── */
+const pricingTeasers = [
+  {
+    title: "Private Chef Experience",
+    starting: "Experiences starting at $125/person",
+    desc: "Fully customized. Professionally executed. Unforgettable.",
+  },
+  {
+    title: "Catering & Events",
+    starting: "Catering starting at $45/person",
+    desc: "From intimate gatherings to large-scale celebrations \u2014 every event, handled.",
+  },
+  {
+    title: "Meal Boxes",
+    starting: "Weekly meal plans starting at $120/week",
+    desc: "Chef-crafted meals delivered fresh to your door.",
+  },
+];
+
+function HomePricingTeaser() {
+  return (
+    <section className="section-dark py-24 lg:py-32">
+      <div className="container">
+        <SectionHeader
+          label="Pricing"
+          title="Chef-Quality Dining"
+          titleAccent="For Every Occasion"
+          subtitle="Transparent, flexible pricing designed to bring restaurant-quality dining to your table."
+          dark
+        />
+        <div className="grid sm:grid-cols-3 gap-6 lg:gap-8">
+          {pricingTeasers.map((item, i) => (
+            <FadeIn key={item.title} delay={i * 0.1}>
+              <div className="border border-white/10 bg-white/[0.03] p-8 lg:p-10 flex flex-col h-full hover:border-[#ECA241]/30 transition-colors duration-300">
+                <h3
+                  className="font-[family-name:var(--font-display)] text-xl lg:text-2xl text-[#F3F1E9] mb-3"
+                >
+                  {item.title}
+                </h3>
+                <p
+                  className="text-[#ECA241] text-base font-semibold mb-3"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {item.starting}
+                </p>
+                <p
+                  className="text-[#F3F1E9]/50 text-sm leading-relaxed mb-8 flex-1"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {item.desc}
+                </p>
+                <Link
+                  href="/book"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#ECA241] text-black text-sm font-bold tracking-wider uppercase hover:bg-[#f0b050] transition-all duration-300"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  Book Your Experience <ArrowRight size={15} />
+                </Link>
               </div>
             </FadeIn>
           ))}

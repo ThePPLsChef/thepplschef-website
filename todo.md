@@ -50,3 +50,9 @@
 - [x] Premium selected state (warm amber accent, no gaming UI feel)
 - [x] Brand-consistent warmth (Gold #ECA241, Cream #F3F1E9, Charcoal #1A1A1A)
 - [x] Seamless transition from homepage into booking flow
+
+## Homepage Targeted Edits (Apr 8)
+
+- [x] Change 1: Replace full 9-card pricing section with simplified 3-card starting-at teaser (homepage only)
+- [x] Change 2: Update Why Choose Us intro paragraph to new copy
+- [x] Change 3: Add "Every dish is crafted to your event" line + BUILD YOUR MENU CTA to Signature Dishes section

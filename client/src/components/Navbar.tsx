@@ -78,7 +78,7 @@ export default function Navbar() {
     }
   };
 
-  const linkStyle = "text-[#F3F1E9]/75 hover:text-[#ECA241] text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors duration-300 relative after:absolute after:bottom-[-3px] after:left-0 after:w-0 after:h-[1px] after:bg-[#ECA241] after:transition-all after:duration-300 hover:after:w-full";
+  const linkStyle = "text-[#F3F1E9]/75 hover:text-[#ECA241] text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors duration-300 relative py-3 px-1 after:absolute after:bottom-[6px] after:left-0 after:w-0 after:h-[1px] after:bg-[#ECA241] after:transition-all after:duration-300 hover:after:w-full";
   const fontBody = { fontFamily: "var(--font-body)" };
 
   return (

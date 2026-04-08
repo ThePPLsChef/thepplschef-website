@@ -76,3 +76,9 @@
 - [x] Update Meal Prep page CTA → /book?service=meal-prep
 - [x] Update Special Events page CTA → /book?service=special-event
 - [x] Update Corporate Dining page CTA → /book?service=corporate
+
+## Navbar Fix (Apr 8)
+
+- [x] Investigate why navbar links stop working when sticky/fixed navbar is visible during scroll
+- [x] Fix all nav links to route correctly in both initial and scrolled states — added py-3 px-1 to linkStyle, hit targets now 41px (was 17px)
+- [x] Verify mobile hamburger menu links also work correctly — mobile links already had adequate padding

@@ -299,7 +299,7 @@ export default function MenusPage() {
 
             {/* CTA */}
             <div className="mt-14 text-center">
-              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-16 w-auto object-contain mx-auto mb-5 drop-shadow-lg" />
+              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain mx-auto mb-5 drop-shadow-lg" />
               <p className="text-black/50 text-sm mb-6" style={fontBody}>
                 All menus are fully customizable. Let us design the perfect menu for your event.
               </p>

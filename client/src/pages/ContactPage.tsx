@@ -89,7 +89,7 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black" />
         <div className="relative z-10 container text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain mx-auto mb-6 drop-shadow-xl" />
+            <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-24 w-auto object-contain mx-auto mb-6 drop-shadow-xl" />
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="w-8 h-[1px] bg-[#ECA241]" />
               <span className="brand-label">Get In Touch</span>

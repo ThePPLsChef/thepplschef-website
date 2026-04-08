@@ -201,7 +201,7 @@ function HeroSection() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
-          className="h-32 w-auto sm:h-44 object-contain mb-8 drop-shadow-2xl"
+          className="h-44 w-auto sm:h-60 object-contain mb-8 drop-shadow-2xl"
         />
 
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="flex items-center gap-3 mb-6">
@@ -571,7 +571,7 @@ function FinalCTA() {
       <div className="absolute inset-0 bg-black/75" />
       <div className="relative z-10 container text-center">
         <FadeIn>
-          <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain mx-auto mb-6 drop-shadow-xl" />
+          <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-44 w-auto sm:h-60 object-contain mx-auto mb-6 drop-shadow-xl" />
           <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-[#F3F1E9] leading-tight mb-5">
             Ready to Create Something <span className="text-[#ECA241]">Extraordinary?</span>
           </h2>

@@ -601,7 +601,9 @@ export default function MealPrepPage() {
             {/* Sidebar */}
             <div className="lg:col-span-2">
               <FadeIn>
-                <img src={LOGO_ALT_HORIZONTAL} alt="The PPL's Chef" className="h-16 w-auto object-contain drop-shadow-xl mb-5" />
+                <div className="inline-block bg-white/15 backdrop-blur-sm rounded-xl px-5 py-3 mb-5">
+                  <img src={LOGO_ALT_HORIZONTAL} alt="The PPL's Chef" className="h-20 w-auto object-contain" />
+                </div>
                 <h2 className="font-[family-name:var(--font-display)] text-2xl lg:text-3xl text-[#F3F1E9] mb-4">
                   Start Your <span className="text-[#ECA241]">Meal Plan</span>
                 </h2>
@@ -656,7 +658,9 @@ export default function MealPrepPage() {
       <section className="section-cream py-20 lg:py-28">
         <div className="container text-center">
           <FadeIn>
-            <img src={LOGO_ALT_HORIZONTAL} alt="The PPL's Chef" className="h-16 w-auto object-contain drop-shadow-lg mx-auto mb-5" />
+            <div className="inline-block bg-black/10 rounded-xl px-5 py-3 mb-5">
+              <img src={LOGO_ALT_HORIZONTAL} alt="The PPL's Chef" className="h-20 w-auto object-contain" />
+            </div>
             <h2 className="font-[family-name:var(--font-display)] text-3xl lg:text-4xl text-black mb-4">
               Ready to Eat <span className="text-[#D82E2B]">Better?</span>
             </h2>

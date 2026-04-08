@@ -88,3 +88,10 @@
 - [x] Fix mobile menu overlay z-index — moved to React Portal on document.body with z-index: 9999
 - [x] Ensure mobile menu is full-screen overlay on top of all content — verified via screenshot and console
 - [x] Verify X close button works correctly — confirmed in browser test
+
+## Logo Adjustments (Apr 8)
+- [ ] Fix Meal Prep page logo visibility on dark background (black P invisible on black bg)
+- [ ] Increase navbar logo size for mobile readability
+- [ ] Increase hero section logo size for brand impact
+- [ ] Match CTA section logo size to hero logo size
+- [ ] Audit and adjust all other logo placements for consistency

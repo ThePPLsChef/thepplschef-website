@@ -126,7 +126,7 @@ export default function BookingPage() {
             {/* Sidebar */}
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-8">
               <div>
-                <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain drop-shadow-xl mb-4" />
+                <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-24 w-auto object-contain drop-shadow-xl mb-4" />
                 <p className="text-[#F3F1E9]/40 text-sm leading-relaxed" style={fontBody}>
                   Fill out the form and we'll respond within 24 hours with a custom proposal for your event.
                 </p>

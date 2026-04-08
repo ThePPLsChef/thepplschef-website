@@ -73,7 +73,7 @@ export default function AboutPage() {
 
             <FadeIn delay={0.2}>
               <div className="flex items-center gap-4 mb-6">
-                <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-16 w-auto object-contain drop-shadow-lg" />
+                <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain drop-shadow-lg" />
                 <div>
                   <div className="font-[family-name:var(--font-display)] text-lg text-black">The PPL's <span className="text-[#D82E2B]">Chef</span></div>
                   <div className="text-[#D82E2B]/60 text-[10px] tracking-[0.25em] uppercase" style={fontBody}>The People's Chef</div>
@@ -214,7 +214,7 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-black/80" />
         <div className="relative z-10 container text-center">
           <FadeIn>
-            <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain mx-auto mb-6 drop-shadow-xl" />
+            <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-24 w-auto object-contain mx-auto mb-6 drop-shadow-xl" />
             <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-[#F3F1E9] leading-tight mb-5">
               Ready to Experience the <span className="text-[#ECA241]">Difference?</span>
             </h2>

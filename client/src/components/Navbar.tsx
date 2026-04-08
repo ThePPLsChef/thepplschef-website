@@ -102,7 +102,7 @@ export default function Navbar() {
             src={LOGO_PRIMARY}
             alt="The PPL's Chef"
             className={`object-contain transition-all duration-300 drop-shadow-lg ${
-              scrolled ? "h-9 w-auto" : "h-11 w-auto"
+              scrolled ? "h-12 w-auto" : "h-14 w-auto"
             }`}
           />
         </Link>

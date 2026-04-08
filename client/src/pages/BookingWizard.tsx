@@ -599,7 +599,7 @@ export default function BookingWizard() {
             className="text-center mb-12"
           >
             <Link href="/" className="inline-block mb-6">
-              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-12 w-auto mx-auto object-contain" />
+              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-16 w-auto mx-auto object-contain" />
             </Link>
             <div className="flex items-center justify-center gap-3 mb-2">
               <div className="w-8 h-[1px] bg-[#ECA241]/40" />

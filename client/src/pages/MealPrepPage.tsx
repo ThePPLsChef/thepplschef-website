@@ -520,7 +520,7 @@ export default function MealPrepPage() {
 
       {/* ─── PRICING ─── */}
       <ServicePricingSection
-        ctaHref="/meal-prep-las-vegas#order-form"
+        ctaHref="/book?service=meal-prep"
         label="Meal Prep Pricing"
         tiers={[
           {
@@ -664,9 +664,9 @@ export default function MealPrepPage() {
               Stop settling for ordinary. Let a professional chef handle your meals so you can focus on what matters.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <a href="#order-form" onClick={(e) => { e.preventDefault(); document.getElementById('order-form')?.scrollIntoView({ behavior: 'smooth' }); }} className="btn-primary">
+              <Link href="/book?service=meal-prep" className="btn-primary">
                 Start My Meal Plan
-              </a>
+              </Link>
               <a href="tel:725-212-2236" className="btn-outline-dark">Call 725-212-2236</a>
             </div>
           </FadeIn>

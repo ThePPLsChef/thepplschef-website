@@ -67,3 +67,12 @@
 - [x] Update step dots to reflect correct step count per path
 - [x] Update handleSubmit to include meal-prep-specific fields in inquiry
 - [x] Verify standard path (Private Chef, Catering, etc.) is completely unchanged
+
+## Service Page CTA Routing (Apr 8)
+
+- [x] Add URL parameter pre-selection to BookingWizard (?service=X skips to Step 2)
+- [x] Update Private Chef page CTA → /book?service=private-chef
+- [x] Update Catering page CTA → /book?service=catering
+- [x] Update Meal Prep page CTA → /book?service=meal-prep
+- [x] Update Special Events page CTA → /book?service=special-event
+- [x] Update Corporate Dining page CTA → /book?service=corporate

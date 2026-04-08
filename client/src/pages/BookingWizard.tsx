@@ -9,7 +9,7 @@
  * warm charcoal background (#1A1A1A), refined gold accents,
  * clean card borders (no neon glow), elegant typography.
  */
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -308,9 +308,19 @@ function MultiSelectCard({
    MAIN WIZARD COMPONENT
    ═══════════════════════════════════════════════════════════════ */
 export default function BookingWizard() {
-  const [step, setStep] = useState(1);
+  // Read ?service= URL param to pre-select service and skip to step 2
+  const preselectedService = useMemo((): ServiceType | null => {
+    const params = new URLSearchParams(window.location.search);
+    const s = params.get("service");
+    const valid: ServiceType[] = ["private-chef", "catering", "meal-prep", "special-event", "corporate"];
+    return valid.includes(s as ServiceType) ? (s as ServiceType) : null;
+  }, []);
+
+  const [step, setStep] = useState(() => preselectedService ? 2 : 1);
   const [direction, setDirection] = useState(1);
-  const [data, setData] = useState<WizardData>(initialData);
+  const [data, setData] = useState<WizardData>(() =>
+    preselectedService ? { ...initialData, serviceType: preselectedService } : initialData
+  );
   const [isPending, setIsPending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 

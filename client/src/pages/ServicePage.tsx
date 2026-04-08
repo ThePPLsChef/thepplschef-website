@@ -23,10 +23,17 @@ function FadeIn({ children, className = "", delay = 0 }: { children: React.React
   );
 }
 
+/* ─── Slug → wizard service param mapping ─── */
+const SLUG_TO_SERVICE_PARAM: Record<string, string> = {
+  "private-chef-las-vegas": "private-chef",
+  "catering-las-vegas": "catering",
+  "special-events-las-vegas": "special-event",
+  "corporate-catering-las-vegas": "corporate",
+};
+
 /* ─── Per-service pricing data ─── */
-const servicePricingData: Record<string, { tiers: PricingTier[]; ctaHref: string }> = {
+const servicePricingData: Record<string, { tiers: PricingTier[]; ctaHref?: string }> = {
   "private-chef-las-vegas": {
-    ctaHref: "/contact",
     tiers: [
       {
         name: "Signature Experience",
@@ -69,7 +76,6 @@ const servicePricingData: Record<string, { tiers: PricingTier[]; ctaHref: string
     ],
   },
   "catering-las-vegas": {
-    ctaHref: "/contact",
     tiers: [
       {
         name: "Signature Catering",
@@ -107,7 +113,6 @@ const servicePricingData: Record<string, { tiers: PricingTier[]; ctaHref: string
     ],
   },
   "corporate-catering-las-vegas": {
-    ctaHref: "/contact",
     tiers: [
       {
         name: "Signature Catering",
@@ -149,6 +154,11 @@ const servicePricingData: Record<string, { tiers: PricingTier[]; ctaHref: string
 export default function ServicePage() {
   const params = useParams<{ slug: string }>();
   const service = getServiceBySlug(params.slug || "");
+
+  // Derive the booking URL with pre-selected service param
+  const bookingUrl = params.slug && SLUG_TO_SERVICE_PARAM[params.slug]
+    ? `/book?service=${SLUG_TO_SERVICE_PARAM[params.slug]}`
+    : "/book";
 
   useEffect(() => {
     if (service) {
@@ -200,8 +210,8 @@ export default function ServicePage() {
               <p className="text-black/60 text-base lg:text-lg leading-relaxed" style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}>
                 {service.overview}
               </p>
-              <Link href="/contact" className="btn-primary mt-8 inline-flex">
-                Inquire About This Service
+              <Link href={bookingUrl} className="btn-primary mt-8 inline-flex">
+                Book This Service
               </Link>
             </FadeIn>
 
@@ -292,7 +302,7 @@ export default function ServicePage() {
       {servicePricingData[service.slug] && (
         <ServicePricingSection
           tiers={servicePricingData[service.slug].tiers}
-          ctaHref={servicePricingData[service.slug].ctaHref}
+          ctaHref={bookingUrl}
         />
       )}
 
@@ -308,7 +318,7 @@ export default function ServicePage() {
               Tell us about your event and we'll create a custom proposal tailored to your needs.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/contact" className="btn-primary">Book This Service</Link>
+              <Link href={bookingUrl} className="btn-primary">Book This Service</Link>
               <a href="tel:725-212-2236" className="btn-outline-dark">Call 725-212-2236</a>
             </div>
           </FadeIn>

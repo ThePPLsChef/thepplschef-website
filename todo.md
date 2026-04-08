@@ -82,3 +82,9 @@
 - [x] Investigate why navbar links stop working when sticky/fixed navbar is visible during scroll
 - [x] Fix all nav links to route correctly in both initial and scrolled states — added py-3 px-1 to linkStyle, hit targets now 41px (was 17px)
 - [x] Verify mobile hamburger menu links also work correctly — mobile links already had adequate padding
+
+## Mobile Navbar Fix (Apr 8)
+
+- [x] Fix mobile menu overlay z-index — moved to React Portal on document.body with z-index: 9999
+- [x] Ensure mobile menu is full-screen overlay on top of all content — verified via screenshot and console
+- [x] Verify X close button works correctly — confirmed in browser test

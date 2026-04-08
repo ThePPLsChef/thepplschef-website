@@ -4,6 +4,7 @@
  * BRAND: Abril Fatface display, DM Sans nav, Gold/Red/Black/Cream palette.
  */
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Link, useLocation } from "wouter";
 import { Menu, X, Phone, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -220,19 +221,18 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileOpen && (
+      {/* Mobile Menu — rendered via Portal to escape nav stacking context */}
+      {mobileOpen && createPortal(
         <div
           style={{
             position: "fixed",
             inset: 0,
             backgroundColor: "rgba(0,0,0,0.97)",
-            zIndex: 40,
+            zIndex: 9999,
             overflowY: "auto",
             paddingTop: "80px",
             paddingBottom: "40px",
           }}
-          className="lg:hidden"
         >
           {/* Close button */}
           <button
@@ -400,7 +400,8 @@ export default function Navbar() {
             </a>
 
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </nav>

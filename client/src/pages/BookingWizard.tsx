@@ -150,39 +150,62 @@ function SelectionCard({
     <motion.button
       type="button"
       onClick={onClick}
-      whileHover={{ scale: 1.02, y: -2 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.03, y: -4 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 400, damping: 20 }}
       className={`
-        relative group text-left w-full rounded-sm border transition-all duration-300
-        ${small ? "p-4" : "p-6"}
+        relative group text-left w-full transition-all duration-300 overflow-hidden
+        ${small ? "p-5" : "p-7"}
         ${selected
-          ? "border-[#ECA241] bg-[#ECA241]/10 shadow-[0_0_20px_rgba(236,162,65,0.15)]"
-          : "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]"
+          ? "border-2 border-[#ECA241] bg-gradient-to-br from-[#ECA241]/20 via-[#ECA241]/10 to-[#1a1200] rounded-md shadow-[0_0_35px_rgba(236,162,65,0.45),inset_0_1px_0_rgba(236,162,65,0.3)]"
+          : "border-2 border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent rounded-md hover:border-[#ECA241]/40 hover:bg-gradient-to-br hover:from-[#ECA241]/8 hover:to-transparent hover:shadow-[0_0_20px_rgba(236,162,65,0.15)]"
         }
       `}
     >
-      {/* Selection indicator */}
+      {/* Shimmer overlay on selected */}
+      {selected && (
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#ECA241]/5 to-transparent pointer-events-none" />
+      )}
+
+      {/* Selection indicator — bold gold checkmark */}
       <div className={`
-        absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300
-        ${selected ? "border-[#ECA241] bg-[#ECA241]" : "border-white/20"}
+        absolute top-4 right-4 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300
+        ${selected
+          ? "border-[#ECA241] bg-[#ECA241] shadow-[0_0_12px_rgba(236,162,65,0.8)]"
+          : "border-white/20 group-hover:border-[#ECA241]/50"
+        }
       `}>
-        {selected && <Check size={12} className="text-black" strokeWidth={3} />}
+        {selected && <Check size={13} className="text-black" strokeWidth={3.5} />}
       </div>
 
       {Icon && (
         <div className={`
-          w-12 h-12 flex items-center justify-center rounded-sm mb-4 transition-all duration-300
-          ${selected ? "bg-[#ECA241]/20 text-[#ECA241]" : "bg-white/5 text-white/40 group-hover:text-white/60"}
+          flex items-center justify-center rounded-md mb-4 transition-all duration-300
+          ${small ? "w-11 h-11" : "w-14 h-14"}
+          ${selected
+            ? "bg-[#ECA241]/25 text-[#ECA241] shadow-[0_0_16px_rgba(236,162,65,0.3)]"
+            : "bg-white/8 text-white/50 group-hover:bg-[#ECA241]/15 group-hover:text-[#ECA241]/80 group-hover:shadow-[0_0_10px_rgba(236,162,65,0.15)]"
+          }
         `}>
-          <Icon size={24} />
+          <Icon size={small ? 22 : 26} />
         </div>
       )}
-      <div className={`font-semibold ${selected ? "text-[#ECA241]" : "text-[#F3F1E9]"} ${small ? "text-sm" : "text-base"}`}
-        style={{ fontFamily: "var(--font-body)" }}>
+      <div
+        className={`font-bold tracking-wide transition-colors duration-300
+          ${selected ? "text-[#ECA241]" : "text-[#F3F1E9] group-hover:text-white"}
+          ${small ? "text-sm" : "text-base"}
+        `}
+        style={{ fontFamily: "var(--font-body)" }}
+      >
         {label}
       </div>
       {desc && (
-        <div className="text-white/35 text-xs mt-1.5 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+        <div
+          className={`text-xs mt-2 leading-relaxed transition-colors duration-300
+            ${selected ? "text-[#ECA241]/60" : "text-white/35 group-hover:text-white/55"}
+          `}
+          style={{ fontFamily: "var(--font-body)" }}
+        >
           {desc}
         </div>
       )}
@@ -204,20 +227,21 @@ function MultiSelectCard({
     <motion.button
       type="button"
       onClick={onClick}
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ scale: 1.05, y: -2 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 400, damping: 20 }}
       className={`
-        relative px-5 py-3.5 rounded-sm border text-sm font-medium transition-all duration-300
+        relative px-6 py-4 rounded-md border-2 text-sm font-semibold tracking-wide transition-all duration-300
         ${selected
-          ? "border-[#ECA241] bg-[#ECA241]/10 text-[#ECA241]"
-          : "border-white/10 bg-white/[0.02] text-[#F3F1E9]/60 hover:border-white/20 hover:text-[#F3F1E9]/80"
+          ? "border-[#ECA241] bg-gradient-to-br from-[#ECA241]/20 to-[#ECA241]/5 text-[#ECA241] shadow-[0_0_20px_rgba(236,162,65,0.35)]"
+          : "border-white/12 bg-white/[0.03] text-[#F3F1E9]/55 hover:border-[#ECA241]/40 hover:text-[#F3F1E9]/90 hover:bg-[#ECA241]/8 hover:shadow-[0_0_12px_rgba(236,162,65,0.12)]"
         }
       `}
       style={{ fontFamily: "var(--font-body)" }}
     >
       {selected && (
-        <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#ECA241] rounded-full flex items-center justify-center">
-          <Check size={10} className="text-black" strokeWidth={3} />
+        <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#ECA241] rounded-full flex items-center justify-center shadow-[0_0_8px_rgba(236,162,65,0.8)]">
+          <Check size={11} className="text-black" strokeWidth={3.5} />
         </span>
       )}
       {label}
@@ -415,9 +439,12 @@ export default function BookingWizard() {
   /* ─── Main Wizard ─── */
   return (
     <Layout>
-      <section className="min-h-screen bg-black relative overflow-hidden">
-        {/* Subtle background texture */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(236,162,65,0.04)_0%,transparent_50%)]" />
+      <section className="min-h-screen bg-[#0a0800] relative overflow-hidden">
+        {/* Rich background gradients */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,rgba(236,162,65,0.10)_0%,transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(216,46,43,0.05)_0%,transparent_50%)]" />
+        {/* Subtle gold grid texture */}
+        <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "linear-gradient(rgba(236,162,65,1) 1px, transparent 1px), linear-gradient(90deg, rgba(236,162,65,1) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
 
         <div ref={wizardTopRef} className="relative z-10 container max-w-3xl mx-auto px-4 pt-28 pb-20">
           {/* Header */}
@@ -427,30 +454,30 @@ export default function BookingWizard() {
             className="text-center mb-10"
           >
             <Link href="/" className="inline-block mb-6">
-              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-14 w-auto mx-auto object-contain" />
+              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-14 w-auto mx-auto object-contain drop-shadow-[0_0_20px_rgba(236,162,65,0.3)]" />
             </Link>
             <div className="flex items-center justify-center gap-3 mb-2">
-              <div className="w-6 h-[1px] bg-[#ECA241]/50" />
-              <span className="text-[#ECA241]/60 text-[10px] tracking-[0.25em] uppercase font-medium" style={fontBody}>
+              <div className="w-10 h-[1px] bg-gradient-to-r from-transparent to-[#ECA241]/60" />
+              <span className="text-[#ECA241]/80 text-[10px] tracking-[0.3em] uppercase font-semibold" style={fontBody}>
                 Find Your Chef Experience
               </span>
-              <div className="w-6 h-[1px] bg-[#ECA241]/50" />
+              <div className="w-10 h-[1px] bg-gradient-to-l from-transparent to-[#ECA241]/60" />
             </div>
           </motion.div>
 
-          {/* Progress Bar */}
+          {/* Progress Bar — bolder */}
           <div className="mb-12">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[#F3F1E9]/30 text-xs tracking-wider uppercase" style={fontBody}>
+              <span className="text-[#F3F1E9]/50 text-xs tracking-wider uppercase font-semibold" style={fontBody}>
                 Step {step} of {TOTAL_STEPS}
               </span>
-              <span className="text-[#ECA241]/50 text-xs" style={fontBody}>
+              <span className="text-[#ECA241] text-xs font-bold" style={fontBody}>
                 {Math.round((step / TOTAL_STEPS) * 100)}%
               </span>
             </div>
-            <div className="h-[2px] bg-white/5 rounded-full overflow-hidden">
+            <div className="h-1 bg-white/8 rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-[#ECA241] to-[#D82E2B]"
+                className="h-full bg-gradient-to-r from-[#ECA241] via-[#f0b050] to-[#ECA241] rounded-full shadow-[0_0_8px_rgba(236,162,65,0.6)]"
                 initial={{ width: 0 }}
                 animate={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}

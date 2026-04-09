@@ -69,7 +69,7 @@ export const NEW_EVENT_6      = `${CDN}/new_event_6_93728541.webp`;
 
 // REAL Chef portraits — Stephen Austin in branded white "The People's Chef" coat
 export const CHEF_REAL_PORTRAIT_1 = `${CDN}/chef_real_portrait_1_32c9525b.webp`;
-export const CHEF_REAL_PORTRAIT_2 = `${CDN}/chef_real_portrait_2_5c46726c.webp`;
+export const CHEF_REAL_PORTRAIT_2 = `${CDN}/chef_real_portrait_2_fixed_73eb83fd.webp`; // rotated 90° CW to fix EXIF orientation
 
 // New plated dish photos (batch 3) — WebP converted
 export const BEET_SALAD_SIDE    = `${CDN}/beet_salad_side_2f80f144.webp`;

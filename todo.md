@@ -179,3 +179,12 @@
 - [x] Updated inquiry.test.ts to use adminTokenProcedure context (x-admin-token header)
 - [x] All 28 vitest tests passing
 - [x] Redeploy to preview
+
+## Hero Image Rotation Fix (Apr 9)
+
+- [x] Located: CHEF_REAL_PORTRAIT_2 used as background-image on Private Chef service page
+- [x] Downloaded image — confirmed rotated 90° clockwise (EXIF issue in original WebP)
+- [x] Rotated 270° CCW (= 90° CW) using Pillow to produce upright portrait
+- [x] Uploaded corrected image to CDN: chef_real_portrait_2_fixed_73eb83fd.webp
+- [x] Updated CHEF_REAL_PORTRAIT_2 in images.ts to point to corrected CDN URL
+- [x] Redeploy to preview

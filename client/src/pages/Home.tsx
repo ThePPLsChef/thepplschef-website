@@ -4,6 +4,7 @@
  * Featured Dishes, 3-Step Process, Testimonials, Final CTA, About the Chef
  */
 import Layout from "@/components/Layout";
+import { JsonLd, localBusinessSchema, createFaqSchema } from "@/lib/seo";
 
 import FAQ from "@/components/FAQ";
 // Pricing component replaced with inline HomePricingTeaser on homepage
@@ -160,8 +161,21 @@ function HomepageGalleryPreview() {
    HOME PAGE
    ═══════════════════════════════════════════════════════════════ */
 export default function Home() {
+  const faqSchema = createFaqSchema([
+    { question: "How far in advance should I book?", answer: "We recommend booking at least 2–4 weeks in advance for private chef experiences and small events. For large catering events (50+ guests), 4–8 weeks notice is ideal. However, we do our best to accommodate last-minute requests — reach out and we'll see what we can do." },
+    { question: "Do you accommodate dietary restrictions and allergies?", answer: "Absolutely. Every menu we create is fully customizable. We regularly prepare meals for guests with allergies, vegan/vegetarian preferences, gluten-free needs, halal requirements, keto diets, and more. Just let us know during the consultation and we'll design a menu that works for everyone." },
+    { question: "What areas do you serve?", answer: "We serve the entire Las Vegas Valley, including Las Vegas, Henderson, North Las Vegas, Summerlin, and surrounding areas. For events outside the metro area, please contact us to discuss travel arrangements and availability." },
+    { question: "How does pricing work?", answer: "Pricing varies based on the type of service, number of guests, menu complexity, and event duration. Private chef experiences start at $125 per person, catering starts at $55 per person for buffet service, and meal prep boxes start at $75 for 5 meals. We provide a detailed custom quote after your initial consultation — no hidden fees." },
+    { question: "Do you provide service staff, equipment, and setup?", answer: "Yes. Our full-service catering includes professional service staff, equipment, table setup, and complete cleanup. For private chef experiences, Chef Stephen handles all cooking, plating, and kitchen cleanup. You don't need to lift a finger." },
+    { question: "Can I customize the menu?", answer: "Every menu is 100% customizable. The sample menus on our website are starting points to inspire you. During your consultation, we'll discuss your preferences, dietary needs, flavor profiles, and event theme to create a menu that's uniquely yours." },
+    { question: "How does the meal prep / meal box service work?", answer: "Choose your proteins, pick your flavor style, and select your plan size. We prepare everything fresh and deliver it to your door. Available as a one-time order or weekly subscription." },
+    { question: "What happens after I submit an inquiry?", answer: "After you submit your inquiry, we'll reach out within 24 hours to schedule a consultation. During the consultation, we'll discuss your vision, finalize the menu, and provide a detailed quote. Once confirmed, we handle all the logistics — you just show up and enjoy." },
+  ]);
+
   return (
     <Layout>
+      <JsonLd id="schema-local-business" data={localBusinessSchema} />
+      <JsonLd id="schema-faq" data={faqSchema} />
       <HeroSection />
       <BrandIntro />
       <ServicesSection />

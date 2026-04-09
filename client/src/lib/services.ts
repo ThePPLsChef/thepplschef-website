@@ -158,7 +158,7 @@ export const services: ServiceData[] = [
     slug: "special-events-las-vegas",
     title: "Special Events & Celebrations",
     tagline: "Make your milestone unforgettable.",
-    heroImage: EVENT_2025_OCT,
+    heroImage: ELEGANT_TABLE,
     overview: "Birthdays, engagements, baby showers, retirements — whatever you're celebrating, we'll make it extraordinary. Our Special Events service combines custom menus with creative presentation to turn your celebration into a culinary experience your guests will remember. We work closely with you to design every detail.",
     included: [
       "Event consultation and theme coordination",

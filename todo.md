@@ -96,3 +96,15 @@
 - [x] Increase hero section logo size for brand impact
 - [x] Match CTA section logo size to hero logo size
 - [x] Audit and adjust all other logo placements for consistency
+
+## Audit Fixes (Apr 8 — Round 2)
+
+- [x] Add "Corporate Dining" to homepage contact form service type dropdown
+- [x] Fix booking wizard mobile: make CONTINUE button sticky at bottom of viewport on mobile screens
+- [x] Add JSON-LD LocalBusiness schema to homepage and contact page
+- [x] Add JSON-LD Service schema to each service page (Private Chef, Catering, Meal Prep, Special Events, Corporate Dining)
+- [x] Add JSON-LD FAQPage schema to homepage FAQ section
+- [x] Add JSON-LD Person schema to About page
+- [x] Add unique meta descriptions (150-160 chars) to all pages missing one
+- [x] Fix Menus page title tag to "Sample Menus | The PPL's Chef | Las Vegas Private Chef"
+- [x] Replace Special Events hero image with celebration/event-themed photo

@@ -4,7 +4,7 @@
  * BRAND: Abril Fatface headings, DM Sans body, Cormorant Garamond serif accents.
  * Colors: Black #000, Cream #F3F1E9, Red #D82E2B, Gold #ECA241.
  */
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion, useInView } from "framer-motion";
 import { ChevronLeft, ChefHat, Users, UtensilsCrossed } from "lucide-react";
@@ -175,6 +175,13 @@ const tabs = menus.map((m) => ({ id: m.id, label: m.title, icon: m.icon }));
 export default function MenusPage() {
   const [activeTab, setActiveTab] = useState("intimate");
   const activeMenu = menus.find((m) => m.id === activeTab)!;
+
+  useEffect(() => {
+    document.title = "Sample Menus | The PPL's Chef | Las Vegas Private Chef";
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", "Browse sample menus from The PPL's Chef — Las Vegas private chef. Intimate dinners, celebration catering, and weekly meal prep menus by Chef Stephen Austin.");
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <Layout>

@@ -376,7 +376,7 @@ export default function MealPrepPage() {
   useEffect(() => {
     document.title = "Chef-Crafted Meal Prep | The PPL's Chef | Las Vegas";
     const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute("content", "Chef-crafted meal prep in Las Vegas. Choose your protein, pick your flavor style, and let us handle the rest. Fresh, balanced, restaurant-quality meals delivered.");
+    if (meta) meta.setAttribute("content", "Chef-crafted meal prep in Las Vegas. Choose your protein and flavor style — fresh, balanced, restaurant-quality meals prepared and delivered by The PPL's Chef.");
     window.scrollTo(0, 0);
   }, []);
 

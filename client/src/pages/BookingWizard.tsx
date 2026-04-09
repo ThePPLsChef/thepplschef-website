@@ -308,6 +308,13 @@ function MultiSelectCard({
    MAIN WIZARD COMPONENT
    ═══════════════════════════════════════════════════════════════ */
 export default function BookingWizard() {
+  useEffect(() => {
+    document.title = "Book a Chef | The PPL's Chef | Las Vegas Private Chef & Catering";
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", "Book The PPL's Chef for your Las Vegas event. Use our step-by-step wizard to request a private chef, catering, meal prep, or special event experience.");
+    window.scrollTo(0, 0);
+  }, []);
+
   // Read ?service= URL param to pre-select service and skip to step 2
   const preselectedService = useMemo((): ServiceType | null => {
     const params = new URLSearchParams(window.location.search);
@@ -591,7 +598,7 @@ export default function BookingWizard() {
       <section className="min-h-screen relative overflow-hidden" style={{ backgroundColor: "#1A1A1A" }}>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,rgba(236,162,65,0.04)_0%,transparent_60%)]" />
 
-        <div ref={wizardTopRef} className="relative z-10 container max-w-2xl mx-auto px-5 sm:px-6 pt-28 pb-24">
+        <div ref={wizardTopRef} className="relative z-10 container max-w-2xl mx-auto px-5 sm:px-6 pt-28 pb-36 sm:pb-24">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -970,7 +977,8 @@ export default function BookingWizard() {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center justify-between mt-10 pt-8 border-t border-white/[0.06]">
+          {/* On mobile: fixed bottom bar so CONTINUE is always visible without scrolling */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#1A1A1A] px-5 py-4 shadow-[0_-4px_24px_rgba(0,0,0,0.5)] border-t border-white/[0.08] flex items-center justify-between sm:static sm:z-auto sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none sm:border-t sm:border-white/[0.06] sm:mt-10 sm:pt-8">
             {step > 1 ? (
               <button
                 type="button"

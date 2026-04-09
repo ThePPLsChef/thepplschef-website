@@ -88,6 +88,8 @@ export default function GalleryPage() {
 
   useEffect(() => {
     document.title = "Gallery | The PPL's Chef | Las Vegas";
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", "Browse dishes, events, and dining experiences from The PPL's Chef — Las Vegas private chef. Seafood boils, plated dinners, meal prep, and catering events.");
     window.scrollTo(0, 0);
   }, []);
 

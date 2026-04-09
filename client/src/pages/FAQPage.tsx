@@ -151,7 +151,9 @@ function FAQItem({ faq, index }: { faq: { question: string; answer: string }; in
 
 export default function FAQPage() {
   useEffect(() => {
-    document.title = "FAQ | The PPL's Chef | Las Vegas";
+    document.title = "FAQ | The PPL's Chef | Las Vegas Private Chef";
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", "Frequently asked questions about The PPL's Chef private chef and catering in Las Vegas. Covers booking, pricing, dietary needs, service areas, and more.");
     window.scrollTo(0, 0);
   }, []);
 

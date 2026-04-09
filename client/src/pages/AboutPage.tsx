@@ -13,6 +13,7 @@ import {
   LOGO_PRIMARY, CHEF_BW_PORTRAIT, SEAFOOD_BOIL_CHEF,
   HERO_BG, CHEF_REAL_PORTRAIT_1, CHEF_REAL_PORTRAIT_2,
 } from "@/lib/images";
+import { JsonLd, chefPersonSchema } from "@/lib/seo";
 
 const fontBody = { fontFamily: "var(--font-body)" };
 const fontSerif = { fontFamily: "var(--font-serif)" };
@@ -30,11 +31,14 @@ function FadeIn({ children, className = "", delay = 0 }: { children: React.React
 export default function AboutPage() {
   useEffect(() => {
     document.title = "About Chef Stephen Austin | The PPL's Chef | Las Vegas";
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", "Meet Chef Stephen Austin, founder of The PPL's Chef. Las Vegas private chef with 25+ years of culinary experience. Trained at the College of Southern Nevada.");
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <Layout>
+      <JsonLd id="schema-person-chef" data={chefPersonSchema} />
       {/* ─── HERO ─── */}
       <section className="relative min-h-[60vh] flex items-end overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${HERO_BG})` }} />

@@ -228,13 +228,12 @@ export default function Contact() {
                     onChange={(e) => setFormData({ ...formData, eventType: e.target.value })}
                     className="w-full px-4 py-3 bg-[#F3F1E9] border border-black/10 text-black focus:border-[#D82E2B] focus:outline-none transition-colors text-sm font-[family-name:var(--font-body)]"
                   >
-                    <option value="">Select event type</option>
-                    <option value="private">Private Event</option>
-                    <option value="corporate">Corporate Catering</option>
-                    <option value="birthday">Birthday & Celebration</option>
-                    <option value="personal">Personal Chef</option>
-                    <option value="outdoor">Outdoor Event</option>
-                    <option value="other">Other</option>
+                    <option value="">Select service type</option>
+                    <option value="private-chef">Private Chef Experience</option>
+                    <option value="catering">Catering</option>
+                    <option value="meal-boxes">Meal Prep / Meal Boxes</option>
+                    <option value="special-events">Special Events</option>
+                    <option value="corporate">Corporate Dining</option>
                   </select>
                 </div>
               </div>

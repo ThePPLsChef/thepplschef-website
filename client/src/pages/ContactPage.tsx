@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import Layout from "@/components/Layout";
 import { LOGO_PRIMARY, HERO_BG } from "@/lib/images";
 import { submitInquiry } from "@/lib/submitInquiry";
+import { JsonLd, localBusinessSchema } from "@/lib/seo";
 
 const fontBody = { fontFamily: "var(--font-body)" };
 
@@ -38,6 +39,8 @@ export default function ContactPage() {
 
   useEffect(() => {
     document.title = "Contact & Booking | The PPL's Chef | Las Vegas";
+    const meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute("content", "Contact The PPL's Chef in Las Vegas. Book a private chef, catering, meal prep, special event, or corporate dining. Call 725-212-2236 or send an inquiry.");
     window.scrollTo(0, 0);
   }, []);
 
@@ -83,6 +86,7 @@ export default function ContactPage() {
 
   return (
     <Layout>
+      <JsonLd id="schema-local-business-contact" data={localBusinessSchema} />
       {/* Hero */}
       <section className="relative py-32 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${HERO_BG})` }} />

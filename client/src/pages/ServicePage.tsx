@@ -12,6 +12,7 @@ import ServicePricingSection, { PricingTier } from "@/components/ServicePricingS
 import Layout from "@/components/Layout";
 import { getServiceBySlug, services } from "@/lib/services";
 import { LOGO_PRIMARY, LOGO_P_ICON } from "@/lib/images";
+import { JsonLd, createServiceSchema } from "@/lib/seo";
 
 function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef(null);
@@ -168,10 +169,18 @@ export default function ServicePage() {
     }
   }, [service]);
 
+  const serviceSchema = service ? createServiceSchema({
+    name: service.title,
+    description: service.overview,
+    url: `https://thepplschef.com/${service.slug}`,
+    serviceType: service.title,
+  }) : null;
+
   if (!service) return <Redirect to="/404" />;
 
   return (
     <Layout>
+      {serviceSchema && <JsonLd id={`schema-service-${service?.slug}`} data={serviceSchema} />}
       {/* Hero */}
       <section className="relative min-h-[70vh] flex items-end overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${service.heroImage})` }} />

@@ -531,10 +531,9 @@ export default function BookingWizard() {
     return subtitles[step] || "";
   };
 
-  /* ─── Success Screen ─── */
-  if (submitted) {
+  /* ─── Success Screen ─── */  if (submitted) {
     return (
-      <Layout>
+      <Layout hideStickyCta hideFooter>
         <section className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ backgroundColor: "#1A1A1A" }}>
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -591,14 +590,13 @@ export default function BookingWizard() {
       </Layout>
     );
   }
-
   /* ─── Main Wizard ─── */
   return (
-    <Layout>
+    <Layout hideStickyCta hideFooter>
       <section className="min-h-screen relative overflow-hidden" style={{ backgroundColor: "#1A1A1A" }}>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,rgba(236,162,65,0.04)_0%,transparent_60%)]" />
 
-        <div ref={wizardTopRef} className="relative z-10 container max-w-2xl mx-auto px-5 sm:px-6 pt-28 pb-36 sm:pb-24">
+        <div ref={wizardTopRef} className="relative z-10 container max-w-2xl mx-auto px-5 sm:px-6 pt-28 pb-56 sm:pb-24">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}

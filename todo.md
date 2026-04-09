@@ -114,3 +114,13 @@
 - [x] Add gold underline/highlight active page indicator to desktop navbar links
 - [x] Add gold active indicator to mobile hamburger menu links
 - [x] Use wouter's useLocation to detect current path
+
+## Mobile Wizard Layout Fix (Apr 8)
+- [ ] Add sufficient bottom padding to wizard container so CONTINUE button clears the sticky bottom bar on mobile
+- [ ] Prevent wizard page from scrolling into the site footer (no footer bleed, no empty black gap)
+
+## Wizard Mobile Fix + Special Events Hero (Apr 8)
+- [x] Hide "BOOK YOUR EXPERIENCE" sticky gold bar on /book page (add hideStickyCta prop to Layout)
+- [x] Increase wizard container bottom padding to clear the wizard's own fixed nav bar on mobile
+- [x] Remove text overlay from Special Events hero image (inpaint/fill text area)
+- [x] Upload cleaned Special Events hero image to CDN and update services.ts

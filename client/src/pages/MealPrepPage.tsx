@@ -601,9 +601,15 @@ export default function MealPrepPage() {
             {/* Sidebar */}
             <div className="lg:col-span-2">
               <FadeIn>
-                <div className="inline-block bg-white/15 backdrop-blur-sm rounded-xl px-5 py-3 mb-5">
-                  <img src={LOGO_ALT_HORIZONTAL} alt="The PPL's Chef" className="h-20 w-auto object-contain" />
-                </div>
+                <img
+                  src={LOGO_ALT_HORIZONTAL}
+                  alt="The PPL's Chef"
+                  className="h-20 w-auto object-contain mb-5"
+                  style={{
+                    filter:
+                      "drop-shadow(0 0 1px white) drop-shadow(0 0 1px white) drop-shadow(0 0 2px white) drop-shadow(1px 0 0 white) drop-shadow(-1px 0 0 white) drop-shadow(0 1px 0 white) drop-shadow(0 -1px 0 white)",
+                  }}
+                />
                 <h2 className="font-[family-name:var(--font-display)] text-2xl lg:text-3xl text-[#F3F1E9] mb-4">
                   Start Your <span className="text-[#ECA241]">Meal Plan</span>
                 </h2>

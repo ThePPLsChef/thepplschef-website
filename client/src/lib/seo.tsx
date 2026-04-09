@@ -64,9 +64,8 @@ export const localBusinessSchema = {
   "servesCuisine": ["American", "Seafood", "Contemporary", "Southern"],
   "sameAs": [
     "https://www.instagram.com/thepplschef",
-    "https://tiktok.com/@thepplschef",
-    "https://facebook.com/thepplschef",
-    "https://x.com/thepplschef"
+    "https://www.tiktok.com/@thepplschef",
+    "https://www.facebook.com/thepplschef"
   ],
   "openingHoursSpecification": {
     "@type": "OpeningHoursSpecification",

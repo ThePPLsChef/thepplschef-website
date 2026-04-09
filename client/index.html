@@ -27,6 +27,18 @@
       defer
       src="%VITE_ANALYTICS_ENDPOINT%/umami"
       data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+
+    <!-- Google Analytics 4 — Measurement ID: G-QHP2QP8FHE -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHP2QP8FHE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-QHP2QP8FHE', {
+        page_path: window.location.pathname,
+        send_page_view: true
+      });
+    </script>
   </body>
 
 </html>

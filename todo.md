@@ -145,3 +145,17 @@
 - [x] Write vitest tests for email procedures (4 tests passing)
 - [x] Test all forms end-to-end and confirm emails received
 - [x] Deploy to preview
+
+## Pre-Launch Tasks (Apr 9)
+
+- [x] Audit all social media footer links — verified Instagram, TikTok, Facebook all active
+- [x] Remove non-existent X/Twitter link (@thepplschef does not exist) from all 5 locations + JSON-LD sameAs
+- [x] Update TikTok and Facebook URLs to www. prefix for consistency across all pages
+- [x] Install bcrypt (cost 12) for server-side password hashing
+- [x] Add ADMIN_PASSWORD_HASH to server ENV (bcrypt hash, never exposed to client)
+- [x] Build tRPC admin.verifyPassword procedure (bcrypt.compare server-side)
+- [x] Build AdminPasswordGate component — session persists within browser tab
+- [x] Wire AdminPasswordGate around AdminDashboard in App.tsx
+- [x] Add GA4 tracking code to index.html with real Measurement ID G-QHP2QP8FHE
+- [x] Write vitest test for admin.verifyPassword procedure
+- [x] Deploy to preview

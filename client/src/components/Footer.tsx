@@ -33,9 +33,9 @@ const services = [
 
 const socials = [
   { icon: Instagram, href: "https://www.instagram.com/thepplschef", label: "Instagram" },
-  { icon: TikTokIcon, href: "https://tiktok.com/@thepplschef", label: "TikTok" },
-  { icon: Facebook, href: "https://facebook.com/thepplschef", label: "Facebook" },
-  { icon: XIcon, href: "https://x.com/thepplschef", label: "X" },
+  { icon: TikTokIcon, href: "https://www.tiktok.com/@thepplschef", label: "TikTok" },
+  { icon: Facebook, href: "https://www.facebook.com/thepplschef", label: "Facebook" },
+  // X/Twitter account not yet active — will be added when @ThePPLsChef is created
 ];
 
 export default function Footer() {

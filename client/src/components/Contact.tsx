@@ -31,9 +31,9 @@ function XIcon({ size = 20 }: { size?: number }) {
 
 const socialLinks = [
   { icon: Instagram, href: "https://www.instagram.com/thepplschef", label: "Instagram", isCustom: false },
-  { icon: TikTokIcon, href: "https://tiktok.com/@thepplschef", label: "TikTok", isCustom: true },
-  { icon: Facebook, href: "https://facebook.com/thepplschef", label: "Facebook", isCustom: false },
-  { icon: XIcon, href: "https://x.com/thepplschef", label: "X", isCustom: true },
+  { icon: TikTokIcon, href: "https://www.tiktok.com/@thepplschef", label: "TikTok", isCustom: true },
+  { icon: Facebook, href: "https://www.facebook.com/thepplschef", label: "Facebook", isCustom: false },
+  // X/Twitter account not yet active
 ];
 
 export default function Contact() {

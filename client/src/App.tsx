@@ -14,6 +14,7 @@ import GalleryPage from "./pages/GalleryPage";
 import FAQPage from "./pages/FAQPage";
 import ContactPage from "./pages/ContactPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminPasswordGate from "./components/AdminPasswordGate";
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
@@ -26,7 +27,7 @@ function Router() {
       <Route path="/faq" component={FAQPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/book" component={BookingWizard} />
-      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin">{() => <AdminPasswordGate><AdminDashboard /></AdminPasswordGate>}</Route>
       {/* Service pages with SEO slugs */}
       <Route path="/meal-prep-las-vegas" component={MealPrepPage} />
       <Route path="/:slug">{(params) => {

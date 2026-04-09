@@ -158,9 +158,9 @@ export default function BookingPage() {
                 <div className="flex gap-2">
                   {[
                     { icon: Instagram, href: "https://www.instagram.com/thepplschef", label: "Instagram" },
-                    { icon: TikTokIcon, href: "https://tiktok.com/@thepplschef", label: "TikTok" },
-                    { icon: Facebook, href: "https://facebook.com/thepplschef", label: "Facebook" },
-                    { icon: XIcon, href: "https://x.com/thepplschef", label: "X" },
+                    { icon: TikTokIcon, href: "https://www.tiktok.com/@thepplschef", label: "TikTok" },
+                    { icon: Facebook, href: "https://www.facebook.com/thepplschef", label: "Facebook" },
+                    // X/Twitter account not yet active
                   ].map((s) => (
                     <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="w-9 h-9 border border-[#ECA241]/15 flex items-center justify-center text-[#F3F1E9]/40 hover:bg-[#D82E2B] hover:border-[#D82E2B] hover:text-white transition-all duration-300" aria-label={s.label}>
                       <s.icon size={14} />

@@ -131,3 +131,17 @@
 - [x] Upload WebP images to CDN and collect URL mappings
 - [x] Update all image references in images.ts and services.ts to WebP CDN URLs
 - [x] Verify site loads correctly with new WebP images
+
+## Email Notification System (Apr 9)
+
+- [x] Research email sending service available via Manus built-in API or SMTP
+- [x] Build branded HTML email templates (internal notification + customer confirmation)
+- [x] Create server-side email sending utility (server/email.ts)
+- [x] Add sendInquiryEmails tRPC procedure (or integrate into existing inquiry.submit)
+- [x] Wire booking wizard submission to trigger both emails
+- [x] Wire contact form (Contact.tsx / homepage) to trigger both emails
+- [x] Wire meal prep form to trigger both emails
+- [x] Wire catering inquiry form to trigger both emails (if separate)
+- [x] Write vitest tests for email procedures (4 tests passing)
+- [x] Test all forms end-to-end and confirm emails received
+- [x] Deploy to preview

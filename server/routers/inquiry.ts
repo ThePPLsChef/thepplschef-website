@@ -10,6 +10,7 @@ import {
   getServiceTypes,
 } from "../db";
 import { notifyOwner } from "../_core/notification";
+import { sendInquiryEmails } from "../email";
 
 export const inquiryRouter = router({
   /**
@@ -88,6 +89,26 @@ export const inquiryRouter = router({
         });
       } catch (err) {
         console.warn("[Inquiry] Failed to notify owner:", err);
+      }
+
+      // Send branded email notifications (internal + customer confirmation)
+      try {
+        await sendInquiryEmails({
+          name: input.name,
+          email: input.email,
+          phone: input.phone,
+          serviceType: input.serviceType,
+          eventDate: input.eventDate,
+          eventTime: input.eventTime,
+          location: input.location,
+          guestCount: input.guestCount,
+          budget: input.budget,
+          foodPreferences: input.foodPreferences,
+          allergies: input.allergies,
+          notes: input.notes,
+        });
+      } catch (err) {
+        console.error("[Inquiry] Email sending failed (non-fatal):", err);
       }
 
       return { success: true, id: result.id };

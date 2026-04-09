@@ -1,16 +1,12 @@
 /**
- * AdminDashboard — Brand-styled admin panel for The PPL's Chef
- * Features: inquiry list, detail view, status updates, stats overview.
- * Colors: Black #1A1A1A, Gold #F5A623/#ECA241, Red #D82E2B, Cream #F3F1E9.
- * Auth: Manus OAuth admin role check.
+ * AdminDashboard — Brand-styled admin panel for The PPL's Chef.
+ * Auth: password gate only (no Manus OAuth required).
+ * The x-admin-token header is injected by main.tsx from sessionStorage.
  */
 import { useState, useMemo } from "react";
-import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { getLoginUrl } from "@/const";
 import { toast } from "sonner";
 import {
-  BarChart3,
   ClipboardList,
   Eye,
   ArrowLeft,
@@ -28,14 +24,20 @@ import {
   XCircle,
   FileText,
   Loader2,
+  LogOut,
 } from "lucide-react";
+
+const SESSION_KEY = "pplschef_admin_token";
 
 const fontBody = { fontFamily: "var(--font-body)" };
 const fontDisplay = { fontFamily: "var(--font-display)" };
 
 type InquiryStatus = "new" | "reviewed" | "quoted" | "booked" | "cancelled";
 
-const STATUS_CONFIG: Record<InquiryStatus, { label: string; color: string; bg: string; icon: typeof AlertCircle }> = {
+const STATUS_CONFIG: Record<
+  InquiryStatus,
+  { label: string; color: string; bg: string; icon: typeof AlertCircle }
+> = {
   new: { label: "New", color: "text-[#ECA241]", bg: "bg-[#ECA241]/10 border-[#ECA241]/30", icon: AlertCircle },
   reviewed: { label: "Reviewed", color: "text-blue-400", bg: "bg-blue-400/10 border-blue-400/30", icon: Eye },
   quoted: { label: "Quoted", color: "text-purple-400", bg: "bg-purple-400/10 border-purple-400/30", icon: FileText },
@@ -47,65 +49,25 @@ function StatusBadge({ status }: { status: InquiryStatus }) {
   const config = STATUS_CONFIG[status];
   const Icon = config.icon;
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wider uppercase border ${config.bg} ${config.color}`} style={fontBody}>
+    <span
+      className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold tracking-wider uppercase border ${config.bg} ${config.color}`}
+      style={fontBody}
+    >
       <Icon size={12} />
       {config.label}
     </span>
   );
 }
 
+function handleLogout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  window.location.reload();
+}
+
 export default function AdminDashboard() {
-  const { user, loading: authLoading, isAuthenticated } = useAuth();
   const [view, setView] = useState<"list" | "detail">("list");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-
-  // Auth guard
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center">
-        <Loader2 className="animate-spin text-[#ECA241]" size={40} />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center">
-        <div className="text-center p-12 bg-[#0a0a0a] border border-white/5 max-w-md">
-          <ChefHat size={48} className="text-[#ECA241] mx-auto mb-4" />
-          <h2 className="text-2xl text-[#F3F1E9] mb-3" style={fontDisplay}>Admin Access Required</h2>
-          <p className="text-[#F3F1E9]/50 text-sm mb-6" style={fontBody}>
-            Please sign in with your admin account to access the dashboard.
-          </p>
-          <a
-            href={getLoginUrl()}
-            className="inline-block px-8 py-3 bg-[#D82E2B] text-white font-bold tracking-wider uppercase text-sm hover:bg-[#ECA241] hover:text-black transition-all duration-300"
-            style={fontBody}
-          >
-            Sign In
-          </a>
-        </div>
-      </div>
-    );
-  }
-
-  if (user?.role !== "admin") {
-    return (
-      <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center">
-        <div className="text-center p-12 bg-[#0a0a0a] border border-white/5 max-w-md">
-          <XCircle size={48} className="text-[#D82E2B] mx-auto mb-4" />
-          <h2 className="text-2xl text-[#F3F1E9] mb-3" style={fontDisplay}>Access Denied</h2>
-          <p className="text-[#F3F1E9]/50 text-sm mb-6" style={fontBody}>
-            You do not have admin privileges. Contact the site owner for access.
-          </p>
-          <a href="/" className="inline-block px-8 py-3 bg-[#ECA241] text-black font-bold tracking-wider uppercase text-sm hover:bg-[#D82E2B] hover:text-white transition-all duration-300" style={fontBody}>
-            Return Home
-          </a>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-[#1A1A1A]">
@@ -118,16 +80,31 @@ export default function AdminDashboard() {
               <h1 className="text-[#F3F1E9] text-lg" style={fontDisplay}>
                 The PPL's <span className="text-[#D82E2B]">Chef</span>
               </h1>
-              <p className="text-[#F3F1E9]/30 text-[10px] tracking-[0.2em] uppercase" style={fontBody}>Admin Dashboard</p>
+              <p
+                className="text-[#F3F1E9]/30 text-[10px] tracking-[0.2em] uppercase"
+                style={fontBody}
+              >
+                Admin Dashboard
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-[#F3F1E9]/40 text-xs" style={fontBody}>
-              {user?.name || user?.email || "Admin"}
-            </span>
-            <a href="/" className="text-[#ECA241]/60 hover:text-[#ECA241] text-xs tracking-wider uppercase transition-colors" style={fontBody}>
+            <a
+              href="/"
+              className="text-[#ECA241]/60 hover:text-[#ECA241] text-xs tracking-wider uppercase transition-colors"
+              style={fontBody}
+            >
               View Site
             </a>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-[#F3F1E9]/40 hover:text-[#D82E2B] text-xs tracking-wider uppercase transition-colors"
+              style={fontBody}
+              title="Log out of admin"
+            >
+              <LogOut size={14} />
+              Logout
+            </button>
           </div>
         </div>
       </header>
@@ -180,12 +157,22 @@ function StatsCards() {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       {cards.map((card) => (
-        <div key={card.label} className="bg-[#0a0a0a] border border-white/5 p-6 hover:border-[#ECA241]/20 transition-colors">
+        <div
+          key={card.label}
+          className="bg-[#0a0a0a] border border-white/5 p-6 hover:border-[#ECA241]/20 transition-colors"
+        >
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase" style={fontBody}>{card.label}</span>
+            <span
+              className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase"
+              style={fontBody}
+            >
+              {card.label}
+            </span>
             <card.icon size={16} className={card.color} />
           </div>
-          <div className="text-3xl text-[#F3F1E9] font-bold" style={fontDisplay}>{card.value}</div>
+          <div className="text-3xl text-[#F3F1E9] font-bold" style={fontDisplay}>
+            {card.value}
+          </div>
         </div>
       ))}
     </div>
@@ -202,13 +189,34 @@ function InquiryListView({
   setStatusFilter: (s: string) => void;
   onSelectInquiry: (id: number) => void;
 }) {
-  const { data: inquiries, isLoading, refetch } = trpc.inquiry.list.useQuery();
+  const { data: inquiries, isLoading, refetch, error } = trpc.inquiry.list.useQuery();
 
   const filtered = useMemo(() => {
     if (!inquiries) return [];
     if (statusFilter === "all") return inquiries;
     return inquiries.filter((i) => i.status === statusFilter);
   }, [inquiries, statusFilter]);
+
+  if (error) {
+    return (
+      <div className="text-center py-20 bg-[#0a0a0a] border border-white/5">
+        <XCircle size={48} className="text-[#D82E2B]/40 mx-auto mb-4" />
+        <p className="text-[#F3F1E9]/50 text-sm mb-2" style={fontBody}>
+          Failed to load inquiries.
+        </p>
+        <p className="text-[#F3F1E9]/30 text-xs" style={fontBody}>
+          {error.message}
+        </p>
+        <button
+          onClick={() => refetch()}
+          className="mt-4 px-6 py-2 bg-[#ECA241] text-black text-xs font-bold tracking-wider uppercase"
+          style={fontBody}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -220,7 +228,7 @@ function InquiryListView({
           Inquiries
         </h2>
         <div className="flex items-center gap-3">
-          <div className="flex gap-1">
+          <div className="flex flex-wrap gap-1">
             {["all", "new", "reviewed", "quoted", "booked", "cancelled"].map((s) => (
               <button
                 key={s}
@@ -264,11 +272,17 @@ function InquiryListView({
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/5">
-                  {["Date", "Name", "Email", "Service", "Guests", "Status", ""].map((h) => (
-                    <th key={h} className="text-left px-5 py-3 text-[#F3F1E9]/30 text-[10px] tracking-wider uppercase font-semibold" style={fontBody}>
-                      {h}
-                    </th>
-                  ))}
+                  {["Submitted", "Name", "Email", "Phone", "Service", "Event Date", "Guests", "Budget", "Status", ""].map(
+                    (h) => (
+                      <th
+                        key={h}
+                        className="text-left px-4 py-3 text-[#F3F1E9]/30 text-[10px] tracking-wider uppercase font-semibold whitespace-nowrap"
+                        style={fontBody}
+                      >
+                        {h}
+                      </th>
+                    )
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -278,25 +292,38 @@ function InquiryListView({
                     className="border-b border-white/5 hover:bg-white/[0.02] transition-colors cursor-pointer"
                     onClick={() => onSelectInquiry(inq.id)}
                   >
-                    <td className="px-5 py-4 text-[#F3F1E9]/50 text-xs" style={fontBody}>
-                      {new Date(inq.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    <td className="px-4 py-4 text-[#F3F1E9]/50 text-xs whitespace-nowrap" style={fontBody}>
+                      {new Date(inq.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
                     </td>
-                    <td className="px-5 py-4 text-[#F3F1E9] text-sm font-medium" style={fontBody}>
+                    <td className="px-4 py-4 text-[#F3F1E9] text-sm font-medium whitespace-nowrap" style={fontBody}>
                       {inq.name}
                     </td>
-                    <td className="px-5 py-4 text-[#F3F1E9]/50 text-xs" style={fontBody}>
+                    <td className="px-4 py-4 text-[#F3F1E9]/60 text-xs" style={fontBody}>
                       {inq.email}
                     </td>
-                    <td className="px-5 py-4 text-[#ECA241]/70 text-xs" style={fontBody}>
+                    <td className="px-4 py-4 text-[#F3F1E9]/50 text-xs whitespace-nowrap" style={fontBody}>
+                      {inq.phone || "—"}
+                    </td>
+                    <td className="px-4 py-4 text-[#ECA241]/70 text-xs whitespace-nowrap" style={fontBody}>
                       {inq.serviceTypeName || "—"}
                     </td>
-                    <td className="px-5 py-4 text-[#F3F1E9]/50 text-xs" style={fontBody}>
+                    <td className="px-4 py-4 text-[#F3F1E9]/50 text-xs whitespace-nowrap" style={fontBody}>
+                      {inq.eventDate || "—"}
+                    </td>
+                    <td className="px-4 py-4 text-[#F3F1E9]/50 text-xs" style={fontBody}>
                       {inq.guestCount || "—"}
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-4 text-[#F3F1E9]/50 text-xs whitespace-nowrap" style={fontBody}>
+                      {inq.budget || "—"}
+                    </td>
+                    <td className="px-4 py-4">
                       <StatusBadge status={inq.status as InquiryStatus} />
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-4">
                       <button className="text-[#ECA241]/40 hover:text-[#ECA241] transition-colors">
                         <Eye size={16} />
                       </button>
@@ -313,7 +340,13 @@ function InquiryListView({
 }
 
 /* ─── Inquiry Detail View ─── */
-function InquiryDetailView({ inquiryId, onBack }: { inquiryId: number; onBack: () => void }) {
+function InquiryDetailView({
+  inquiryId,
+  onBack,
+}: {
+  inquiryId: number;
+  onBack: () => void;
+}) {
   const { data: inquiry, isLoading, refetch } = trpc.inquiry.detail.useQuery({ id: inquiryId });
   const utils = trpc.useUtils();
 
@@ -354,7 +387,6 @@ function InquiryDetailView({ inquiryId, onBack }: { inquiryId: number; onBack: (
 
   return (
     <div>
-      {/* Back button */}
       <button
         onClick={onBack}
         className="flex items-center gap-2 text-[#ECA241]/60 hover:text-[#ECA241] text-xs tracking-wider uppercase mb-6 transition-colors"
@@ -366,49 +398,77 @@ function InquiryDetailView({ inquiryId, onBack }: { inquiryId: number; onBack: (
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Main info */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Header card */}
           <div className="bg-[#0a0a0a] border border-white/5 p-8">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-2xl text-[#F3F1E9] mb-1" style={fontDisplay}>{inquiry.name}</h2>
+                <h2 className="text-2xl text-[#F3F1E9] mb-1" style={fontDisplay}>
+                  {inquiry.name}
+                </h2>
                 <p className="text-[#F3F1E9]/40 text-xs" style={fontBody}>
-                  Submitted {new Date(inquiry.createdAt).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
-                  {" at "}
-                  {new Date(inquiry.createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
+                  Submitted{" "}
+                  {new Date(inquiry.createdAt).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}{" "}
+                  at{" "}
+                  {new Date(inquiry.createdAt).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                  })}
                 </p>
               </div>
               <StatusBadge status={inquiry.status as InquiryStatus} />
             </div>
 
-            {/* Detail grid */}
             <div className="grid sm:grid-cols-2 gap-4">
               {detailRows.map((row) => (
                 <div key={row.label} className="flex items-start gap-3">
                   <row.icon size={16} className="text-[#ECA241]/40 mt-0.5 flex-shrink-0" />
                   <div>
-                    <div className="text-[#F3F1E9]/30 text-[10px] tracking-wider uppercase" style={fontBody}>{row.label}</div>
-                    <div className="text-[#F3F1E9] text-sm" style={fontBody}>{row.value || "—"}</div>
+                    <div
+                      className="text-[#F3F1E9]/30 text-[10px] tracking-wider uppercase"
+                      style={fontBody}
+                    >
+                      {row.label}
+                    </div>
+                    <div className="text-[#F3F1E9] text-sm" style={fontBody}>
+                      {row.value || "—"}
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Notes */}
           {inquiry.notes && (
             <div className="bg-[#0a0a0a] border border-white/5 p-8">
-              <h3 className="text-[#ECA241] text-[10px] tracking-wider uppercase font-semibold mb-4" style={fontBody}>Notes / Details</h3>
-              <p className="text-[#F3F1E9]/70 text-sm leading-relaxed whitespace-pre-wrap" style={fontBody}>
+              <h3
+                className="text-[#ECA241] text-[10px] tracking-wider uppercase font-semibold mb-4"
+                style={fontBody}
+              >
+                Notes / Special Requests
+              </h3>
+              <p
+                className="text-[#F3F1E9]/70 text-sm leading-relaxed whitespace-pre-wrap"
+                style={fontBody}
+              >
                 {inquiry.notes}
               </p>
             </div>
           )}
         </div>
 
-        {/* Sidebar — Status update */}
+        {/* Sidebar */}
         <div className="space-y-6">
           <div className="bg-[#0a0a0a] border border-white/5 p-6">
-            <h3 className="text-[#ECA241] text-[10px] tracking-wider uppercase font-semibold mb-4" style={fontBody}>Update Status</h3>
+            <h3
+              className="text-[#ECA241] text-[10px] tracking-wider uppercase font-semibold mb-4"
+              style={fontBody}
+            >
+              Update Status
+            </h3>
             <div className="space-y-2">
               {statuses.map((s) => {
                 const config = STATUS_CONFIG[s];
@@ -417,9 +477,7 @@ function InquiryDetailView({ inquiryId, onBack }: { inquiryId: number; onBack: (
                   <button
                     key={s}
                     onClick={() => {
-                      if (!isCurrent) {
-                        updateStatusMutation.mutate({ id: inquiryId, status: s });
-                      }
+                      if (!isCurrent) updateStatusMutation.mutate({ id: inquiryId, status: s });
                     }}
                     disabled={isCurrent || updateStatusMutation.isPending}
                     className={`w-full flex items-center gap-3 px-4 py-3 text-left text-sm transition-all duration-200 ${
@@ -430,17 +488,25 @@ function InquiryDetailView({ inquiryId, onBack }: { inquiryId: number; onBack: (
                     style={fontBody}
                   >
                     <config.icon size={14} />
-                    <span className="tracking-wider uppercase text-xs font-semibold">{config.label}</span>
-                    {isCurrent && <span className="ml-auto text-[10px] opacity-60">Current</span>}
+                    <span className="tracking-wider uppercase text-xs font-semibold">
+                      {config.label}
+                    </span>
+                    {isCurrent && (
+                      <span className="ml-auto text-[10px] opacity-60">Current</span>
+                    )}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Quick actions */}
           <div className="bg-[#0a0a0a] border border-white/5 p-6">
-            <h3 className="text-[#ECA241] text-[10px] tracking-wider uppercase font-semibold mb-4" style={fontBody}>Quick Actions</h3>
+            <h3
+              className="text-[#ECA241] text-[10px] tracking-wider uppercase font-semibold mb-4"
+              style={fontBody}
+            >
+              Quick Actions
+            </h3>
             <div className="space-y-2">
               <a
                 href={`mailto:${inquiry.email}?subject=Your Inquiry with The PPL's Chef&body=Hi ${inquiry.name},%0A%0AThank you for your inquiry with The PPL's Chef!%0A%0A`}
@@ -452,10 +518,10 @@ function InquiryDetailView({ inquiryId, onBack }: { inquiryId: number; onBack: (
               {inquiry.phone && (
                 <a
                   href={`tel:${inquiry.phone}`}
-                  className="w-full flex items-center gap-3 px-4 py-3 border border-white/10 text-[#F3F1E9]/60 text-xs tracking-wider uppercase font-semibold hover:border-[#ECA241]/30 hover:text-[#ECA241] transition-all duration-300"
+                  className="w-full flex items-center gap-3 px-4 py-3 bg-[#0a0a0a] border border-white/10 text-[#F3F1E9]/60 text-xs tracking-wider uppercase font-semibold hover:border-[#ECA241]/30 hover:text-[#ECA241] transition-all duration-300"
                   style={fontBody}
                 >
-                  <Phone size={14} /> Call Client
+                  <Phone size={14} /> Call {inquiry.phone}
                 </a>
               )}
             </div>

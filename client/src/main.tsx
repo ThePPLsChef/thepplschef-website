@@ -10,13 +10,17 @@ import "./index.css";
 
 const queryClient = new QueryClient();
 
+const SESSION_KEY = "pplschef_admin_token";
+
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
   if (typeof window === "undefined") return;
 
   const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
-
   if (!isUnauthorized) return;
+
+  // Don't redirect if we're on the admin page — the password gate handles it
+  if (window.location.pathname.startsWith("/admin")) return;
 
   window.location.href = getLoginUrl();
 };
@@ -42,6 +46,13 @@ const trpcClient = trpc.createClient({
     httpBatchLink({
       url: "/api/trpc",
       transformer: superjson,
+      headers() {
+        // Inject the admin token (from password gate) into every request.
+        // The server's adminTokenProcedure reads x-admin-token to authorize
+        // admin-only procedures without requiring Manus OAuth.
+        const token = sessionStorage.getItem(SESSION_KEY);
+        return token ? { "x-admin-token": token } : {};
+      },
       fetch(input, init) {
         return globalThis.fetch(input, {
           ...(init ?? {}),

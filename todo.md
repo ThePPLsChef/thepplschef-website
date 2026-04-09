@@ -167,3 +167,15 @@
 - [x] Update admin.verifyPassword test to cover the base64 decode path (7 tests, all passing)
 - [x] All 28 vitest tests passing
 - [x] Redeploy to preview
+
+## Admin Dashboard Redirect Fix (Apr 9)
+
+- [x] Diagnose: AdminDashboard used useAuth() OAuth check — redirected non-OAuth users to homepage
+- [x] Fix: Switched inquiry list/detail/stats/updateStatus from adminProcedure to adminTokenProcedure (validates x-admin-token header)
+- [x] Fix: main.tsx now injects sessionStorage token as x-admin-token header on every tRPC request
+- [x] Fix: AdminDashboard rewritten to remove all OAuth dependency — works purely with password gate
+- [x] Admin dashboard shows: name, email, phone, service, event date, guests, budget, status, submission date
+- [x] Logout button clears sessionStorage and reloads to show password gate
+- [x] Updated inquiry.test.ts to use adminTokenProcedure context (x-admin-token header)
+- [x] All 28 vitest tests passing
+- [x] Redeploy to preview

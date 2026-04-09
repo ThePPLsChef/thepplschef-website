@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { publicProcedure, router, adminProcedure } from "../_core/trpc";
+import { publicProcedure, router, adminTokenProcedure } from "../_core/trpc";
 import {
   createInquiry,
   listInquiries,
@@ -124,7 +124,7 @@ export const inquiryRouter = router({
   /**
    * Admin: list all inquiries, newest first.
    */
-  list: adminProcedure
+  list: adminTokenProcedure
     .input(
       z
         .object({
@@ -148,7 +148,7 @@ export const inquiryRouter = router({
   /**
    * Admin: get a single inquiry by ID.
    */
-  detail: adminProcedure
+  detail: adminTokenProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
       const inquiry = await getInquiryById(input.id);
@@ -168,7 +168,7 @@ export const inquiryRouter = router({
   /**
    * Admin: update inquiry status.
    */
-  updateStatus: adminProcedure
+  updateStatus: adminTokenProcedure
     .input(
       z.object({
         id: z.number(),
@@ -182,7 +182,7 @@ export const inquiryRouter = router({
   /**
    * Admin: get dashboard statistics.
    */
-  stats: adminProcedure.query(async () => {
+  stats: adminTokenProcedure.query(async () => {
     return getInquiryStats();
   }),
 });

@@ -1,7 +1,8 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeAll } from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
-import { NOT_ADMIN_ERR_MSG, UNAUTHED_ERR_MSG } from "../shared/const";
+import { UNAUTHED_ERR_MSG } from "../shared/const";
+import { ENV } from "./_core/env";
 
 // ─── Mock DB helpers ───
 vi.mock("./db", () => ({
@@ -74,6 +75,19 @@ vi.mock("./_core/notification", () => ({
   notifyOwner: vi.fn().mockResolvedValue(true),
 }));
 
+// ─── Mock email ───
+vi.mock("./email", () => ({
+  sendInquiryEmails: vi.fn().mockResolvedValue(undefined),
+}));
+
+// ─── Derive the admin token from the env var (same logic as the server) ───
+function getAdminToken(): string {
+  const base64Hash = ENV.adminPasswordHash ?? "";
+  if (!base64Hash) return "test-token-no-hash";
+  const hash = Buffer.from(base64Hash, "base64").toString("utf8");
+  return Buffer.from(hash.slice(-20)).toString("base64");
+}
+
 // ─── Context helpers ───
 function createPublicContext(): TrpcContext {
   return {
@@ -83,38 +97,25 @@ function createPublicContext(): TrpcContext {
   };
 }
 
-function createAdminContext(): TrpcContext {
+function createAdminTokenContext(): TrpcContext {
+  // adminTokenProcedure reads x-admin-token from req.headers
   return {
-    user: {
-      id: 1,
-      openId: "admin-user",
-      email: "admin@thepplschef.com",
-      name: "Admin",
-      loginMethod: "manus",
-      role: "admin",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      lastSignedIn: new Date(),
-    },
-    req: { protocol: "https", headers: {} } as TrpcContext["req"],
+    user: null,
+    req: {
+      protocol: "https",
+      headers: { "x-admin-token": getAdminToken() },
+    } as TrpcContext["req"],
     res: { clearCookie: vi.fn() } as unknown as TrpcContext["res"],
   };
 }
 
-function createUserContext(): TrpcContext {
+function createWrongTokenContext(): TrpcContext {
   return {
-    user: {
-      id: 2,
-      openId: "regular-user",
-      email: "user@example.com",
-      name: "Regular User",
-      loginMethod: "manus",
-      role: "user",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      lastSignedIn: new Date(),
-    },
-    req: { protocol: "https", headers: {} } as TrpcContext["req"],
+    user: null,
+    req: {
+      protocol: "https",
+      headers: { "x-admin-token": "wrong-token-value" },
+    } as TrpcContext["req"],
     res: { clearCookie: vi.fn() } as unknown as TrpcContext["res"],
   };
 }
@@ -170,9 +171,9 @@ describe("inquiry.serviceTypes (public)", () => {
   });
 });
 
-describe("inquiry.list (admin)", () => {
-  it("returns inquiries for admin users", async () => {
-    const caller = appRouter.createCaller(createAdminContext());
+describe("inquiry.list (adminToken)", () => {
+  it("returns inquiries for requests with valid admin token", async () => {
+    const caller = appRouter.createCaller(createAdminTokenContext());
     const list = await caller.inquiry.list();
 
     expect(list).toHaveLength(1);
@@ -180,20 +181,20 @@ describe("inquiry.list (admin)", () => {
     expect(list[0]).toHaveProperty("serviceTypeName", "Private Chef");
   });
 
-  it("rejects unauthenticated users", async () => {
+  it("rejects requests with no token", async () => {
     const caller = appRouter.createCaller(createPublicContext());
-    await expect(caller.inquiry.list()).rejects.toThrow(NOT_ADMIN_ERR_MSG);
+    await expect(caller.inquiry.list()).rejects.toThrow(UNAUTHED_ERR_MSG);
   });
 
-  it("rejects non-admin users", async () => {
-    const caller = appRouter.createCaller(createUserContext());
-    await expect(caller.inquiry.list()).rejects.toThrow(NOT_ADMIN_ERR_MSG);
+  it("rejects requests with wrong token", async () => {
+    const caller = appRouter.createCaller(createWrongTokenContext());
+    await expect(caller.inquiry.list()).rejects.toThrow(UNAUTHED_ERR_MSG);
   });
 });
 
-describe("inquiry.detail (admin)", () => {
-  it("returns inquiry details for admin", async () => {
-    const caller = appRouter.createCaller(createAdminContext());
+describe("inquiry.detail (adminToken)", () => {
+  it("returns inquiry details for valid admin token", async () => {
+    const caller = appRouter.createCaller(createAdminTokenContext());
     const detail = await caller.inquiry.detail({ id: 1 });
 
     expect(detail).toHaveProperty("name", "Test User");
@@ -202,43 +203,43 @@ describe("inquiry.detail (admin)", () => {
   });
 
   it("throws NOT_FOUND for non-existent inquiry", async () => {
-    const caller = appRouter.createCaller(createAdminContext());
+    const caller = appRouter.createCaller(createAdminTokenContext());
     await expect(caller.inquiry.detail({ id: 999 })).rejects.toThrow("Inquiry not found");
   });
 
-  it("rejects unauthenticated users", async () => {
+  it("rejects requests with no token", async () => {
     const caller = appRouter.createCaller(createPublicContext());
-    await expect(caller.inquiry.detail({ id: 1 })).rejects.toThrow(NOT_ADMIN_ERR_MSG);
+    await expect(caller.inquiry.detail({ id: 1 })).rejects.toThrow(UNAUTHED_ERR_MSG);
   });
 });
 
-describe("inquiry.updateStatus (admin)", () => {
-  it("updates status for admin", async () => {
-    const caller = appRouter.createCaller(createAdminContext());
+describe("inquiry.updateStatus (adminToken)", () => {
+  it("updates status for valid admin token", async () => {
+    const caller = appRouter.createCaller(createAdminTokenContext());
     const result = await caller.inquiry.updateStatus({ id: 1, status: "reviewed" });
 
     expect(result).toEqual({ success: true });
   });
 
   it("rejects invalid status values", async () => {
-    const caller = appRouter.createCaller(createAdminContext());
+    const caller = appRouter.createCaller(createAdminTokenContext());
     await expect(
       // @ts-expect-error testing invalid status
       caller.inquiry.updateStatus({ id: 1, status: "invalid" })
     ).rejects.toThrow();
   });
 
-  it("rejects non-admin users", async () => {
-    const caller = appRouter.createCaller(createUserContext());
+  it("rejects requests with wrong token", async () => {
+    const caller = appRouter.createCaller(createWrongTokenContext());
     await expect(
       caller.inquiry.updateStatus({ id: 1, status: "reviewed" })
-    ).rejects.toThrow(NOT_ADMIN_ERR_MSG);
+    ).rejects.toThrow(UNAUTHED_ERR_MSG);
   });
 });
 
-describe("inquiry.stats (admin)", () => {
-  it("returns dashboard statistics for admin", async () => {
-    const caller = appRouter.createCaller(createAdminContext());
+describe("inquiry.stats (adminToken)", () => {
+  it("returns dashboard statistics for valid admin token", async () => {
+    const caller = appRouter.createCaller(createAdminTokenContext());
     const stats = await caller.inquiry.stats();
 
     expect(stats).toHaveProperty("total", 15);
@@ -247,8 +248,8 @@ describe("inquiry.stats (admin)", () => {
     expect(stats.byStatus).toHaveProperty("booked", 2);
   });
 
-  it("rejects unauthenticated users", async () => {
+  it("rejects requests with no token", async () => {
     const caller = appRouter.createCaller(createPublicContext());
-    await expect(caller.inquiry.stats()).rejects.toThrow(NOT_ADMIN_ERR_MSG);
+    await expect(caller.inquiry.stats()).rejects.toThrow(UNAUTHED_ERR_MSG);
   });
 });

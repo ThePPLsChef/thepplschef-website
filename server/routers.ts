@@ -34,14 +34,17 @@ export const appRouter = router({
         if (!ENV.adminPasswordHash) {
           throw new Error("[Admin] ADMIN_PASSWORD_HASH is not configured.");
         }
-        const valid = await bcrypt.compare(input.password, ENV.adminPasswordHash);
+        // The hash is stored as base64 in the env var to avoid $ character
+        // stripping by the secrets system. Decode it before comparing.
+        const hash = Buffer.from(ENV.adminPasswordHash, "base64").toString("utf8");
+        const valid = await bcrypt.compare(input.password, hash);
         if (!valid) {
           // Return false rather than throwing so the client can show a friendly error
           return { success: false as const };
         }
         // Return a simple signed token: base64(hash slice) so the client can
         // persist access without storing the real hash or the plain password.
-        const token = Buffer.from(ENV.adminPasswordHash.slice(-20)).toString("base64");
+        const token = Buffer.from(hash.slice(-20)).toString("base64");
         return { success: true as const, token };
       }),
   }),

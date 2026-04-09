@@ -1,52 +1,67 @@
 /**
  * Tests for admin.verifyPassword tRPC procedure
- * Verifies bcrypt server-side password checking works correctly.
+ * Verifies bcrypt server-side password checking works correctly,
+ * including the base64-decode step for the env var.
  */
-import { describe, it, expect, vi, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import bcrypt from "bcrypt";
 
-// The password used for the default admin account
-const ADMIN_PASSWORD = "pplschef2024admin";
-let HASH: string;
+// The real admin password
+const ADMIN_PASSWORD = "15Lessproblem$";
+let RAW_HASH: string;
+let BASE64_HASH: string;
 
 beforeAll(async () => {
-  HASH = await bcrypt.hash(ADMIN_PASSWORD, 12);
+  RAW_HASH = await bcrypt.hash(ADMIN_PASSWORD, 12);
+  BASE64_HASH = Buffer.from(RAW_HASH).toString("base64");
 });
 
 describe("admin password bcrypt verification", () => {
-  it("bcrypt.compare returns true for correct password", async () => {
-    const result = await bcrypt.compare(ADMIN_PASSWORD, HASH);
+  it("bcrypt.compare returns true for correct password against raw hash", async () => {
+    const result = await bcrypt.compare(ADMIN_PASSWORD, RAW_HASH);
     expect(result).toBe(true);
   });
 
   it("bcrypt.compare returns false for wrong password", async () => {
-    const result = await bcrypt.compare("wrongpassword", HASH);
+    const result = await bcrypt.compare("wrongpassword", RAW_HASH);
     expect(result).toBe(false);
   });
 
   it("bcrypt.compare returns false for empty string", async () => {
-    const result = await bcrypt.compare("", HASH);
+    const result = await bcrypt.compare("", RAW_HASH);
     expect(result).toBe(false);
   });
 
   it("bcrypt hash has correct cost factor ($2b$12$)", () => {
-    expect(HASH.startsWith("$2b$12$")).toBe(true);
+    expect(RAW_HASH.startsWith("$2b$12$")).toBe(true);
   });
 
-  it("stored ADMIN_PASSWORD_HASH env var is a valid bcrypt hash format", () => {
-    const storedHash = process.env.ADMIN_PASSWORD_HASH ?? "";
-    // If env var is set, verify it looks like a bcrypt hash
-    if (storedHash) {
-      expect(storedHash).toMatch(/^\$2[ab]\$\d{2}\$.{53}$/);
-    } else {
-      // In CI without the env var, just verify bcrypt works
-      expect(HASH).toMatch(/^\$2[ab]\$\d{2}\$.{53}$/);
+  it("base64 round-trip: decode then bcrypt.compare succeeds (simulates env var path)", async () => {
+    // This mirrors exactly what the server does:
+    // 1. Read base64 from env var
+    // 2. Decode to raw bcrypt hash
+    // 3. bcrypt.compare(submittedPassword, decodedHash)
+    const decoded = Buffer.from(BASE64_HASH, "base64").toString("utf8");
+    expect(decoded).toBe(RAW_HASH);
+    const result = await bcrypt.compare(ADMIN_PASSWORD, decoded);
+    expect(result).toBe(true);
+  });
+
+  it("ADMIN_PASSWORD_HASH env var (base64) decodes and verifies correctly", async () => {
+    const storedBase64 = process.env.ADMIN_PASSWORD_HASH ?? "";
+    if (!storedBase64) {
+      // Skip if env not set (CI without secrets)
+      return;
     }
+    const decoded = Buffer.from(storedBase64, "base64").toString("utf8");
+    expect(decoded).toMatch(/^\$2[ab]\$\d{2}\$/);
+    const result = await bcrypt.compare(ADMIN_PASSWORD, decoded);
+    expect(result).toBe(true);
   });
 
   it("token generation from hash slice is deterministic", () => {
-    const token = Buffer.from(HASH.slice(-20)).toString("base64");
-    const token2 = Buffer.from(HASH.slice(-20)).toString("base64");
+    const token = Buffer.from(RAW_HASH.slice(-20)).toString("base64");
+    const token2 = Buffer.from(RAW_HASH.slice(-20)).toString("base64");
     expect(token).toBe(token2);
     expect(token.length).toBeGreaterThan(0);
   });

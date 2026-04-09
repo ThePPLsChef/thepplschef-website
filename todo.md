@@ -159,3 +159,11 @@
 - [x] Add GA4 tracking code to index.html with real Measurement ID G-QHP2QP8FHE
 - [x] Write vitest test for admin.verifyPassword procedure
 - [x] Deploy to preview
+
+## Admin Password Gate Bug Fix (Apr 9)
+
+- [x] Diagnose root cause: secrets system strips $ characters from env var values, corrupting the bcrypt hash
+- [x] Fix: store hash as base64 in ADMIN_PASSWORD_HASH; server decodes with Buffer.from(val, 'base64').toString('utf8') before bcrypt.compare()
+- [x] Update admin.verifyPassword test to cover the base64 decode path (7 tests, all passing)
+- [x] All 28 vitest tests passing
+- [x] Redeploy to preview

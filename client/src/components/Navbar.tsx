@@ -2,6 +2,7 @@
  * Navbar — Premium sticky navigation with phone number
  * Sticky on scroll, phone number always visible, Services dropdown, Menus link.
  * BRAND: Abril Fatface display, DM Sans nav, Gold/Red/Black/Cream palette.
+ * Active page indicator: gold underline + full-brightness text on current page.
  */
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
@@ -27,6 +28,16 @@ const navLinks = [
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
 ];
+
+/** Returns true if the given href matches the current location */
+function isActive(href: string, location: string): boolean {
+  if (href === "/") return location === "/";
+  if (href.startsWith("/#")) {
+    // Services dropdown — highlight when on any service sub-page
+    return serviceLinks.some((s) => location === s.href);
+  }
+  return location === href || location.startsWith(href + "/");
+}
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -73,14 +84,56 @@ export default function Navbar() {
       if (location === "/") {
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
-        // Navigate to homepage from any other page
         window.location.href = "/";
       }
     }
   };
 
-  const linkStyle = "text-[#F3F1E9]/75 hover:text-[#ECA241] text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors duration-300 relative py-3 px-1 after:absolute after:bottom-[6px] after:left-0 after:w-0 after:h-[1px] after:bg-[#ECA241] after:transition-all after:duration-300 hover:after:w-full";
+  /** Base desktop link style — inactive state */
+  const baseLinkStyle = "text-[11px] font-semibold tracking-[0.18em] uppercase transition-colors duration-300 relative py-3 px-1";
+
+  /** Returns the full className for a desktop nav link based on active state */
+  const desktopLinkClass = (href: string) => {
+    const active = isActive(href, location);
+    return [
+      baseLinkStyle,
+      active
+        ? "text-[#ECA241] after:absolute after:bottom-[6px] after:left-0 after:w-full after:h-[2px] after:bg-[#ECA241]"
+        : "text-[#F3F1E9]/75 hover:text-[#ECA241] after:absolute after:bottom-[6px] after:left-0 after:w-0 after:h-[1px] after:bg-[#ECA241] after:transition-all after:duration-300 hover:after:w-full",
+    ].join(" ");
+  };
+
   const fontBody = { fontFamily: "var(--font-body)" };
+
+  /** Mobile link inline style — gold + underline when active */
+  const mobileLinkStyle = (href: string): React.CSSProperties => {
+    const active = isActive(href, location);
+    return {
+      color: active ? "#ECA241" : "#F3F1E9",
+      fontSize: "22px",
+      fontFamily: "var(--font-display)",
+      letterSpacing: "0.04em",
+      textDecoration: active ? "none" : "none",
+      padding: "8px 0",
+      borderBottom: active ? "2px solid #ECA241" : "2px solid transparent",
+      display: "inline-block",
+    };
+  };
+
+  /** Mobile service sub-link style */
+  const mobileServiceLinkStyle = (href: string): React.CSSProperties => {
+    const active = location === href;
+    return {
+      display: "block",
+      color: active ? "#ECA241" : "#FAF7F2",
+      padding: "14px 20px",
+      fontSize: "15px",
+      textDecoration: "none",
+      borderBottom: "1px solid rgba(255,255,255,0.08)",
+      fontWeight: active ? "700" : "400",
+      borderLeft: active ? "3px solid #ECA241" : "3px solid transparent",
+    };
+  };
 
   return (
     <nav
@@ -112,6 +165,7 @@ export default function Navbar() {
           {navLinks.map((link) => {
             // Services dropdown
             if (link.hasDropdown) {
+              const servicesActive = isActive(link.href, location);
               return (
                 <div key={link.href} className="relative" ref={dropdownRef}>
                   <button
@@ -120,7 +174,7 @@ export default function Navbar() {
                       setServicesOpen(!servicesOpen);
                     }}
                     onMouseEnter={() => setServicesOpen(true)}
-                    className={`${linkStyle} flex items-center gap-1`}
+                    className={`${desktopLinkClass(link.href)} flex items-center gap-1`}
                     style={fontBody}
                   >
                     {link.label}
@@ -136,17 +190,24 @@ export default function Navbar() {
                         onMouseLeave={() => setServicesOpen(false)}
                         className="absolute top-full left-0 mt-3 w-64 bg-black/98 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/40"
                       >
-                        {serviceLinks.map((s) => (
-                          <Link
-                            key={s.href}
-                            href={s.href}
-                            onClick={() => setServicesOpen(false)}
-                            className="block px-5 py-3 text-[#F3F1E9]/60 hover:text-[#ECA241] hover:bg-white/5 text-xs tracking-wider transition-all duration-200"
-                            style={fontBody}
-                          >
-                            {s.label}
-                          </Link>
-                        ))}
+                        {serviceLinks.map((s) => {
+                          const sActive = location === s.href;
+                          return (
+                            <Link
+                              key={s.href}
+                              href={s.href}
+                              onClick={() => setServicesOpen(false)}
+                              className={`block px-5 py-3 text-xs tracking-wider transition-all duration-200 ${
+                                sActive
+                                  ? "text-[#ECA241] bg-white/5 border-l-2 border-[#ECA241] pl-[18px]"
+                                  : "text-[#F3F1E9]/60 hover:text-[#ECA241] hover:bg-white/5 border-l-2 border-transparent pl-[18px]"
+                              }`}
+                              style={fontBody}
+                            >
+                              {s.label}
+                            </Link>
+                          );
+                        })}
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -160,7 +221,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={linkStyle}
+                  className={desktopLinkClass(link.href)}
                   style={fontBody}
                 >
                   {link.label}
@@ -173,7 +234,7 @@ export default function Navbar() {
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link.href)}
-                className={linkStyle}
+                className={desktopLinkClass(link.href)}
                 style={fontBody}
               >
                 {link.label}
@@ -255,7 +316,7 @@ export default function Navbar() {
             <a
               href="/"
               onClick={() => setMobileOpen(false)}
-              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+              style={mobileLinkStyle("/")}
             >
               Home
             </a>
@@ -264,7 +325,7 @@ export default function Navbar() {
             <a
               href="/about"
               onClick={() => setMobileOpen(false)}
-              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+              style={mobileLinkStyle("/about")}
             >
               About
             </a>
@@ -277,7 +338,8 @@ export default function Navbar() {
                   width: "100%",
                   background: "none",
                   border: "none",
-                  color: "#F3F1E9",
+                  borderBottom: isActive("/#services", location) ? "2px solid #ECA241" : "2px solid transparent",
+                  color: isActive("/#services", location) ? "#ECA241" : "#F3F1E9",
                   fontSize: "22px",
                   fontFamily: "var(--font-display)",
                   letterSpacing: "0.04em",
@@ -309,37 +371,37 @@ export default function Navbar() {
                   <a
                     href="/private-chef-las-vegas"
                     onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
-                    style={{ display: "block", color: "#FAF7F2", padding: "14px 20px", fontSize: "15px", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                    style={mobileServiceLinkStyle("/private-chef-las-vegas")}
                   >
                     Private Chef Experience
                   </a>
                   <a
                     href="/catering-las-vegas"
                     onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
-                    style={{ display: "block", color: "#FAF7F2", padding: "14px 20px", fontSize: "15px", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                    style={mobileServiceLinkStyle("/catering-las-vegas")}
                   >
                     Full-Service Catering
                   </a>
                   <a
                     href="/meal-prep-las-vegas"
                     onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
-                    style={{ display: "block", color: "#FAF7F2", padding: "14px 20px", fontSize: "15px", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                    style={mobileServiceLinkStyle("/meal-prep-las-vegas")}
                   >
                     Chef-Crafted Meal Prep
                   </a>
                   <a
-                    href="/corporate-catering-las-vegas"
+                    href="/special-events-las-vegas"
                     onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
-                    style={{ display: "block", color: "#FAF7F2", padding: "14px 20px", fontSize: "15px", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                    style={mobileServiceLinkStyle("/special-events-las-vegas")}
                   >
-                    Corporate Dining
+                    Special Events & Celebrations
                   </a>
                   <a
-                    href="/menus"
+                    href="/corporate-catering-las-vegas"
                     onClick={() => { setMobileOpen(false); setMobileServicesOpen(false); }}
-                    style={{ display: "block", color: "#FAF7F2", padding: "14px 20px", fontSize: "15px", textDecoration: "none" }}
+                    style={{ ...mobileServiceLinkStyle("/corporate-catering-las-vegas"), borderBottom: "none" }}
                   >
-                    Menus
+                    Corporate & Group Dining
                   </a>
                 </div>
               )}
@@ -349,7 +411,7 @@ export default function Navbar() {
             <a
               href="/menus"
               onClick={() => setMobileOpen(false)}
-              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+              style={mobileLinkStyle("/menus")}
             >
               Menus
             </a>
@@ -358,7 +420,7 @@ export default function Navbar() {
             <a
               href="/gallery"
               onClick={() => setMobileOpen(false)}
-              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+              style={mobileLinkStyle("/gallery")}
             >
               Gallery
             </a>
@@ -367,7 +429,7 @@ export default function Navbar() {
             <a
               href="/faq"
               onClick={() => setMobileOpen(false)}
-              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+              style={mobileLinkStyle("/faq")}
             >
               FAQ
             </a>
@@ -376,7 +438,7 @@ export default function Navbar() {
             <a
               href="/contact"
               onClick={() => setMobileOpen(false)}
-              style={{ color: "#F3F1E9", fontSize: "22px", fontFamily: "var(--font-display)", letterSpacing: "0.04em", textDecoration: "none", padding: "8px 0" }}
+              style={mobileLinkStyle("/contact")}
             >
               Contact
             </a>

@@ -108,3 +108,9 @@
 - [x] Add unique meta descriptions (150-160 chars) to all pages missing one
 - [x] Fix Menus page title tag to "Sample Menus | The PPL's Chef | Las Vegas Private Chef"
 - [x] Replace Special Events hero image with celebration/event-themed photo
+
+## Navbar Active Page Indicator (Apr 8)
+
+- [x] Add gold underline/highlight active page indicator to desktop navbar links
+- [x] Add gold active indicator to mobile hamburger menu links
+- [x] Use wouter's useLocation to detect current path

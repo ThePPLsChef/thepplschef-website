@@ -1,12 +1,14 @@
 /**
  * CDN Image Constants — The PPL's Chef
  * All images served from CloudFront CDN.
+ * Photos converted to WebP at quality 88 for optimal load speed.
+ * Logos remain as PNG (transparency required).
  * Organized by category for easy reference across pages.
  */
 
 const CDN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ";
 
-// Brand
+// Brand — logos stay as PNG (transparency required)
 export const LOGO = `${CDN}/photo_AQAD2gtrG-WvaEZ-_2eac18e2.jpg`;
 export const LOGO_TRANSPARENT = `${CDN}/logo_transparent_d4eeeef8.png`;  // White logo on transparent background
 // Three-logo system
@@ -14,93 +16,91 @@ export const LOGO_PRIMARY = `${CDN}/logo_primary_a1adc3ca.png`;          // Full
 export const LOGO_P_ICON = `${CDN}/logo_p_icon_5a0514c3.png`;            // P+chef hat icon — Private Chef & Catering section badges
 export const LOGO_ALT_HORIZONTAL = `${CDN}/logo_alt_horizontal_v4_4ad3d7b5.png`; // Horizontal alt logo — Meal Prep section badge
 
-// Generated hero/feature images
-export const HERO_BG = `https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/feast_hero_e50fe7a8.png`;  // Overhead feast — diverse group sharing many dishes, warm communal dining atmosphere
-export const ABOUT_CHEF = `${CDN}/about-chef-QVjiLWLps5DMyMxX7uAGJz.webp`;
-export const GEN_PRIVATE = `${CDN}/services-private-TzcXY4W8pCFoiekAcqNa5M.webp`;
-export const GEN_CORPORATE = `${CDN}/services-corporate-aKhbmwwfW9YkL5HLY6hDhV.webp`;
-export const GEN_OUTDOOR = `${CDN}/services-outdoor-KvnaGeukpyF2Qwdef5sKdT.webp`;
-export const GEN_PRIVATE_DINING = `${CDN}/private-dining-hero-HqMz6f5TpssaMBGyw9ythB.webp`;
-export const GEN_MEAL_BOX = `${CDN}/meal-box-hero-jZegVfXTA3AJsmBZUgLuwS.webp`;
-export const GEN_SPECIAL_EVENTS = `${CDN}/special-events-hero-WUQPQBmjP2AZDfBv6W8UHm.webp`;
+// Hero/feature images — WebP
+export const HERO_BG = `${CDN}/feast_hero_d4d449c6.webp`;  // Overhead feast — diverse group sharing many dishes, warm communal dining atmosphere
+export const ABOUT_CHEF = `${CDN}/about-chef-QVjiLWLps5DMyMxX7uAGJz.webp`;  // Already WebP
+export const GEN_PRIVATE = `${CDN}/services-private-TzcXY4W8pCFoiekAcqNa5M.webp`;  // Already WebP
+export const GEN_CORPORATE = `${CDN}/services-corporate-aKhbmwwfW9YkL5HLY6hDhV.webp`;  // Already WebP
+export const GEN_OUTDOOR = `${CDN}/services-outdoor-KvnaGeukpyF2Qwdef5sKdT.webp`;  // Already WebP
+export const GEN_PRIVATE_DINING = `${CDN}/private-dining-hero-HqMz6f5TpssaMBGyw9ythB.webp`;  // Already WebP
+export const GEN_MEAL_BOX = `${CDN}/meal-box-hero-jZegVfXTA3AJsmBZUgLuwS.webp`;  // Already WebP
+export const GEN_SPECIAL_EVENTS = `${CDN}/special-events-hero-WUQPQBmjP2AZDfBv6W8UHm.webp`;  // Already WebP
 
-// Real event photos — original batch
-export const SEAFOOD_BOWLS = `${CDN}/photo_AQAD5QtrG-WvaEZ-_6f944946.jpg`;
-export const PLATED_SALAD = `${CDN}/photo_AQAD5gtrG-WvaEZ-_0434f69d.jpg`;
-export const SALAD_LINE = `${CDN}/photo_AQAD5wtrG-WvaEZ-_6f0837a6.jpg`;
-export const OUTDOOR_COOKING = `${CDN}/photo_AQAD6AtrG-WvaEZ-_b91f04f8.jpg`;
-export const CHEF_PLATING = `${CDN}/photo_AQAD6QtrG-WvaEZ-_fd290b00.jpg`;
-export const ELEGANT_TABLE = `${CDN}/photo_AQAD6gtrG-WvaEZ-_90370ee0.jpg`;
-export const PREP_TABLE = `${CDN}/photo_AQAD6wtrG-WvaEZ-_c236d98d.jpg`;
-export const GRILLED_ROMAINE = `${CDN}/photo_AQAD7AtrG-WvaEZ-_a9f936ea.jpg`;
-export const CHEF_OUTDOOR = `${CDN}/photo_AQAD7QtrG-WvaEZ-_6eac566c.jpg`;
-export const GREEN_BEANS = `${CDN}/photo_AQAD7gtrG-WvaEZ-_d509ab84.jpg`;
-export const MEAT_CHAFER = `${CDN}/photo_AQAD7wtrG-WvaEZ-_456232e8.jpg`;
-export const OUTDOOR_PARTY = `${CDN}/photo_AQAD8AtrG-WvaEZ-_4ea0cc45.jpg`;
-export const MASHED_POTATOES = `${CDN}/photo_AQAD8QtrG-WvaEZ-_7b9f1552.jpg`;
-export const DESSERT_TABLE = `${CDN}/photo_AQAD8gtrG-WvaEZ-_aea8950c.jpg`;
-export const DESSERT_OVERHEAD = `${CDN}/photo_AQAD8wtrG-WvaEZ-_af31db2b.jpg`;
-export const CARVING_STATION = `${CDN}/photo_AQAD9AtrG-WvaEZ-_a36b8ed2.jpg`;
-export const BUFFET_SERVICE = `${CDN}/photo_AQAD9QtrG-WvaEZ-_ee856e38.jpg`;
+// Real event photos — original batch — WebP converted
+export const SEAFOOD_BOWLS = `${CDN}/seafood_bowls_351075a7.webp`;
+export const PLATED_SALAD = `${CDN}/photo_AQAD5gtrG-WvaEZ-_0434f69d.jpg`;  // kept JPG (WebP was larger)
+export const SALAD_LINE = `${CDN}/salad_line_36b63667.webp`;
+export const OUTDOOR_COOKING = `${CDN}/outdoor_cooking_8abd6ea1.webp`;
+export const CHEF_PLATING = `${CDN}/chef_plating_c236104a.webp`;
+export const ELEGANT_TABLE = `${CDN}/elegant_table_d4ebf84b.webp`;
+export const PREP_TABLE = `${CDN}/prep_table_f5d7d315.webp`;
+export const GRILLED_ROMAINE = `${CDN}/grilled_romaine_db473bb8.webp`;
+export const CHEF_OUTDOOR = `${CDN}/chef_outdoor_ac0f6ef9.webp`;
+export const GREEN_BEANS = `${CDN}/green_beans_a264268f.webp`;
+export const MEAT_CHAFER = `${CDN}/meat_chafer_d0723767.webp`;
+export const OUTDOOR_PARTY = `${CDN}/photo_AQAD8AtrG-WvaEZ-_4ea0cc45.jpg`;  // kept JPG (WebP was larger)
+export const MASHED_POTATOES = `${CDN}/mashed_potatoes_ad64e1ba.webp`;
+export const DESSERT_TABLE = `${CDN}/dessert_table_3d681a8d.webp`;
+export const DESSERT_OVERHEAD = `${CDN}/photo_AQAD8wtrG-WvaEZ-_af31db2b.jpg`;  // kept JPG (WebP was larger)
+export const CARVING_STATION = `${CDN}/photo_AQAD9AtrG-WvaEZ-_a36b8ed2.jpg`;  // kept JPG (WebP was larger)
+export const BUFFET_SERVICE = `${CDN}/buffet_service_61130b97.webp`;
 
 // ── BATCH 2 PHOTOS ────────────────────────────────────────────────────────────
 
-// Chef personal photos (batch 2 — food/event photos, not actual chef portraits)
-export const CHEF_PORTRAIT_1 = `${CDN}/1000006463_cba05171.jpg`;
-export const CHEF_PORTRAIT_2 = `${CDN}/1000006465_1e454661.jpg`;
+// Chef personal photos (batch 2)
+export const CHEF_PORTRAIT_1 = `${CDN}/chef_portrait_1_4f5f6be2.webp`;
+export const CHEF_PORTRAIT_2 = `${CDN}/chef_portrait_2_5c192310.webp`;
 
-// New food & event photos (batch 2)
-export const EVENT_SPREAD_2020 = `${CDN}/20200830_113203_b9c9d0e1.jpg`;
-export const EVENT_2025_APR   = `${CDN}/20250423_195811_d1d56ed5.jpg`;
-export const EVENT_2025_SEP   = `${CDN}/20250926_120104_19d1e661.jpg`;
-export const EVENT_2025_OCT   = `${CDN}/20251022_143618_7380c0ce.jpg`;
-export const NEW_FOOD_1       = `${CDN}/1000007155_845a52b2.jpg`;
-export const NEW_FOOD_2       = `${CDN}/1000007144_99cd73e5.jpg`;
-export const NEW_EVENT_1      = `${CDN}/1000006918_cb89449a.jpg`;
-export const NEW_EVENT_2      = `${CDN}/1000006916_da4038d0.jpg`;
-export const NEW_EVENT_3      = `${CDN}/1000006910_bdea7a20.jpg`;
-export const NEW_EVENT_4      = `${CDN}/1000006914_f99c87e7.jpg`;
-export const NEW_EVENT_5      = `${CDN}/1000006917_b4d8f3cc.jpg`;
-export const NEW_EVENT_6      = `${CDN}/1000006524_d9b753a5.jpg`;
+// New food & event photos (batch 2) — WebP converted
+export const EVENT_SPREAD_2020 = `${CDN}/20200830_113203_b9c9d0e1.jpg`;  // kept JPG (WebP was larger)
+export const EVENT_2025_APR   = `${CDN}/event_2025_apr_c7a87c9e.webp`;
+export const EVENT_2025_SEP   = `${CDN}/event_2025_sep_53e88cdd.webp`;
+export const EVENT_2025_OCT   = `${CDN}/event_2025_oct_31e05cdc.webp`;
+export const NEW_FOOD_1       = `${CDN}/new_food_1_c3a428be.webp`;
+export const NEW_FOOD_2       = `${CDN}/new_food_2_89e130ad.webp`;
+export const NEW_EVENT_1      = `${CDN}/new_event_1_a45648f1.webp`;
+export const NEW_EVENT_2      = `${CDN}/new_event_2_d8d95cf8.webp`;
+export const NEW_EVENT_3      = `${CDN}/new_event_3_8dbdc4f2.webp`;
+export const NEW_EVENT_4      = `${CDN}/new_event_4_2491802a.webp`;
+export const NEW_EVENT_5      = `${CDN}/new_event_5_4051b7ee.webp`;
+export const NEW_EVENT_6      = `${CDN}/new_event_6_93728541.webp`;
 
 // ── BATCH 3 PHOTOS ────────────────────────────────────────────────────────────
 
 // REAL Chef portraits — Stephen Austin in branded white "The People's Chef" coat
-// Use these prominently in About section and Private Chef service page
-export const CHEF_REAL_PORTRAIT_1 = `${CDN}/20250423_200033_a5bc7e37.jpg`;  // Side profile, sleeve logo
-export const CHEF_REAL_PORTRAIT_2 = `${CDN}/20250423_200019_d8a32faa.jpg`;  // Front facing, chest logo
+export const CHEF_REAL_PORTRAIT_1 = `${CDN}/chef_real_portrait_1_32c9525b.webp`;
+export const CHEF_REAL_PORTRAIT_2 = `${CDN}/chef_real_portrait_2_5c46726c.webp`;
 
-// New plated dish photos (batch 3) — beautifully plated restaurant-quality dishes
-export const BEET_SALAD_SIDE    = `${CDN}/20250810_000236(1)_23a7bad8.jpg`;  // Beet salad, side angle
-export const BEET_SALAD_OVERHEAD = `${CDN}/20250810_000108_e3ca6bef.jpg`;    // Beet salad, overhead
-export const BEET_SALAD_CLOSE   = `${CDN}/20250809_235616_b963776f.jpg`;     // Beet salad, close-up
-export const DEVILED_EGGS_1     = `${CDN}/20250626_151450_8a288308.jpg`;     // Deviled eggs, plated
-export const DEVILED_EGGS_2     = `${CDN}/20250626_151456_e2b22e31.jpg`;     // Deviled eggs, overhead
-export const PASTRY_TURNOVER    = `${CDN}/20250619_162012_3b2b48c9.jpg`;     // Flaky pastry turnover with dipping sauce
-export const SHRIMP_CREAM_SAUCE = `${CDN}/20250619_160948_585a0118.jpg`;     // Jumbo shrimp in cream sauce
-export const GLAZED_RIBS        = `${CDN}/20250507_173917_2abd28d2.jpg`;     // Glazed ribs
-export const CAST_IRON_DISH     = `${CDN}/20250507_175445_b7cb9ef4.jpg`;     // Cast iron meatball dish
+// New plated dish photos (batch 3) — WebP converted
+export const BEET_SALAD_SIDE    = `${CDN}/beet_salad_side_2f80f144.webp`;
+export const BEET_SALAD_OVERHEAD = `${CDN}/beet_salad_overhead_3ef22f63.webp`;
+export const BEET_SALAD_CLOSE   = `${CDN}/beet_salad_close_69b78743.webp`;
+export const DEVILED_EGGS_1     = `${CDN}/deviled_eggs_1_2a709f90.webp`;
+export const DEVILED_EGGS_2     = `${CDN}/deviled_eggs_2_0f162246.webp`;
+export const PASTRY_TURNOVER    = `${CDN}/pastry_turnover_97259cbd.webp`;
+export const SHRIMP_CREAM_SAUCE = `${CDN}/shrimp_cream_sauce_6575ba6d.webp`;
+export const GLAZED_RIBS        = `${CDN}/glazed_ribs_e2f9521c.webp`;
+export const CAST_IRON_DISH     = `${CDN}/cast_iron_dish_324ad886.webp`;
 
 // ── BATCH 4 — MEAL PREP PHOTOS ────────────────────────────────────────────────
-// Real meal prep containers showing weekly meal box service offerings
-export const MEAL_PREP_OVERHEAD_MULTI  = `${CDN}/1000009793_640d446d.jpg`;  // Overhead: tamale, salmon, chicken containers
-export const MEAL_PREP_GRILLED_CHICKEN = `${CDN}/1000009791_6a881b13.jpg`;  // Grilled chicken with lime & green beans
-export const MEAL_PREP_GLAZED_SALMON   = `${CDN}/1000009792_bc162e7d.jpg`;  // Glazed salmon with sesame rice & veggies
-export const MEAL_PREP_SHRIMP_FAJITA   = `${CDN}/1000009788_97b94012.jpg`;  // Shrimp fajita bowl with rice & tortilla
-export const MEAL_PREP_CHICKEN_FAJITA  = `${CDN}/1000009787_517505cb.jpg`;  // Grilled chicken fajita bowl
-export const MEAL_PREP_TAMALES         = `${CDN}/1000009790_10b5bab1.jpg`;  // Tamales with elote corn salad
-export const MEAL_PREP_4BOX_SPREAD     = `${CDN}/1000009786_f0a488b3.jpg`;  // 4-box overhead spread of grilled protein meals
+// These small JPEGs were already well-compressed — WebP was larger, kept as JPG
+export const MEAL_PREP_OVERHEAD_MULTI  = `${CDN}/1000009793_640d446d.jpg`;
+export const MEAL_PREP_GRILLED_CHICKEN = `${CDN}/1000009791_6a881b13.jpg`;
+export const MEAL_PREP_GLAZED_SALMON   = `${CDN}/1000009792_bc162e7d.jpg`;
+export const MEAL_PREP_SHRIMP_FAJITA   = `${CDN}/1000009788_97b94012.jpg`;
+export const MEAL_PREP_CHICKEN_FAJITA  = `${CDN}/1000009787_517505cb.jpg`;
+export const MEAL_PREP_TAMALES         = `${CDN}/1000009790_10b5bab1.jpg`;
+export const MEAL_PREP_4BOX_SPREAD     = `${CDN}/1000009786_f0a488b3.jpg`;
 
 // ── CHEF PORTRAIT — B&W HEADSHOT ──────────────────────────────────────────────
-// Dramatic black & white studio headshot — no glasses, direct gaze
-// PRIMARY portrait for About the Chef section on homepage and about page
-export const CHEF_BW_PORTRAIT = `${CDN}/1000009505_9a592248.jpg`;
+export const CHEF_BW_PORTRAIT = `${CDN}/chef_bw_portrait_45777655.webp`;
 
 // ── BATCH 5 — SEAFOOD BOIL PHOTOS ────────────────────────────────────────────
-export const SEAFOOD_BOIL_CHEF     = `${CDN}/1000009775_f7ede7b2.jpg`;  // Chef in PPL's Chef coat behind full seafood boil spread (HERO)
-export const SEAFOOD_BOIL_CLOSE    = `${CDN}/1000009774_bb067ee5.jpg`;  // Close-up: mussels, clams, lemon, salad background
-export const SEAFOOD_BOIL_OVERHEAD = `${CDN}/1000009773_851cd885.jpg`;  // Overhead: shrimp, crab, newspaper spread
-export const SEAFOOD_BOIL_CRAB     = `${CDN}/1000009772_bccb8e36.jpg`;  // Close-up: crab claws, shrimp, lemon, Heineken
+// These small JPEGs were already well-compressed — WebP was larger, kept as JPG
+export const SEAFOOD_BOIL_CHEF     = `${CDN}/1000009775_f7ede7b2.jpg`;
+export const SEAFOOD_BOIL_CLOSE    = `${CDN}/1000009774_bb067ee5.jpg`;
+export const SEAFOOD_BOIL_OVERHEAD = `${CDN}/1000009773_851cd885.jpg`;
+export const SEAFOOD_BOIL_CRAB     = `${CDN}/1000009772_bccb8e36.jpg`;
 
 // Gallery collection — all real photos (original 16 + 12 batch 2 + 9 batch 3 food photos)
 export const GALLERY_IMAGES = [

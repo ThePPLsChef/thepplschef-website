@@ -116,11 +116,18 @@
 - [x] Use wouter's useLocation to detect current path
 
 ## Mobile Wizard Layout Fix (Apr 8)
-- [ ] Add sufficient bottom padding to wizard container so CONTINUE button clears the sticky bottom bar on mobile
-- [ ] Prevent wizard page from scrolling into the site footer (no footer bleed, no empty black gap)
+- [x] Add sufficient bottom padding to wizard container so CONTINUE button clears the sticky bottom bar on mobile
+- [x] Prevent wizard page from scrolling into the site footer (no footer bleed, no empty black gap)
 
 ## Wizard Mobile Fix + Special Events Hero (Apr 8)
 - [x] Hide "BOOK YOUR EXPERIENCE" sticky gold bar on /book page (add hideStickyCta prop to Layout)
 - [x] Increase wizard container bottom padding to clear the wizard's own fixed nav bar on mobile
 - [x] Remove text overlay from Special Events hero image (inpaint/fill text area)
 - [x] Upload cleaned Special Events hero image to CDN and update services.ts
+
+## Image Compression to WebP (Apr 9)
+- [x] Audit all image URLs in images.ts and services.ts
+- [x] Download all remote images and convert to WebP at quality 85-90
+- [x] Upload WebP images to CDN and collect URL mappings
+- [x] Update all image references in images.ts and services.ts to WebP CDN URLs
+- [x] Verify site loads correctly with new WebP images

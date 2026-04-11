@@ -215,8 +215,9 @@ export default async function handler(req, res) {
     // ── Send emails via Resend ────────────────────────────────────────────────
     const resend = getResend();
     if (resend) {
-      const FROM_ADDRESS = "notifications@thepplschef.com";
-      const OWNER_EMAIL = "info@thepplschef.com";
+      // send.thepplschef.com is the verified Resend sending domain
+      const FROM_ADDRESS = "The PPL's Chef <notifications@send.thepplschef.com>";
+      const OWNER_EMAIL = "saustin@thepplschef.com";
 
       const emailData = {
         name: name.trim(),
@@ -234,27 +235,33 @@ export default async function handler(req, res) {
         inquiryId: inquiryId || "N/A",
       };
 
-      // Fire both emails in parallel, non-blocking
-      Promise.allSettled([
+      // Await both emails so Vercel doesn't terminate before delivery
+      const emailResults = await Promise.allSettled([
         resend.emails.send({
           from: FROM_ADDRESS,
           to: [OWNER_EMAIL],
           replyTo: email.trim(),
-          subject: `🍽️ New Inquiry: ${name.trim()}${serviceType ? ` — ${serviceType}` : ""}`,
+          subject: `New Inquiry — ${serviceType || "General"} — ${name.trim()}`,
           html: buildOwnerEmailHtml(emailData),
         }),
         resend.emails.send({
           from: FROM_ADDRESS,
           to: [email.trim()],
-          subject: "We received your inquiry — The PPL's Chef",
+          replyTo: OWNER_EMAIL,
+          subject: "Your Experience Starts Here — The PPL's Chef",
           html: buildClientEmailHtml(name.trim(), serviceType),
         }),
-      ]).then((results) => {
-        results.forEach((r, i) => {
-          if (r.status === "rejected") {
-            console.error(`[api/inquiries] Email ${i === 0 ? "owner" : "client"} failed:`, r.reason);
-          }
-        });
+      ]);
+
+      emailResults.forEach((r, i) => {
+        const label = i === 0 ? "owner" : "client";
+        if (r.status === "rejected") {
+          console.error(`[api/inquiries] Email ${label} rejected:`, r.reason);
+        } else if (r.value?.error) {
+          console.error(`[api/inquiries] Email ${label} Resend error:`, r.value.error);
+        } else {
+          console.log(`[api/inquiries] Email ${label} sent OK, id:`, r.value?.data?.id);
+        }
       });
     } else {
       console.warn("[api/inquiries] RESEND_API_KEY not set — emails skipped");

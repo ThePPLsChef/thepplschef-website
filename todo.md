@@ -188,3 +188,14 @@
 - [x] Uploaded corrected image to CDN: chef_real_portrait_2_fixed_73eb83fd.webp
 - [x] Updated CHEF_REAL_PORTRAIT_2 in images.ts to point to corrected CDN URL
 - [x] Redeploy to preview
+
+## Email Sending Fix — send.thepplschef.com (Apr 11)
+
+- [x] Audit: real production path is api/inquiries.js (Vercel serverless), not server/email.ts (tRPC)
+- [x] Fix api/inquiries.js FROM_ADDRESS: notifications@thepplschef.com → notifications@send.thepplschef.com
+- [x] Fix api/inquiries.js OWNER_EMAIL: info@thepplschef.com → saustin@thepplschef.com
+- [x] Fix api/inquiries.js: await Promise.allSettled so Vercel doesn't terminate before emails send
+- [x] Fix api/inquiries.js: inspect r.value?.error for fulfilled-but-failed Resend sends
+- [x] Fix server/email.ts production from address: noreply@thepplschef.com → notifications@send.thepplschef.com
+- [x] RESEND_API_KEY confirmed read correctly via process.env in both files
+- [x] Deploy to preview and test end-to-end

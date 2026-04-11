@@ -317,8 +317,10 @@ export async function sendInquiryEmails(data: InquiryEmailData): Promise<void> {
 
   // Determine the from address. If domain is verified, use branded address.
   // Falls back to Resend's shared domain for testing.
+  // send.thepplschef.com is the verified Resend sending domain
+  // onboarding@resend.dev is used only in local dev (non-production)
   const fromAddress = ENV.isProduction
-    ? "The PPL's Chef <noreply@thepplschef.com>"
+    ? "The PPL's Chef <notifications@send.thepplschef.com>"
     : "The PPL's Chef <onboarding@resend.dev>";
 
   const internalSubject = `New Inquiry — ${serviceLabel} — ${data.name}${eventDatePart}`;

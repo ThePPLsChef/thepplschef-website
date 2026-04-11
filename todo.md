@@ -199,3 +199,18 @@
 - [x] Fix server/email.ts production from address: noreply@thepplschef.com → notifications@send.thepplschef.com
 - [x] RESEND_API_KEY confirmed read correctly via process.env in both files
 - [x] Deploy to preview and test end-to-end
+
+## Booking Wizard Redesign (Apr 11)
+
+- [x] Audit current wizard structure, steps, and styling
+- [x] Redesign with warm luxury aesthetic: warm brownish-dark gradient bg, gold accents, brand typography
+- [x] Match homepage brand feel: warm, inviting, premium hospitality
+- [x] Improve progress stepper: gold gradient bar, step labels, percentage indicator, step dots
+- [x] Refine typography: display font headings, body font for labels/descriptions
+- [x] Add smooth transitions between steps (AnimatePresence + spring animations)
+- [x] Gold CTA buttons (#ECA241 → #F5A623 gradient) throughout
+- [x] Mobile-responsive: fixed bottom nav bar, generous touch targets, app-ready layout
+- [x] Improved spacing, padding, visual hierarchy, and card warmth
+- [x] All 7 standard steps + 8 meal prep steps tested and working
+- [x] All 28 vitest tests passing
+- [x] Deploy to preview

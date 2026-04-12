@@ -245,7 +245,7 @@ function HeroSection() {
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.7 }} className="flex flex-wrap gap-4 justify-center">
-          <Link href="/contact" className="px-10 py-4 bg-[#ECA241] text-black text-base font-semibold tracking-wider uppercase hover:bg-[#f0b050] transition-all duration-300 shadow-lg shadow-[#ECA241]/30" style={{ fontFamily: "var(--font-body)" }}>
+          <Link href="/book" className="px-10 py-4 bg-[#ECA241] text-black text-base font-semibold tracking-wider uppercase hover:bg-[#f0b050] transition-all duration-300 shadow-lg shadow-[#ECA241]/30" style={{ fontFamily: "var(--font-body)" }}>
             Book Your Experience
           </Link>
           <a href="#services" onClick={(e) => { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); }} className="btn-outline">
@@ -392,7 +392,7 @@ function SignatureExperience() {
             <p className="text-[#F3F1E9]/40 text-sm leading-relaxed mb-8" style={{ fontFamily: "var(--font-body)" }}>
               We bring the warmth of Southern hospitality, the precision of fine dining, and the creativity of a personal chef — all to the location of your choosing.
             </p>
-            <Link href="/contact" className="btn-primary">Start Planning</Link>
+            <Link href="/book" className="btn-primary">Start Planning</Link>
           </FadeIn>
         </div>
       </div>
@@ -534,7 +534,7 @@ function BookingProcess() {
           ))}
         </div>
         <FadeIn className="text-center mt-14" delay={0.4}>
-          <Link href="/contact" className="btn-primary">Get Started</Link>
+          <Link href="/book" className="btn-primary">Get Started</Link>
         </FadeIn>
       </div>
     </section>
@@ -593,7 +593,7 @@ function FinalCTA() {
             Let us bring the restaurant to you. Tell us about your event and we'll craft a custom experience your guests will never forget.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/contact" className="btn-primary">Book Your Experience</Link>
+            <Link href="/book" className="btn-primary">Book Your Experience</Link>
             <a href="tel:725-212-2236" className="btn-outline">Call 725-212-2236</a>
           </div>
         </FadeIn>

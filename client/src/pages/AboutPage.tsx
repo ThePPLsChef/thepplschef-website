@@ -226,7 +226,7 @@ export default function AboutPage() {
               Let Chef Stephen and the team bring an unforgettable culinary experience to your next event.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/contact" className="btn-primary">Book Your Experience</Link>
+              <Link href="/book" className="btn-primary">Book Your Experience</Link>
               <a href="tel:725-212-2236" className="btn-outline">Call 725-212-2236</a>
             </div>
           </FadeIn>

@@ -970,44 +970,44 @@ export default function BookingWizard() {
                 Continue <ArrowRight size={16} />
               </motion.button>
             ) : (
-              <>
+              <div className="flex flex-col items-end gap-2">
                 {/* Reassurance message above submit */}
                 <p
-                  className="text-center text-[13.5px] text-[#F3F1E9]/60 leading-relaxed mb-4 px-2"
+                  className="text-center text-[13.5px] text-[#F3F1E9]/60 leading-relaxed mb-1 px-2"
                   style={fontBody}
                 >
                   This isn't a finalized booking — just the start of something great.<br />
                   We'll review your request and reach out within 24 hours to design your experience and provide a custom quote.
                 </p>
-              <motion.button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isPending}
-                whileHover={!isPending ? { scale: 1.02 } : {}}
-                whileTap={!isPending ? { scale: 0.98 } : {}}
-                className={`
-                  flex items-center gap-2 px-10 py-4 rounded-xl text-sm font-bold tracking-wider uppercase transition-all duration-300
-                  ${!isPending
-                    ? "text-white shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.4)]"
-                    : "bg-[#F3F1E9]/[0.05] text-[#F3F1E9]/12 cursor-not-allowed"
-                  }
-                `}
-                style={!isPending ? { ...fontBody, background: "linear-gradient(135deg, #C49A3A 0%, #ECA241 60%, #F5A623 100%)" } : fontBody}
-              >
-                {isPending ? (
-                  <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
-                    />
-                    Submitting...
-                  </>
-                ) : (
-                  <>Submit Request <ArrowRight size={16} /></>
-                )}
-              </motion.button>
-              </>
+                <motion.button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isPending}
+                  whileHover={!isPending ? { scale: 1.02 } : {}}
+                  whileTap={!isPending ? { scale: 0.98 } : {}}
+                  className={`
+                    flex items-center gap-2 px-10 py-4 rounded-xl text-sm font-bold tracking-wider uppercase transition-all duration-300
+                    ${!isPending
+                      ? "text-white shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.4)]"
+                      : "bg-[#F3F1E9]/[0.05] text-[#F3F1E9]/12 cursor-not-allowed"
+                    }
+                  `}
+                  style={!isPending ? { ...fontBody, background: "linear-gradient(135deg, #C49A3A 0%, #ECA241 60%, #F5A623 100%)" } : fontBody}
+                >
+                  {isPending ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                      />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>Submit Request <ArrowRight size={16} /></>
+                  )}
+                </motion.button>
+              </div>
             )}
           </div>
 

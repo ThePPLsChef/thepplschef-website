@@ -234,7 +234,7 @@ export default function Pricing() {
 
                       {/* CTA Button */}
                       <Link
-                        href={section.category === "Meal Boxes" ? "/meal-prep-las-vegas#order-form" : "/contact"}
+                        href={section.category === "Meal Boxes" ? "/book?service=meal-prep" : "/book"}
                         className={`w-full py-3.5 font-bold tracking-wider uppercase transition-all duration-300 text-center ${
                           tier.popular
                             ? "bg-[#D82E2B] text-white hover:bg-[#ECA241] hover:text-black"

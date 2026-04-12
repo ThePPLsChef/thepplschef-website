@@ -311,7 +311,7 @@ export default function MenusPage() {
                 All menus are fully customizable. Let us design the perfect menu for your event.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Link href="/contact" className="btn-primary">Book Your Experience</Link>
+                <Link href="/book" className="btn-primary">Book Your Experience</Link>
                 <a href="tel:725-212-2236" className="btn-outline-dark">Call 725-212-2236</a>
               </div>
             </div>

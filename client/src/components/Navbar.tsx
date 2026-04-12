@@ -254,7 +254,7 @@ export default function Navbar() {
 
           {/* Book Now CTA */}
           <Link
-            href="/contact"
+            href="/book"
             className="ml-1 px-6 py-2.5 bg-[#ECA241] text-black text-[11px] font-bold tracking-[0.18em] uppercase hover:bg-[#f0b050] hover:text-black transition-all duration-300 shadow-lg shadow-[#ECA241]/20"
             style={fontBody}
           >
@@ -454,7 +454,7 @@ export default function Navbar() {
 
             {/* Book Now */}
             <a
-              href="/contact"
+              href="/book"
               onClick={() => setMobileOpen(false)}
               style={{ marginTop: "16px", padding: "14px 40px", backgroundColor: "#D82E2B", color: "white", fontSize: "13px", fontFamily: "var(--font-body)", fontWeight: "700", letterSpacing: "0.15em", textTransform: "uppercase", textDecoration: "none", display: "inline-block" }}
             >

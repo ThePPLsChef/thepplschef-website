@@ -143,7 +143,7 @@ export default function Footer() {
               ))}
             </div>
             <Link
-              href="/contact"
+              href="/book"
               className="inline-block px-6 py-2.5 bg-[#D82E2B] text-white text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#ECA241] hover:text-black transition-all duration-300"
               style={{ fontFamily: "var(--font-body)" }}
             >

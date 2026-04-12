@@ -236,3 +236,19 @@
 - [x] Styled: text-[13.5px], text-[#F3F1E9]/60, centered, leading-relaxed, mb-4 spacing — readable, warm, not fine print
 - [x] 0 TypeScript errors, all 28 vitest tests passing
 - [x] Deploy to preview and push to GitHub
+
+## Book CTA Routing Fix (Apr 12)
+
+- [x] Audited all booking CTAs across 12+ files
+- [x] Home.tsx: hero "Book Your Experience", "Start Planning", "Get Started" CTAs → /book
+- [x] Navbar.tsx: "Book Now" button (desktop + mobile) → /book
+- [x] Footer.tsx: "Book Now" link → /book
+- [x] ClientReviews.tsx: "Book Your Experience" CTA → /book
+- [x] MenusPage.tsx: "Book Your Experience" CTA → /book
+- [x] AboutPage.tsx: "Book Your Experience" CTA → /book
+- [x] GalleryPage.tsx: "Book Your Experience" CTA → /book
+- [x] Fixed stale JSX fragment in BookingWizard.tsx nav bar (replaced <> with <div>)
+- [x] Kept: Navbar "Contact" nav item → /contact (correct nav link)
+- [x] Kept: FAQPage "Send an Inquiry" → /contact (correct contact action)
+- [x] All 28 vitest tests passing
+- [x] Deploy to preview and push to GitHub

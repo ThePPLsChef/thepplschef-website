@@ -183,7 +183,7 @@ export default function GalleryPage() {
           <p className="text-black/50 text-base mb-8 max-w-xl mx-auto" style={fontBody}>
             Let us bring the same level of artistry and care to your next event.
           </p>
-          <Link href="/contact" className="btn-primary">Book Your Experience</Link>
+          <Link href="/book" className="btn-primary">Book Your Experience</Link>
         </div>
       </section>
 

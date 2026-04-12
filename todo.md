@@ -263,4 +263,4 @@
 - [x] Home.tsx ContactSection: Fallback form collapsed by default behind "Have a unique request?" toggle — expands on click
 - [x] Home.tsx ContactSection: Form styled subdued (muted borders, ghost submit button)
 - [x] All 28 vitest tests passing, 0 TypeScript errors
-- [ ] Deploy to preview and push to GitHub
+- [x] Deploy to preview and push to GitHub

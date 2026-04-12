@@ -8,7 +8,7 @@
  */
 import { motion } from "framer-motion";
 
-const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/hero-bg-XjpAAtRn8oMGwPsg6kzbmK.webp";
+const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/hero-homepage-dining_3730360c.webp";  // Overhead dining table — warm golden light, multiple dishes, hands reaching
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/photo_AQAD2gtrG-WvaEZ-_2eac18e2.jpg";
 
 export default function Hero() {

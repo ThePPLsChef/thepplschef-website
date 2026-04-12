@@ -25,6 +25,7 @@ import {
   MEAL_PREP_CHICKEN_FAJITA,
   MEAL_PREP_TAMALES,
   MEAL_PREP_4BOX_SPREAD,
+  CATERING_HERO,
 } from "./images";
 
 export interface ServiceData {
@@ -83,7 +84,7 @@ export const services: ServiceData[] = [
     slug: "catering-las-vegas",
     title: "Full-Service Catering",
     tagline: "Elevated catering for events of every scale.",
-    heroImage: NEW_EVENT_1,
+    heroImage: CATERING_HERO,
     overview: "Whether you're hosting 30 guests or 300, our full-service catering delivers restaurant-quality food with seamless execution. We offer buffet-style, family-style, and plated service options — each customized to your event's theme, dietary requirements, and budget. Our team manages everything from setup to breakdown.",
     included: [
       "Custom menu planning and tastings",

@@ -17,7 +17,8 @@ export const LOGO_P_ICON = `${CDN}/logo_p_icon_5a0514c3.png`;            // P+ch
 export const LOGO_ALT_HORIZONTAL = `${CDN}/logo_alt_horizontal_v4_4ad3d7b5.png`; // Horizontal alt logo — Meal Prep section badge
 
 // Hero/feature images — WebP
-export const HERO_BG = `${CDN}/feast_hero_d4d449c6.webp`;  // Overhead feast — diverse group sharing many dishes, warm communal dining atmosphere
+export const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/hero-homepage-dining_3730360c.webp";  // Overhead dining table — warm golden light, multiple dishes, hands reaching, immersive communal atmosphere (Pexels royalty-free)
+export const CATERING_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/hero-catering-buffet_442aae7b.webp";  // Chef serving at candlelit catering buffet — scale, motion, warm glow, full-service feel (Pexels royalty-free)
 export const ABOUT_CHEF = `${CDN}/about-chef-QVjiLWLps5DMyMxX7uAGJz.webp`;  // Already WebP
 export const GEN_PRIVATE = `${CDN}/services-private-TzcXY4W8pCFoiekAcqNa5M.webp`;  // Already WebP
 export const GEN_CORPORATE = `${CDN}/services-corporate-aKhbmwwfW9YkL5HLY6hDhV.webp`;  // Already WebP

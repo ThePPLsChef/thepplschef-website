@@ -275,4 +275,4 @@
 - [x] Special Events & Celebrations ✅ (chef with torch, food visible, people eating)
 - [x] Corporate & Group Dining ✅ (food visible)
 - [x] All 28 vitest tests passing, 0 TypeScript errors
-- [ ] Deploy to preview ONLY (no GitHub push until owner approves)
+- [x] Deploy to preview ONLY (no GitHub push until owner approves)

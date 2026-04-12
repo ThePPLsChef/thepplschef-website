@@ -252,3 +252,15 @@
 - [x] Kept: FAQPage "Send an Inquiry" → /contact (correct contact action)
 - [x] All 28 vitest tests passing
 - [x] Deploy to preview and push to GitHub
+
+## Contact Form Repositioning (Apr 12)
+
+- [x] ContactPage.tsx: Added gold "Recommended" pill + "Ready to Book? Start Here." wizard CTA block as primary above form
+- [x] ContactPage.tsx: Rewritten hero headline to "Let's Create Something Extraordinary" + wizard-first subtext
+- [x] ContactPage.tsx: Inquiry form visually demoted — subdued bg, muted border, ghost submit button, "Prefer to Reach Out Directly?" framing
+- [x] ContactPage.tsx: Contact info moved to a compact horizontal strip between CTA and form
+- [x] Home.tsx ContactSection: Replaced SectionHeader with wizard-first CTA (gold gradient button, feature pills, reassurance text)
+- [x] Home.tsx ContactSection: Fallback form collapsed by default behind "Have a unique request?" toggle — expands on click
+- [x] Home.tsx ContactSection: Form styled subdued (muted borders, ghost submit button)
+- [x] All 28 vitest tests passing, 0 TypeScript errors
+- [ ] Deploy to preview and push to GitHub

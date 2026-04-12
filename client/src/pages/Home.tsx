@@ -689,11 +689,10 @@ const HOMEPAGE_SERVICE_MAP: Record<string, string> = {
   "special-events": "Special Events",
   "corporate": "Corporate Dining",
 };
-
 function ContactSection() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", eventType: "", message: "" });
-
   const [isPending, setIsPending] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -715,117 +714,146 @@ function ContactSection() {
     }
   };
 
-  const socials = [
-    { icon: Instagram, href: "https://www.instagram.com/thepplschef", label: "Instagram" },
-    { icon: TikTokIcon, href: "https://www.tiktok.com/@thepplschef", label: "TikTok" },
-    { icon: Facebook, href: "https://www.facebook.com/thepplschef", label: "Facebook" },
-    // X/Twitter account not yet active
-  ];
-
   return (
     <section id="contact" className="section-dark py-24 lg:py-32">
       <div className="container">
-        <SectionHeader label="Get In Touch" title="Book Your" titleAccent="Event" subtitle="Ready to create an unforgettable dining experience? Reach out and let's start planning." dark />
+        {/* ─── PRIMARY: Wizard CTA ─── */}
+        <FadeIn className="max-w-3xl mx-auto text-center mb-16">
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="w-8 h-[1px] bg-[#ECA241]" />
+            <span className="brand-label">Get In Touch</span>
+            <div className="w-8 h-[1px] bg-[#ECA241]" />
+          </div>
+          <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-[#F3F1E9] leading-tight mb-4">
+            Ready to Book? <span className="text-[#ECA241]">Start Here.</span>
+          </h2>
+          <p className="text-[#F3F1E9]/55 text-base lg:text-lg max-w-xl mx-auto mb-8 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+            Our guided booking experience walks you through every detail in 3 minutes — so we can design your event before we ever speak.
+          </p>
+          <Link
+            href="/book"
+            className="inline-flex items-center gap-3 px-12 py-5 text-black font-bold tracking-wider uppercase text-sm shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-all duration-300 hover:-translate-y-0.5"
+            style={{ fontFamily: "var(--font-body)", background: "linear-gradient(135deg, #C49A3A 0%, #ECA241 60%, #F5A623 100%)" }}
+          >
+            Start Your Curated Experience
+            <ArrowRight size={18} />
+          </Link>
+          <p className="mt-4 text-[#F3F1E9]/25 text-xs" style={{ fontFamily: "var(--font-body)" }}>
+            Not a finalized booking — just the start of something great.
+          </p>
+        </FadeIn>
 
-        <div className="grid lg:grid-cols-5 gap-12 lg:gap-16">
-          <FadeIn className="lg:col-span-2 space-y-8">
+        {/* ─── Contact info strip ─── */}
+        <FadeIn className="flex flex-wrap justify-center gap-8 lg:gap-16 mb-14 pb-14 border-b border-white/5" delay={0.1}>
+          <a href="tel:725-212-2236" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 bg-[#D82E2B]/80 flex items-center justify-center group-hover:bg-[#ECA241] transition-colors duration-300 shrink-0">
+              <Phone size={15} className="text-white" />
+            </div>
             <div>
-              <h3 className="font-[family-name:var(--font-display)] text-xl text-[#F3F1E9] mb-6">Contact Information</h3>
-              <div className="space-y-4">
-                <a href="tel:725-212-2236" className="flex items-center gap-4 group">
-                  <div className="w-11 h-11 bg-[#D82E2B] flex items-center justify-center group-hover:bg-[#ECA241] transition-colors duration-300">
-                    <Phone size={18} className="text-white" />
-                  </div>
-                  <div>
-                    <div className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase" style={{ fontFamily: "var(--font-body)" }}>Phone</div>
-                    <div className="text-[#F3F1E9] font-medium text-base" style={{ fontFamily: "var(--font-body)" }}>725-212-2236</div>
-                  </div>
-                </a>
-                <a href="mailto:info@thepplschef.com" className="flex items-center gap-4 group">
-                  <div className="w-11 h-11 bg-[#D82E2B] flex items-center justify-center group-hover:bg-[#ECA241] transition-colors duration-300">
-                    <Mail size={18} className="text-white" />
-                  </div>
-                  <div>
-                    <div className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase" style={{ fontFamily: "var(--font-body)" }}>Email</div>
-                    <div className="text-[#F3F1E9] font-medium text-base" style={{ fontFamily: "var(--font-body)" }}>info@thepplschef.com</div>
-                  </div>
-                </a>
-              </div>
+              <div className="text-[#F3F1E9]/35 text-[9px] tracking-wider uppercase" style={{ fontFamily: "var(--font-body)" }}>Call Us</div>
+              <div className="text-[#F3F1E9]/80 font-medium text-sm" style={{ fontFamily: "var(--font-body)" }}>725-212-2236</div>
             </div>
-
+          </a>
+          <a href="mailto:info@thepplschef.com" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 bg-[#D82E2B]/80 flex items-center justify-center group-hover:bg-[#ECA241] transition-colors duration-300 shrink-0">
+              <Mail size={15} className="text-white" />
+            </div>
             <div>
-              <h4 className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase mb-3" style={{ fontFamily: "var(--font-body)" }}>Follow Us</h4>
-              <div className="flex gap-2.5">
-                {socials.map((s) => (
-                  <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-[#ECA241]/15 flex items-center justify-center text-[#F3F1E9]/50 hover:bg-[#D82E2B] hover:border-[#D82E2B] hover:text-white transition-all duration-300" aria-label={s.label}>
-                    <s.icon size={16} />
-                  </a>
-                ))}
-              </div>
+              <div className="text-[#F3F1E9]/35 text-[9px] tracking-wider uppercase" style={{ fontFamily: "var(--font-body)" }}>Email</div>
+              <div className="text-[#F3F1E9]/80 font-medium text-sm" style={{ fontFamily: "var(--font-body)" }}>info@thepplschef.com</div>
             </div>
+          </a>
+        </FadeIn>
 
-            <div className="border-l-2 border-[#ECA241]/30 pl-5">
-              <p className="font-[family-name:var(--font-serif)] text-[#F3F1E9]/40 italic text-base leading-relaxed">
-                "Great food is the foundation of genuine happiness."
-              </p>
-            </div>
-          </FadeIn>
+        {/* ─── SECONDARY: Fallback form (collapsed by default) ─── */}
+        <FadeIn className="max-w-2xl mx-auto" delay={0.2}>
+          <button
+            type="button"
+            onClick={() => setShowForm(!showForm)}
+            className="w-full flex items-center justify-center gap-2 py-3 text-[#F3F1E9]/25 text-xs tracking-widest uppercase hover:text-[#F3F1E9]/45 transition-colors duration-300"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            <span>Have a unique request? Send a message instead</span>
+            <motion.span animate={{ rotate: showForm ? 180 : 0 }} transition={{ duration: 0.3 }}>
+              ▾
+            </motion.span>
+          </button>
 
-          <FadeIn className="lg:col-span-3" delay={0.2}>
-            <form onSubmit={handleSubmit} className="bg-[#0a0a0a] border border-white/5 p-8 lg:p-10">
-              <h3 className="font-[family-name:var(--font-display)] text-xl text-[#F3F1E9] mb-8">Send an Inquiry</h3>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {[
-                  { label: "Full Name", key: "name", type: "text", placeholder: "Your name", required: true },
-                  { label: "Email", key: "email", type: "email", placeholder: "your@email.com", required: true },
-                  { label: "Phone", key: "phone", type: "tel", placeholder: "(555) 123-4567", required: false },
-                ].map((f) => (
-                  <div key={f.key}>
-                    <label className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase block mb-2" style={{ fontFamily: "var(--font-body)" }}>{f.label} {f.required && "*"}</label>
-                    <input
-                      type={f.type}
-                      required={f.required}
-                      value={(form as any)[f.key]}
-                      onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                      className="w-full px-4 py-3 bg-black border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm"
+          <AnimatePresence>
+            {showForm && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <div className="bg-[#080808] border border-white/[0.06] p-8 mt-3">
+                  <p className="text-[#F3F1E9]/30 text-sm mb-6 leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+                    For unusual requests or if you'd simply rather send a message — we're here. Otherwise, the booking experience above is the fastest path to your custom quote.
+                  </p>
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {[
+                        { label: "Full Name", key: "name", type: "text", placeholder: "Your name", required: true },
+                        { label: "Email", key: "email", type: "email", placeholder: "your@email.com", required: true },
+                        { label: "Phone", key: "phone", type: "tel", placeholder: "(555) 123-4567", required: false },
+                      ].map((f) => (
+                        <div key={f.key}>
+                          <label className="text-[#F3F1E9]/30 text-[10px] tracking-wider uppercase block mb-1.5" style={{ fontFamily: "var(--font-body)" }}>{f.label} {f.required && "*"}</label>
+                          <input
+                            type={f.type}
+                            required={f.required}
+                            value={(form as any)[f.key]}
+                            onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                            className="w-full px-4 py-3 bg-black/60 border border-white/8 text-[#F3F1E9]/80 placeholder-[#F3F1E9]/20 focus:border-[#ECA241]/40 focus:outline-none transition-colors text-sm"
+                            style={{ fontFamily: "var(--font-body)" }}
+                            placeholder={f.placeholder}
+                          />
+                        </div>
+                      ))}
+                      <div>
+                        <label className="text-[#F3F1E9]/30 text-[10px] tracking-wider uppercase block mb-1.5" style={{ fontFamily: "var(--font-body)" }}>Event Type</label>
+                        <select
+                          value={form.eventType}
+                          onChange={(e) => setForm({ ...form, eventType: e.target.value })}
+                          className="w-full px-4 py-3 bg-black/60 border border-white/8 text-[#F3F1E9]/80 focus:border-[#ECA241]/40 focus:outline-none transition-colors text-sm"
+                          style={{ fontFamily: "var(--font-body)" }}
+                        >
+                          <option value="">Select type</option>
+                          <option value="private-chef">Private Chef</option>
+                          <option value="catering">Catering</option>
+                          <option value="meal-boxes">Meal Boxes</option>
+                          <option value="special-events">Special Events</option>
+                          <option value="corporate">Corporate Dining</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-[#F3F1E9]/30 text-[10px] tracking-wider uppercase block mb-1.5" style={{ fontFamily: "var(--font-body)" }}>Your Request / Notes *</label>
+                      <textarea
+                        required
+                        rows={4}
+                        value={form.message}
+                        onChange={(e) => setForm({ ...form, message: e.target.value })}
+                        className="w-full px-4 py-3 bg-black/60 border border-white/8 text-[#F3F1E9]/80 placeholder-[#F3F1E9]/20 focus:border-[#ECA241]/40 focus:outline-none transition-colors text-sm resize-none"
+                        style={{ fontFamily: "var(--font-body)" }}
+                        placeholder="Tell us about your unique situation or anything the booking wizard didn't cover..."
+                      />
+                    </div>
+                    <button
+                      type="submit" disabled={isPending}
+                      className="w-full py-3.5 border border-[#ECA241]/25 text-[#F3F1E9]/60 text-sm font-semibold tracking-wider uppercase hover:border-[#ECA241]/50 hover:text-[#F3F1E9]/80 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
                       style={{ fontFamily: "var(--font-body)" }}
-                      placeholder={f.placeholder}
-                    />
-                  </div>
-                ))}
-                <div>
-                  <label className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase block mb-2" style={{ fontFamily: "var(--font-body)" }}>Event Type</label>
-                  <select
-                    value={form.eventType}
-                    onChange={(e) => setForm({ ...form, eventType: e.target.value })}
-                    className="w-full px-4 py-3 bg-black border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm"
-                    style={{ fontFamily: "var(--font-body)" }}
-                  >
-                    <option value="">Select type</option>
-                    <option value="private-chef">Private Chef</option>
-                    <option value="catering">Catering</option>
-                    <option value="meal-boxes">Meal Boxes</option>
-                    <option value="special-events">Special Events</option>
-                    <option value="corporate">Corporate Dining</option>
-                  </select>
+                    >
+                      {isPending ? "Sending..." : "Send Message"}
+                    </button>
+                  </form>
                 </div>
-              </div>
-              <div className="mt-4">
-                <label className="text-[#F3F1E9]/40 text-[10px] tracking-wider uppercase block mb-2" style={{ fontFamily: "var(--font-body)" }}>Tell Us About Your Event *</label>
-                <textarea
-                  required
-                  rows={4}
-                  value={form.message}
-                  onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  className="w-full px-4 py-3 bg-black border border-white/10 text-[#F3F1E9] focus:border-[#ECA241] focus:outline-none transition-colors text-sm resize-none"
-                  style={{ fontFamily: "var(--font-body)" }}
-                  placeholder="Date, guest count, dietary needs, vision for the event..."
-                />
-              </div>
-              <button type="submit" disabled={isPending} className="mt-6 w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed">{isPending ? "Sending..." : "Send Inquiry"}</button>
-            </form>
-          </FadeIn>
-        </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </FadeIn>
       </div>
     </section>
   );

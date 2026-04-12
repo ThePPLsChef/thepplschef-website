@@ -229,3 +229,10 @@
 - [x] Review/summary step: elevated cream card, all selections with Edit links per step, consent footer
 - [x] All 28 vitest tests passing
 - [x] Deploy to preview
+
+## Review Step Reassurance Message (Apr 12)
+
+- [x] Added reassurance message above Submit button on review step: "This isn't a finalized booking — just the start of something great..."
+- [x] Styled: text-[13.5px], text-[#F3F1E9]/60, centered, leading-relaxed, mb-4 spacing — readable, warm, not fine print
+- [x] 0 TypeScript errors, all 28 vitest tests passing
+- [x] Deploy to preview and push to GitHub

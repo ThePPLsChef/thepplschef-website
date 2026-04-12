@@ -970,6 +970,15 @@ export default function BookingWizard() {
                 Continue <ArrowRight size={16} />
               </motion.button>
             ) : (
+              <>
+                {/* Reassurance message above submit */}
+                <p
+                  className="text-center text-[13.5px] text-[#F3F1E9]/60 leading-relaxed mb-4 px-2"
+                  style={fontBody}
+                >
+                  This isn't a finalized booking — just the start of something great.<br />
+                  We'll review your request and reach out within 24 hours to design your experience and provide a custom quote.
+                </p>
               <motion.button
                 type="button"
                 onClick={handleSubmit}
@@ -998,6 +1007,7 @@ export default function BookingWizard() {
                   <>Submit Request <ArrowRight size={16} /></>
                 )}
               </motion.button>
+              </>
             )}
           </div>
 

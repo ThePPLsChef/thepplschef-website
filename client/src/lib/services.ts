@@ -26,6 +26,8 @@ import {
   MEAL_PREP_TAMALES,
   MEAL_PREP_4BOX_SPREAD,
   CATERING_HERO,
+  PRIVATE_CHEF_HERO,
+  CORPORATE_HERO_ROTATED,
 } from "./images";
 
 export interface ServiceData {
@@ -46,8 +48,8 @@ export const services: ServiceData[] = [
   {
     slug: "private-chef-las-vegas",
     title: "Private Chef Experience",
-    tagline: "Fine dining, delivered to your doorstep.",
-    heroImage: CHEF_REAL_PORTRAIT_2,
+    tagline: "Restaurant-level dining. Personal. Intimate. Unforgettable.",
+    heroImage: PRIVATE_CHEF_HERO,
     overview: "Transform your home into a five-star restaurant. Our Private Chef Experience brings a dedicated chef to your space, where they'll prepare a multi-course meal crafted exclusively for you and your guests. From ingredient sourcing to plating and cleanup, we handle every detail — you simply enjoy the evening.",
     included: [
       "Personal consultation and custom menu design",
@@ -195,7 +197,7 @@ export const services: ServiceData[] = [
     slug: "corporate-catering-las-vegas",
     title: "Corporate & Group Dining",
     tagline: "Impress your team. Elevate your brand.",
-    heroImage: NEW_EVENT_3,
+    heroImage: CORPORATE_HERO_ROTATED,
     overview: "From executive lunches to company-wide celebrations, our Corporate Dining service brings premium food and professional service to your business events. We understand that corporate events reflect your brand — that's why we deliver an experience that's polished, punctual, and impressive. Custom menus, dietary accommodations, and seamless logistics included.",
     included: [
       "Corporate menu planning and tastings",

@@ -11,7 +11,7 @@ import { ArrowRight, Check, Users, ChevronLeft } from "lucide-react";
 import ServicePricingSection, { PricingTier } from "@/components/ServicePricingSection";
 import Layout from "@/components/Layout";
 import { getServiceBySlug, services } from "@/lib/services";
-import { LOGO_PRIMARY, LOGO_P_ICON } from "@/lib/images";
+import { LOGO_PRIMARY, LOGO_P_ICON, CHEF_REAL_PORTRAIT_2 } from "@/lib/images";
 import { JsonLd, createServiceSchema } from "@/lib/seo";
 
 function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -313,6 +313,45 @@ export default function ServicePage() {
           tiers={servicePricingData[service.slug].tiers}
           ctaHref={bookingUrl}
         />
+      )}
+
+      {/* Meet Your Chef — Private Chef page only */}
+      {service.slug === "private-chef-las-vegas" && (
+        <section className="section-cream py-20 lg:py-28">
+          <div className="container">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              <FadeIn className="order-2 lg:order-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-[1px] bg-[#D82E2B]" />
+                  <span className="brand-label text-[#D82E2B]">Meet Your Chef</span>
+                </div>
+                <h2 className="font-[family-name:var(--font-display)] text-3xl lg:text-4xl text-black leading-tight mb-6">
+                  Chef <span className="text-[#D82E2B]">Stephen Austin</span>
+                </h2>
+                <p className="text-black/60 text-base lg:text-lg leading-relaxed mb-4" style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}>
+                  Chef Stephen Austin is the founder and executive chef behind The PPL's Chef. With years of professional culinary experience across private dining, catering, and events, Stephen built this brand on a single belief: everybody deserves to have a chef.
+                </p>
+                <p className="text-black/60 text-base leading-relaxed mb-8" style={{ fontFamily: "var(--font-serif)", fontWeight: 400 }}>
+                  Every menu is personally designed by Stephen — rooted in bold flavor, elevated technique, and a genuine passion for creating experiences that bring people together.
+                </p>
+                <Link href={bookingUrl} className="btn-primary inline-flex">
+                  Book with Chef Stephen
+                </Link>
+              </FadeIn>
+              <FadeIn delay={0.15} className="order-1 lg:order-2">
+                <div className="relative overflow-hidden aspect-[3/4] max-w-sm mx-auto lg:mx-0 lg:ml-auto">
+                  <img
+                    src={CHEF_REAL_PORTRAIT_2}
+                    alt="Chef Stephen Austin — The PPL's Chef"
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/30 to-transparent" />
+                </div>
+              </FadeIn>
+            </div>
+          </div>
+        </section>
       )}
 
       {/* CTA */}

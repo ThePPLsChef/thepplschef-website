@@ -264,3 +264,15 @@
 - [x] Home.tsx ContactSection: Form styled subdued (muted borders, ghost submit button)
 - [x] All 28 vitest tests passing, 0 TypeScript errors
 - [x] Deploy to preview and push to GitHub
+
+## Homepage Hero Image Overhaul (Apr 12)
+
+- [x] Homepage hero: Replaced HERO_BG with overhead fine-dining table shot — multiple gourmet plated dishes, wine glasses, hands reaching, people actively eating, warm golden lighting
+- [x] Audit all page heroes against rule: must show food OR chef cooking/serving/plating
+- [x] Private Chef Experience ✅ (chef in action, food visible)
+- [x] Full-Service Catering ✅ (chef serving, food visible)
+- [x] Chef-Crafted Meal Boxes ✅ (food visible)
+- [x] Special Events & Celebrations ✅ (chef with torch, food visible, people eating)
+- [x] Corporate & Group Dining ✅ (food visible)
+- [x] All 28 vitest tests passing, 0 TypeScript errors
+- [ ] Deploy to preview ONLY (no GitHub push until owner approves)

@@ -17,7 +17,7 @@ export const LOGO_P_ICON = `${CDN}/logo_p_icon_5a0514c3.png`;            // P+ch
 export const LOGO_ALT_HORIZONTAL = `${CDN}/logo_alt_horizontal_v4_4ad3d7b5.png`; // Horizontal alt logo — Meal Prep section badge
 
 // Hero/feature images — WebP
-export const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/homepage_hero_gourmet_3aac11d1.webp";  // Gourmet fine-dining table — gold charger plates, copper napkins, calla lilies, pillar candles, crystal wine glasses, warm golden bokeh (Pexels royalty-free)
+export const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/homepage_hero_overhead_dining_f74dc462.webp";  // Overhead fine-dining table — multiple gourmet plated dishes (colorful salads, pasta, seafood), wine glasses, hands reaching, elegant white linens, warm golden lighting, people actively eating and sharing (Getty Images royalty-free)
 export const CATERING_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/hero-catering-buffet_442aae7b.webp";  // Chef serving at candlelit catering buffet — scale, motion, warm glow, full-service feel (Pexels royalty-free)
 export const PRIVATE_CHEF_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/private_chef_hero_action_cfa99fa2.webp";  // Chef in action — presenting gourmet plated dish with microgreens, real kitchen environment (Pexels royalty-free)
 export const CORPORATE_HERO_ROTATED = "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/corporate_hero_rotated_cw_ea418542.webp";  // Corporate dining hero — rotated 90° CW to correct orientation

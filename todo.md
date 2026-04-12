@@ -214,3 +214,18 @@
 - [x] All 7 standard steps + 8 meal prep steps tested and working
 - [x] All 28 vitest tests passing
 - [x] Deploy to preview
+
+## Wizard Visual Impact Redesign (Apr 11)
+
+- [x] Cinematic dark background: food photography with multi-layer warm overlay (communal dining hero, elegant table per step)
+- [x] Warm cream cards (#FAF7F2 / #F5F0E8) with soft shadow elevation clearly pop against dark bg
+- [x] Design direction: elevated, spacious, premium — depth via shadow not harsh contrast
+- [x] Gold as guide accent: subtle selection indicator, progress bar, CTA gradient
+- [x] Card hover: y-3 lift + deeper shadow (no glow, no harsh border)
+- [x] Selected card: warm cream bg + muted gold border + subtle ring
+- [x] Dietary pills: cream surface with gold check badge on select
+- [x] Progress bar: gold gradient fill + step labels + percentage
+- [x] AnimatePresence page transitions with directional slide
+- [x] Review/summary step: elevated cream card, all selections with Edit links per step, consent footer
+- [x] All 28 vitest tests passing
+- [x] Deploy to preview

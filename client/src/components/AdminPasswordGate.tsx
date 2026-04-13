@@ -55,6 +55,22 @@ export default function AdminPasswordGate({ children }: AdminPasswordGateProps) 
     }
   }, []);
 
+  // Prevent search engines from indexing the admin route
+  useEffect(() => {
+    let meta = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "robots";
+      document.head.appendChild(meta);
+    }
+    const prev = meta.content;
+    meta.content = "noindex, nofollow";
+    document.title = "Admin | The PPL's Chef";
+    return () => {
+      if (meta) meta.content = prev || "";
+    };
+  }, []);
+
   function triggerError(msg: string) {
     setError(msg);
     setShaking(true);

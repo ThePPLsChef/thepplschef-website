@@ -13,6 +13,7 @@ import AboutPage from "./pages/AboutPage";
 import GalleryPage from "./pages/GalleryPage";
 import FAQPage from "./pages/FAQPage";
 import ContactPage from "./pages/ContactPage";
+import PricingPage from "./pages/PricingPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminPasswordGate from "./components/AdminPasswordGate";
 function Router() {
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/gallery" component={GalleryPage} />
       <Route path="/faq" component={FAQPage} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/pricing" component={PricingPage} />
       <Route path="/book" component={BookingWizard} />
       <Route path="/admin">{() => <AdminPasswordGate><AdminDashboard /></AdminPasswordGate>}</Route>
       {/* Service pages with SEO slugs */}

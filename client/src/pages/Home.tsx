@@ -238,8 +238,8 @@ function HeroSection() {
           transition={{ delay: 0.4, duration: 0.8 }}
           className="font-[family-name:var(--font-display)] text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] text-[#F3F1E9] leading-[1.05] mb-6 max-w-3xl"
         >
-          Everybody Deserves to Have a{" "}
-          <span className="text-[#ECA241]">Chef.</span>
+          Your Table. Your Menu.{" "}
+          <span className="text-[#ECA241]">Your Chef.</span>
         </motion.h1>
 
         <motion.p
@@ -249,16 +249,16 @@ function HeroSection() {
           className="text-[#F3F1E9]/80 text-lg sm:text-xl leading-relaxed mb-10 max-w-xl"
           style={{ fontFamily: "var(--font-body)" }}
         >
-          Las Vegas’s premier private chef and catering experience — restaurant-quality dining in the comfort of your chosen space.
+          Las Vegas's premier private chef and catering company. Five-star dining, custom menus, and full-service hospitality — brought directly to you.
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.7 }} className="flex flex-wrap gap-4 justify-center">
           <Link href="/book" className="px-10 py-4 bg-[#ECA241] text-black text-base font-semibold tracking-wider uppercase hover:bg-[#f0b050] transition-all duration-300 shadow-lg shadow-[#ECA241]/30" style={{ fontFamily: "var(--font-body)" }}>
-            Book Your Experience
+            Plan Your Experience
           </Link>
-          <a href="#services" onClick={(e) => { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }); }} className="btn-outline">
-            Our Services
-          </a>
+          <Link href="/pricing" className="btn-outline">
+            View Pricing
+          </Link>
         </motion.div>
       </div>
 

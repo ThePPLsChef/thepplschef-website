@@ -174,24 +174,23 @@ function LuxCard({
       animate={selected ? { y: -8 } : { y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 26 }}
       className={`
-        relative group text-left w-full rounded-2xl transition-all duration-300
+        relative group text-left w-full rounded-2xl transition-all duration-300 min-h-[48px]
         ${small ? "p-8 sm:p-10" : "p-10 sm:p-12"}
         ${selected
-          ? "bg-[#FAF7F2] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04),0_0_24px_rgba(236,162,65,0.18)] border-transparent ring-0"
-          : "bg-[#F5F0E8] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)] border-transparent hover:bg-[#FAF7F2] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04),0_0_16px_rgba(236,162,65,0.10)]"
+          ? "bg-[#FAF7F2] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04),0_0_24px_rgba(236,162,65,0.22)] ring-2 ring-[#D4A853]/60"
+          : "bg-[#F5F0E8] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)] ring-1 ring-transparent hover:bg-[#FAF7F2] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04),0_0_16px_rgba(236,162,65,0.10)]"
         }
       `}
-      style={{ border: selected ? 'none' : 'none' }}
     >
-      {/* Selection indicator — subtle gold dot top-right */}
+      {/* Selection indicator — gold checkmark top-right */}
       <div className={`
-        absolute top-5 right-5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300
+        absolute top-5 right-5 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-300
         ${selected
-          ? "border-[#C49A3A] bg-[#D4A853] shadow-[0_0_10px_rgba(236,162,65,0.35)]"
+          ? "border-[#C49A3A] bg-[#D4A853] shadow-[0_0_12px_rgba(236,162,65,0.40)]"
           : "border-[#C8BCA8]/40 group-hover:border-[#D4A853]/40"
         }
       `}>
-        {selected && <Check size={12} className="text-white" strokeWidth={3} />}
+        {selected && <Check size={14} className="text-white" strokeWidth={3} />}
       </div>
 
       {Icon && (
@@ -239,13 +238,13 @@ function DietaryPill({ selected, onClick, label }: { selected: boolean; onClick:
       animate={selected ? { y: -4 } : { y: 0 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className={`
-        relative px-7 py-4 rounded-xl text-sm font-medium tracking-wide transition-all duration-300
+        relative px-7 py-4 rounded-xl text-sm font-medium tracking-wide transition-all duration-300 min-h-[44px]
         ${selected
-          ? "bg-[#FAF7F2] text-[#1A1A1A] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04),0_0_16px_rgba(236,162,65,0.18)] border-transparent"
-          : "bg-[#F0EBE0]/70 text-[#8A7A65] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.06),0_10px_10px_-5px_rgba(0,0,0,0.02)] border-transparent hover:bg-[#FAF7F2] hover:text-[#2C2416] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)]"
+          ? "bg-[#FAF7F2] text-[#1A1A1A] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04),0_0_16px_rgba(236,162,65,0.18)] ring-2 ring-[#D4A853]/50"
+          : "bg-[#F0EBE0]/70 text-[#8A7A65] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.06),0_10px_10px_-5px_rgba(0,0,0,0.02)] ring-1 ring-transparent hover:bg-[#FAF7F2] hover:text-[#2C2416] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)]"
         }
       `}
-      style={{ fontFamily: "var(--font-card-body)", border: 'none' }}
+      style={{ fontFamily: "var(--font-card-body)" }}
     >
       {selected && (
         <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#D4A853] rounded-full flex items-center justify-center shadow-[0_0_8px_rgba(236,162,65,0.35)]">
@@ -289,16 +288,16 @@ function ProgressStepper({ step, totalSteps, labels }: { step: number; totalStep
   return (
     <div className="mb-10 sm:mb-12">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[#F3F1E9]/30 text-xs tracking-[0.14em] uppercase font-medium" style={{ fontFamily: "var(--font-body)" }}>
+        <span className="text-[#F3F1E9]/50 text-xs tracking-[0.14em] uppercase font-medium" style={{ fontFamily: "var(--font-body)" }}>
           Step {step} of {totalSteps}
         </span>
-        <span className="text-[#D4A853]/70 text-xs font-semibold tracking-wider" style={{ fontFamily: "var(--font-body)" }}>
+        <span className="text-[#D4A853] text-xs font-semibold tracking-wider" style={{ fontFamily: "var(--font-body)" }}>
           {Math.round(progress)}%
         </span>
       </div>
 
-      {/* Progress bar */}
-      <div className="h-[3px] bg-[#F3F1E9]/[0.08] rounded-full overflow-hidden">
+      {/* Progress bar — taller for visibility */}
+      <div className="h-[5px] bg-[#F3F1E9]/[0.12] rounded-full overflow-hidden">
         <motion.div
           className="h-full rounded-full"
           style={{ background: "linear-gradient(90deg, #C49A3A 0%, #ECA241 50%, #F5A623 100%)" }}
@@ -308,17 +307,24 @@ function ProgressStepper({ step, totalSteps, labels }: { step: number; totalStep
         />
       </div>
 
-      {/* Step label dots */}
-      <div className="hidden sm:flex items-center justify-between mt-3">
+      {/* Step dots + labels — visible on mobile as dots, full labels on sm+ */}
+      <div className="flex items-center justify-between mt-4">
         {labels.map((lbl, i) => (
-          <div key={i} className="flex flex-col items-center" style={{ width: `${100 / totalSteps}%` }}>
+          <div key={i} className="flex flex-col items-center gap-1.5" style={{ width: `${100 / labels.length}%` }}>
+            <div className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+              i + 1 === step
+                ? "bg-[#ECA241] shadow-[0_0_8px_rgba(236,162,65,0.50)] scale-125"
+                : i + 1 < step
+                  ? "bg-[#D4A853]/60"
+                  : "bg-[#F3F1E9]/15"
+            }`} />
             <span
-              className={`text-[10px] tracking-wider transition-colors duration-300 ${
+              className={`hidden sm:block text-[10px] tracking-wider transition-colors duration-300 ${
                 i + 1 === step
                   ? "text-[#D4A853] font-semibold"
                   : i + 1 < step
-                    ? "text-[#D4A853]/40"
-                    : "text-[#F3F1E9]/15"
+                    ? "text-[#D4A853]/50"
+                    : "text-[#F3F1E9]/20"
               }`}
               style={{ fontFamily: "var(--font-body)" }}
             >
@@ -838,7 +844,7 @@ export default function BookingWizard() {
                             type="button"
                             onClick={() => update("referralSource", data.referralSource === opt ? "" : opt)}
                             className={`
-                              px-4 py-2.5 border rounded-lg text-xs sm:text-sm font-medium transition-all duration-300
+                              px-4 py-3 border rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 min-h-[44px]
                               ${data.referralSource === opt
                                 ? "border-[#D4A853]/60 bg-[#FAF7F2] text-[#1A1A1A] shadow-[0_2px_8px_rgba(0,0,0,0.12)]"
                                 : "border-[#E8E0D0]/50 bg-[#F0EBE0]/60 text-[#8A7A65] hover:bg-[#FAF7F2] hover:border-[#D4A853]/30 hover:text-[#2C2416] shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
@@ -944,13 +950,13 @@ export default function BookingWizard() {
               <button
                 type="button"
                 onClick={goBack}
-                className="flex items-center gap-2 text-[#F3F1E9]/30 hover:text-[#D4A853] text-sm transition-colors duration-300"
+                className="flex items-center gap-2 text-[#F3F1E9]/40 hover:text-[#D4A853] text-sm transition-colors duration-300 min-h-[44px] min-w-[44px] px-3"
                 style={fontBody}
               >
                 <ArrowLeft size={16} /> Back
               </button>
             ) : (
-              <Link href="/" className="flex items-center gap-2 text-[#F3F1E9]/30 hover:text-[#D4A853] text-sm transition-colors duration-300" style={fontBody}>
+              <Link href="/" className="flex items-center gap-2 text-[#F3F1E9]/40 hover:text-[#D4A853] text-sm transition-colors duration-300 min-h-[44px] min-w-[44px] px-3" style={fontBody}>
                 <ArrowLeft size={16} /> Home
               </Link>
             )}
@@ -963,7 +969,7 @@ export default function BookingWizard() {
                 whileHover={canProceed() ? { scale: 1.02 } : {}}
                 whileTap={canProceed() ? { scale: 0.98 } : {}}
                 className={`
-                  flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-semibold tracking-wider uppercase transition-all duration-300
+                  flex items-center gap-2 px-8 py-3.5 rounded-xl text-sm font-semibold tracking-wider uppercase transition-all duration-300 min-h-[44px]
                   ${canProceed()
                     ? "text-white shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.4)]"
                     : "bg-[#F3F1E9]/[0.05] text-[#F3F1E9]/12 cursor-not-allowed"

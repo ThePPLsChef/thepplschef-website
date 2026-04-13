@@ -303,3 +303,16 @@
 - [x] Update homepage gallery preview section to match new design language
 - [x] Run TypeScript checks and all vitest tests (16 new gallery tests + 28 existing = 44 total)
 - [ ] Deploy to preview only (no GitHub push)
+
+## Pre-Launch Priority Fixes (Apr 13 — 7-Day Window)
+
+- [x] Fix /pricing route — create premium pricing page with starting points, package logic, custom quote explanation, on-brand dark/gold luxury aesthetic, CTAs to book or request custom quote
+- [x] Secure /admin route — add noindex meta tag, remove any public links to /admin, keep password gate, make route less discoverable
+- [x] Strengthen homepage hero messaging — tighter headline, subheadline, CTA language for maximum emotional impact, value proposition clear within 3 seconds
+- [x] Polish booking wizard — crystal clear selection states, visible/intuitive progress indicators, fix touch targets (min 44px), smooth step transitions, effortless feel
+- [x] Add proper robots.txt — valid robots.txt allowing crawling, pointing to sitemap, served as text/plain
+- [x] Add proper sitemap.xml — valid XML sitemap listing all public routes, served as application/xml, noindex for /admin
+- [x] Fix analytics placeholder error — removed Umami script (GA4 already configured with G-QHP2QP8FHE)
+- [x] Fix homepage performance — hero image preload + fetchpriority=high, CDN preconnect, vendor/motion/trpc code splitting for smaller initial JS bundle
+- [x] Run all tests after changes (44 tests passing, 0 TypeScript errors)
+- [ ] Deploy to preview only (no GitHub push)

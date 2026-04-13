@@ -287,7 +287,7 @@
 - [ ] Ensure design feels luxury hospitality, not software UI
 - [ ] Regenerate homepage hero image — fix self-pouring wine decanter, natural human interactions
 - [ ] Run TypeScript checks and tests
-- [ ] Deploy to preview only (no GitHub push)
+- [x] Deploy to preview only (no GitHub push)
 
 ## Curated Culinary Storytelling Gallery (Apr 12)
 

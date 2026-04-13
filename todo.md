@@ -316,3 +316,17 @@
 - [x] Fix homepage performance — hero image preload + fetchpriority=high, CDN preconnect, vendor/motion/trpc code splitting for smaller initial JS bundle
 - [x] Run all tests after changes (44 tests passing, 0 TypeScript errors)
 - [x] Deploy to preview only (no GitHub push)
+
+## Premium Social Sharing / OG Meta Tags (Apr 13)
+
+- [x] Create 1200x630 OG images for each major page from existing photography, upload to CDN
+- [x] Create favicon set (favicon.ico, apple-touch-icon 180x180, favicon-32x32, favicon-16x16) from logo, upload to CDN
+- [x] Build server-side meta tag injection in Express (social crawlers don't execute JS)
+- [x] Define per-route metadata: og:title, og:description, og:image, twitter:card, twitter:title, twitter:description, twitter:image
+- [x] Routes needing unique meta: /, /about, /menus, /gallery, /pricing, /book, /faq, /contact, /admin (noindex), /private-chef-las-vegas, /catering-las-vegas, /meal-prep-las-vegas, /special-events-las-vegas, /corporate-catering-las-vegas
+- [x] All OG images must be exactly 1200x630px for WhatsApp/iMessage preview
+- [x] twitter:card must be summary_large_image on every page
+- [x] Favicon links in HTML head for all sizes
+- [x] Verify with curl that social crawlers see correct meta per route
+- [x] Run all tests after changes (62 tests passing, 18 new ogMeta tests)
+- [x] Deploy to preview only (no GitHub push)

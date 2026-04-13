@@ -100,29 +100,29 @@ export default function ClientReviews() {
               className="group"
             >
               {/* Review Card */}
-              <div className="relative h-full bg-[#0a0a0a] border border-white/10 hover:border-[#ECA241]/40 transition-all duration-300 p-8 lg:p-10 flex flex-col">
+              <div className="relative h-full bg-[#0a0a0a] rounded-2xl shadow-[0_20px_25px_-5px_rgba(0,0,0,0.25),0_10px_10px_-5px_rgba(0,0,0,0.10)] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.30),0_10px_10px_-5px_rgba(0,0,0,0.12),0_0_20px_rgba(236,162,65,0.10)] hover:-translate-y-2 transition-all duration-300 p-10 lg:p-12 flex flex-col">
                 {/* Accent Top Border */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#D82E2B] via-[#ECA241] to-transparent group-hover:from-[#ECA241] group-hover:via-[#D82E2B] transition-all duration-300" />
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#D82E2B] via-[#ECA241] to-transparent group-hover:from-[#ECA241] group-hover:via-[#D82E2B] transition-all duration-300 rounded-t-2xl" />
 
                 {/* Star Rating */}
-                <div className="mb-5">
+                <div className="mb-6">
                   <StarRating rating={review.rating} />
                 </div>
 
                 {/* Quote */}
-                <blockquote className="text-[#F3F1E9]/75 text-base leading-relaxed mb-6 flex-grow italic" style={fontBody}>
+                <blockquote className="text-[#F3F1E9]/75 text-base leading-relaxed mb-8 flex-grow italic" style={{ fontFamily: "var(--font-card-body)" }}>
                   "{review.quote}"
                 </blockquote>
 
                 {/* Author Info */}
-                <div className="border-t border-white/5 pt-5">
-                  <div className="font-semibold text-[#F3F1E9] text-sm" style={fontDisplay}>
+                <div className="border-t border-white/5 pt-6">
+                  <div className="font-semibold text-[#F3F1E9] text-sm" style={{ fontFamily: "var(--font-card-heading)" }}>
                     {review.author}
                   </div>
-                  <div className="text-[#ECA241] text-[11px] tracking-wider uppercase font-semibold mt-1" style={fontBody}>
+                  <div className="text-[#ECA241] text-[11px] tracking-wider uppercase font-semibold mt-1" style={{ fontFamily: "var(--font-card-body)" }}>
                     {review.eventType}
                   </div>
-                  <div className="text-[#F3F1E9]/35 text-xs mt-2" style={fontBody}>
+                  <div className="text-[#F3F1E9]/35 text-xs mt-2" style={{ fontFamily: "var(--font-card-body)" }}>
                     {review.date}
                   </div>
                 </div>

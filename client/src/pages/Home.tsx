@@ -321,19 +321,19 @@ function ServiceCard({ s, i }: { s: typeof serviceCards[0]; i: number }) {
   const inView = useInView(ref, { once: true, margin: "-40px" });
   return (
     <motion.div ref={ref} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: i * 0.08 }}>
-      <Link href={`/${s.slug}`} className="group block relative overflow-hidden bg-[#0a0a0a] border border-white/5 hover:border-[#ECA241]/30 transition-all duration-500">
-        <div className="relative h-52 overflow-hidden">
+      <Link href={`/${s.slug}`} className="group block relative overflow-hidden bg-[#0a0a0a] rounded-2xl shadow-[0_20px_25px_-5px_rgba(0,0,0,0.25),0_10px_10px_-5px_rgba(0,0,0,0.10)] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.30),0_10px_10px_-5px_rgba(0,0,0,0.12),0_0_20px_rgba(236,162,65,0.10)] transition-all duration-500 hover:-translate-y-2">
+        <div className="relative h-56 overflow-hidden rounded-t-2xl">
           <img src={s.image} alt={s.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
         </div>
-        <div className="p-6">
-          <h3 className="font-[family-name:var(--font-display)] text-lg text-[#F3F1E9] mb-2 group-hover:text-[#ECA241] transition-colors duration-300">{s.title}</h3>
-          <p className="text-[#F3F1E9]/45 text-sm leading-relaxed mb-4" style={{ fontFamily: "var(--font-body)" }}>{s.desc}</p>
-          <span className="text-[#ECA241]/60 group-hover:text-[#ECA241] text-xs tracking-widest uppercase font-semibold transition-colors flex items-center gap-2" style={{ fontFamily: "var(--font-body)" }}>
+        <div className="p-8 lg:p-10">
+          <h3 className="text-lg lg:text-xl text-[#F3F1E9] mb-3 group-hover:text-[#ECA241] transition-colors duration-300" style={{ fontFamily: "var(--font-card-heading)" }}>{s.title}</h3>
+          <p className="text-[#F3F1E9]/45 text-sm leading-relaxed mb-5" style={{ fontFamily: "var(--font-card-body)" }}>{s.desc}</p>
+          <span className="text-[#ECA241]/60 group-hover:text-[#ECA241] text-xs tracking-widest uppercase font-semibold transition-colors flex items-center gap-2" style={{ fontFamily: "var(--font-card-body)" }}>
             Learn More <ArrowRight size={14} />
           </span>
         </div>
-        <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#ECA241] group-hover:w-full transition-all duration-500" />
+        <div className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#ECA241] group-hover:w-full transition-all duration-500 rounded-b-2xl" />
       </Link>
     </motion.div>
   );
@@ -354,11 +354,11 @@ function WhyChooseUs() {
           {whyItems.map((item, i) => (
             <FadeIn key={item.title} delay={i * 0.1}>
               <div className="text-center group">
-                <div className="w-16 h-16 mx-auto mb-5 border border-[#D82E2B]/20 flex items-center justify-center group-hover:bg-[#D82E2B] group-hover:border-[#D82E2B] transition-all duration-400">
+                <div className="w-16 h-16 mx-auto mb-6 rounded-xl shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)] bg-white flex items-center justify-center group-hover:bg-[#D82E2B] group-hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.12),0_0_16px_rgba(216,46,43,0.15)] transition-all duration-400">
                   <item.icon size={24} className="text-[#D82E2B] group-hover:text-white transition-colors duration-400" />
                 </div>
-                <h3 className="font-[family-name:var(--font-display)] text-lg mb-3">{item.title}</h3>
-                <p className="text-black/50 text-sm leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>{item.desc}</p>
+                <h3 className="text-lg mb-3" style={{ fontFamily: "var(--font-card-heading)" }}>{item.title}</h3>
+                <p className="text-black/50 text-sm leading-relaxed" style={{ fontFamily: "var(--font-card-body)" }}>{item.desc}</p>
               </div>
             </FadeIn>
           ))}
@@ -470,28 +470,29 @@ function HomePricingTeaser() {
         <div className="grid sm:grid-cols-3 gap-6 lg:gap-8">
           {pricingTeasers.map((item, i) => (
             <FadeIn key={item.title} delay={i * 0.1}>
-              <div className="border border-white/10 bg-white/[0.03] p-8 lg:p-10 flex flex-col h-full hover:border-[#ECA241]/30 transition-colors duration-300">
+              <div className="rounded-2xl bg-white/[0.03] p-10 lg:p-12 flex flex-col h-full shadow-[0_20px_25px_-5px_rgba(0,0,0,0.25),0_10px_10px_-5px_rgba(0,0,0,0.10)] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.30),0_10px_10px_-5px_rgba(0,0,0,0.12),0_0_20px_rgba(236,162,65,0.10)] hover:-translate-y-2 transition-all duration-300">
                 <h3
-                  className="font-[family-name:var(--font-display)] text-xl lg:text-2xl text-[#F3F1E9] mb-3"
+                  className="text-xl lg:text-2xl text-[#F3F1E9] mb-3"
+                  style={{ fontFamily: "var(--font-card-heading)" }}
                 >
                   {item.title}
                 </h3>
                 <p
                   className="text-[#ECA241] text-base font-semibold mb-3"
-                  style={{ fontFamily: "var(--font-body)" }}
+                  style={{ fontFamily: "var(--font-card-body)" }}
                 >
                   {item.starting}
                 </p>
                 <p
                   className="text-[#F3F1E9]/50 text-sm leading-relaxed mb-8 flex-1"
-                  style={{ fontFamily: "var(--font-body)" }}
+                  style={{ fontFamily: "var(--font-card-body)" }}
                 >
                   {item.desc}
                 </p>
                 <Link
                   href="/book"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#ECA241] text-black text-sm font-bold tracking-wider uppercase hover:bg-[#f0b050] transition-all duration-300"
-                  style={{ fontFamily: "var(--font-body)" }}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#ECA241] text-black text-sm font-bold tracking-wider uppercase hover:bg-[#f0b050] transition-all duration-300 rounded-xl"
+                  style={{ fontFamily: "var(--font-card-body)" }}
                 >
                   Book Your Experience <ArrowRight size={15} />
                 </Link>
@@ -554,19 +555,19 @@ function TestimonialsSection() {
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((t, i) => (
             <FadeIn key={t.name} delay={i * 0.12}>
-              <div className="bg-white p-8 shadow-sm border border-black/5 group hover:shadow-lg transition-shadow duration-400 h-full flex flex-col">
-                <Quote className="text-[#ECA241]/20 mb-3" size={32} />
-                <div className="flex gap-1 mb-4">
+              <div className="bg-white rounded-2xl p-10 lg:p-12 shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)] group hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.12),0_10px_10px_-5px_rgba(0,0,0,0.06),0_0_16px_rgba(236,162,65,0.08)] hover:-translate-y-2 transition-all duration-300 h-full flex flex-col">
+                <Quote className="text-[#ECA241]/20 mb-4" size={36} />
+                <div className="flex gap-1 mb-5">
                   {Array.from({ length: t.rating }).map((_, j) => (
                     <Star key={j} size={14} className="text-[#ECA241] fill-[#ECA241]" />
                   ))}
                 </div>
-                <p className="text-black/65 text-sm leading-relaxed mb-6 flex-1" style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "0.95rem" }}>
+                <p className="text-black/65 leading-relaxed mb-8 flex-1" style={{ fontFamily: "var(--font-serif)", fontStyle: "italic", fontSize: "0.95rem" }}>
                   "{t.text}"
                 </p>
-                <div className="border-t border-black/5 pt-4">
-                  <div className="font-[family-name:var(--font-display)] text-sm text-black">{t.name}</div>
-                  <div className="text-[#D82E2B]/60 text-xs tracking-wider uppercase mt-0.5" style={{ fontFamily: "var(--font-body)" }}>{t.role}</div>
+                <div className="border-t border-black/5 pt-5">
+                  <div className="text-base text-black" style={{ fontFamily: "var(--font-card-heading)" }}>{t.name}</div>
+                  <div className="text-[#D82E2B]/60 text-xs tracking-wider uppercase mt-1" style={{ fontFamily: "var(--font-card-body)" }}>{t.role}</div>
                 </div>
               </div>
             </FadeIn>

@@ -212,8 +212,8 @@ export default function ContactPage() {
               <div className="flex-1 h-[1px] bg-white/8" />
             </div>
 
-            <div className="bg-[#080808] border border-white/[0.06] p-8 lg:p-10">
-              <h3 className="font-[family-name:var(--font-display)] text-xl text-[#F3F1E9]/70 mb-1">Prefer to Reach Out Directly?</h3>
+            <div className="bg-[#080808] rounded-2xl shadow-[0_20px_25px_-5px_rgba(0,0,0,0.25),0_10px_10px_-5px_rgba(0,0,0,0.10)] p-10 lg:p-12">
+              <h3 className="text-xl text-[#F3F1E9]/70 mb-1" style={{ fontFamily: "var(--font-card-heading)" }}>Prefer to Reach Out Directly?</h3>
               <p className="text-[#F3F1E9]/30 text-sm mb-8 leading-relaxed" style={fontBody}>
                 For unusual requests, large-scale events, or if you'd simply rather send a message — we're here. Otherwise, the booking wizard above is the fastest path to your custom quote.
               </p>

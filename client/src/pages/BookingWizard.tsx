@@ -169,55 +169,58 @@ function LuxCard({
     <motion.button
       type="button"
       onClick={onClick}
-      whileHover={{ y: -3, boxShadow: "0 12px 40px rgba(0,0,0,0.28), 0 2px 8px rgba(236,162,65,0.10)" }}
+      whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.10), 0 10px 10px -5px rgba(0,0,0,0.04), 0 0 20px rgba(236,162,65,0.08)" }}
       whileTap={{ scale: 0.985 }}
-      transition={{ type: "spring", stiffness: 350, damping: 28 }}
+      animate={selected ? { y: -8 } : { y: 0 }}
+      transition={{ type: "spring", stiffness: 300, damping: 26 }}
       className={`
         relative group text-left w-full rounded-2xl transition-all duration-300
-        ${small ? "p-5 sm:p-6" : "p-7 sm:p-8"}
+        ${small ? "p-8 sm:p-10" : "p-10 sm:p-12"}
         ${selected
-          ? "bg-[#FAF7F2] border border-[#D4A853]/50 shadow-[0_8px_32px_rgba(0,0,0,0.22),0_0_0_1px_rgba(212,168,83,0.25)] ring-1 ring-[#D4A853]/20"
-          : "bg-[#F5F0E8] border border-[#E8E0D0]/60 shadow-[0_4px_20px_rgba(0,0,0,0.18)] hover:bg-[#FAF7F2] hover:border-[#D4A853]/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.22)]"
+          ? "bg-[#FAF7F2] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04),0_0_24px_rgba(236,162,65,0.18)] border-transparent ring-0"
+          : "bg-[#F5F0E8] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)] border-transparent hover:bg-[#FAF7F2] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04),0_0_16px_rgba(236,162,65,0.10)]"
         }
       `}
+      style={{ border: selected ? 'none' : 'none' }}
     >
       {/* Selection indicator — subtle gold dot top-right */}
       <div className={`
-        absolute top-4 right-4 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-300
+        absolute top-5 right-5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300
         ${selected
-          ? "border-[#C49A3A] bg-[#D4A853]"
-          : "border-[#C8BCA8]/50 group-hover:border-[#D4A853]/40"
+          ? "border-[#C49A3A] bg-[#D4A853] shadow-[0_0_10px_rgba(236,162,65,0.35)]"
+          : "border-[#C8BCA8]/40 group-hover:border-[#D4A853]/40"
         }
       `}>
-        {selected && <Check size={11} className="text-white" strokeWidth={3} />}
+        {selected && <Check size={12} className="text-white" strokeWidth={3} />}
       </div>
 
       {Icon && (
         <div className={`
-          flex items-center justify-center rounded-xl mb-4 transition-all duration-300
-          ${small ? "w-9 h-9" : "w-11 h-11"}
+          flex items-center justify-center rounded-xl mb-5 transition-all duration-300
+          ${small ? "w-10 h-10" : "w-12 h-12"}
           ${selected
             ? "bg-[#D4A853]/12 text-[#B8892A]"
             : "bg-[#1A1A1A]/06 text-[#8A7A65] group-hover:bg-[#D4A853]/08 group-hover:text-[#B8892A]"
           }
         `}>
-          <Icon size={small ? 19 : 22} strokeWidth={1.6} />
+          <Icon size={small ? 20 : 24} strokeWidth={1.6} />
         </div>
       )}
 
       <div className={`
         font-semibold tracking-wide transition-colors duration-300 leading-snug
         ${selected ? "text-[#1A1A1A]" : "text-[#2C2416] group-hover:text-[#1A1A1A]"}
-        ${small ? "text-sm" : "text-[15px]"}
-      `} style={{ fontFamily: "var(--font-body)" }}>
+        ${small ? "text-base" : "text-lg"}
+      `} style={{ fontFamily: "var(--font-card-heading)" }}>
         {label}
       </div>
 
       {desc && (
         <div className={`
-          text-[13px] mt-2 leading-relaxed transition-colors duration-300
+          mt-3 leading-relaxed transition-colors duration-300
           ${selected ? "text-[#6B5E4A]" : "text-[#9A8E7E] group-hover:text-[#7A6E5E]"}
-        `} style={{ fontFamily: "var(--font-body)" }}>
+          ${small ? "text-sm" : "text-[15px]"}
+        `} style={{ fontFamily: "var(--font-card-body)" }}>
           {desc}
         </div>
       )}
@@ -231,21 +234,22 @@ function DietaryPill({ selected, onClick, label }: { selected: boolean; onClick:
     <motion.button
       type="button"
       onClick={onClick}
-      whileHover={{ y: -1 }}
+      whileHover={{ y: -3 }}
       whileTap={{ scale: 0.97 }}
+      animate={selected ? { y: -4 } : { y: 0 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className={`
-        relative px-5 py-3 border rounded-xl text-sm font-medium tracking-wide transition-all duration-300
+        relative px-7 py-4 rounded-xl text-sm font-medium tracking-wide transition-all duration-300
         ${selected
-          ? "border-[#D4A853]/60 bg-[#FAF7F2] text-[#1A1A1A] shadow-[0_4px_16px_rgba(0,0,0,0.14),0_0_0_1px_rgba(212,168,83,0.20)]"
-          : "border-[#E8E0D0]/50 bg-[#F0EBE0]/70 text-[#8A7A65] hover:bg-[#FAF7F2] hover:border-[#D4A853]/30 hover:text-[#2C2416] shadow-[0_2px_8px_rgba(0,0,0,0.10)]"
+          ? "bg-[#FAF7F2] text-[#1A1A1A] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04),0_0_16px_rgba(236,162,65,0.18)] border-transparent"
+          : "bg-[#F0EBE0]/70 text-[#8A7A65] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.06),0_10px_10px_-5px_rgba(0,0,0,0.02)] border-transparent hover:bg-[#FAF7F2] hover:text-[#2C2416] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)]"
         }
       `}
-      style={{ fontFamily: "var(--font-body)" }}
+      style={{ fontFamily: "var(--font-card-body)", border: 'none' }}
     >
       {selected && (
-        <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#D4A853] rounded-full flex items-center justify-center shadow-[0_2px_6px_rgba(0,0,0,0.2)]">
-          <Check size={9} className="text-white" strokeWidth={3} />
+        <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#D4A853] rounded-full flex items-center justify-center shadow-[0_0_8px_rgba(236,162,65,0.35)]">
+          <Check size={10} className="text-white" strokeWidth={3} />
         </span>
       )}
       {label}

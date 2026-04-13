@@ -199,12 +199,12 @@ export default function AboutPage() {
               { icon: Star, title: "5-Star Reputation", desc: "Consistently rated 5 stars by clients across Las Vegas for food quality, service, and professionalism." },
             ].map((item, i) => (
               <FadeIn key={item.title} delay={i * 0.08}>
-                <div className="text-center group p-6">
-                  <div className="w-16 h-16 mx-auto mb-5 border border-[#D82E2B]/20 flex items-center justify-center group-hover:bg-[#D82E2B] group-hover:border-[#D82E2B] transition-all duration-400">
+                <div className="text-center group p-8 lg:p-10">
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-xl shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)] bg-white flex items-center justify-center group-hover:bg-[#D82E2B] group-hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.12),0_0_16px_rgba(216,46,43,0.15)] transition-all duration-400">
                     <item.icon size={24} className="text-[#D82E2B] group-hover:text-white transition-colors duration-400" />
                   </div>
-                  <h3 className="font-[family-name:var(--font-display)] text-lg mb-3">{item.title}</h3>
-                  <p className="text-black/50 text-sm leading-relaxed" style={fontBody}>{item.desc}</p>
+                  <h3 className="text-lg mb-3" style={{ fontFamily: "var(--font-card-heading)" }}>{item.title}</h3>
+                  <p className="text-black/50 text-sm leading-relaxed" style={{ fontFamily: "var(--font-card-body)" }}>{item.desc}</p>
                 </div>
               </FadeIn>
             ))}

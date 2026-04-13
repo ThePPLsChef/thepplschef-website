@@ -187,23 +187,23 @@ export default function Pricing() {
                 >
                   {/* Card Background */}
                   <div
-                    className={`relative h-full border transition-all duration-300 ${
+                    className={`relative h-full rounded-2xl transition-all duration-300 ${
                       tier.popular
-                        ? "bg-gradient-to-br from-[#D82E2B]/10 to-[#ECA241]/5 border-[#ECA241]/40 shadow-2xl shadow-[#ECA241]/10"
-                        : "bg-[#0a0a0a] border-white/10 hover:border-[#ECA241]/30"
+                        ? "bg-gradient-to-br from-[#D82E2B]/10 to-[#ECA241]/5 shadow-[0_20px_25px_-5px_rgba(0,0,0,0.30),0_10px_10px_-5px_rgba(0,0,0,0.12),0_0_24px_rgba(236,162,65,0.18)]"
+                        : "bg-[#0a0a0a] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.25),0_10px_10px_-5px_rgba(0,0,0,0.10)] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.30),0_10px_10px_-5px_rgba(0,0,0,0.12),0_0_20px_rgba(236,162,65,0.10)]"
                     }`}
                   >
                     {/* Popular Badge */}
                     {tier.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#D82E2B] text-white text-[10px] font-bold tracking-widest uppercase shadow-lg">
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-5 py-1.5 bg-[#D82E2B] text-white text-[10px] font-bold tracking-widest uppercase rounded-full shadow-[0_4px_12px_rgba(216,46,43,0.3)]">
                         Most Popular
                       </div>
                     )}
 
                     {/* Content */}
-                    <div className="p-8 lg:p-10 flex flex-col h-full">
+                    <div className="p-10 lg:p-12 flex flex-col h-full">
                       {/* Tier Name */}
-                      <h4 className="font-[family-name:var(--font-display)] text-xl text-[#F3F1E9] mb-2">
+                      <h4 className="text-xl text-[#F3F1E9] mb-2" style={{ fontFamily: "var(--font-card-heading)" }}>
                         {tier.name}
                       </h4>
 
@@ -235,12 +235,12 @@ export default function Pricing() {
                       {/* CTA Button */}
                       <Link
                         href={section.category === "Meal Boxes" ? "/book?service=meal-prep" : "/book"}
-                        className={`w-full py-3.5 font-bold tracking-wider uppercase transition-all duration-300 text-center ${
+                        className={`w-full py-4 font-bold tracking-wider uppercase transition-all duration-300 text-center rounded-xl ${
                           tier.popular
-                            ? "bg-[#D82E2B] text-white hover:bg-[#ECA241] hover:text-black"
-                            : "bg-transparent border border-[#ECA241]/40 text-[#ECA241] hover:bg-[#ECA241] hover:text-black hover:border-[#ECA241]"
+                            ? "bg-[#D82E2B] text-white hover:bg-[#ECA241] hover:text-black shadow-[0_8px_16px_rgba(216,46,43,0.25)]"
+                            : "bg-transparent shadow-[0_4px_12px_rgba(0,0,0,0.15)] text-[#ECA241] hover:bg-[#ECA241] hover:text-black"
                         }`}
-                        style={fontBody}
+                        style={{ fontFamily: "var(--font-card-body)" }}
                       >
                         Book This Experience
                       </Link>

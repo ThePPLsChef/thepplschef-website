@@ -276,3 +276,15 @@
 - [x] Corporate & Group Dining ✅ (food visible)
 - [x] All 28 vitest tests passing, 0 TypeScript errors
 - [x] Deploy to preview ONLY (no GitHub push until owner approves)
+
+## Card CSS/Design Overhaul + Hero Regeneration (Apr 12)
+
+- [ ] Replace thin borders with tiered soft shadows on ALL card components
+- [ ] Add "active" lift (translateY(-8px)) for selected cards
+- [ ] Double internal padding on all cards for premium breathing room
+- [ ] Replace flat gold borders with subtle gold glow (#ECA241) on selected state
+- [ ] Typography: Cheese Sauce for card headers, Rockyeah Sans for body copy
+- [ ] Ensure design feels luxury hospitality, not software UI
+- [ ] Regenerate homepage hero image — fix self-pouring wine decanter, natural human interactions
+- [ ] Run TypeScript checks and tests
+- [ ] Deploy to preview only (no GitHub push)

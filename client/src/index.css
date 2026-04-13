@@ -51,6 +51,8 @@
   --font-display: 'Abril Fatface', Georgia, serif;
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-card-heading: 'Fredoka', 'DM Sans', system-ui, sans-serif;
+  --font-card-body: 'Outfit', 'DM Sans', system-ui, sans-serif;
 }
 
 :root {

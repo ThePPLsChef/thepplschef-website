@@ -102,7 +102,7 @@ describe("OG Meta Tag Injection", () => {
   it("injects contact page meta tags for /contact", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/contact");
     expect(result).toContain("Contact Us");
-    expect(result).toContain("og-images/og-contact-v2.jpg");
+    expect(result).toContain("og-images/og-contact-logo-v2.jpg");
   });
 
   it("adds noindex for /admin route", () => {

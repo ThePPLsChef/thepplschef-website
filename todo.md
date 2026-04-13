@@ -332,8 +332,14 @@
 - [x] Deploy to preview only (no GitHub push)
 
 ## OG Image MIME Type Fix (Urgent — Launch Blocker)
-- [ ] Re-upload all 13 OG images with correct image/jpeg MIME type (currently serving as application/octet-stream)
-- [ ] Swap Gallery OG image to short rib photo (owner preference, keep Private Chef as-is)
-- [ ] Update ogMeta.ts and inject-og-meta.mjs with new CDN URLs
-- [ ] Verify all CDN URLs return content-type: image/jpeg
-- [ ] Run tests, push to GitHub
+- [x] Re-upload all 13 OG images with correct image/jpeg MIME type (currently serving as application/octet-stream)
+- [x] Swap Gallery OG image to short rib photo (owner preference, keep Private Chef as-is)
+- [x] Update ogMeta.ts and inject-og-meta.mjs with new CDN URLs
+- [x] Verify all CDN URLs return content-type: image/jpeg
+- [x] Run tests, push to GitHub
+
+## Owner Image Changes (Apr 13)
+
+- [x] Contact page OG image — replaced with full PPL's Chef wordmark on dark brand background (#1A1209), 1200x630, image/jpeg, updated ogMeta.ts and inject-og-meta.mjs
+- [x] Meal prep page hero image — unsharp mask (radius=2, percent=150, threshold=3) + contrast boost, re-uploaded as image/jpeg, updated images.ts CDN URL
+- [x] Run tests (62/62 passing), deploy to preview, push to GitHub

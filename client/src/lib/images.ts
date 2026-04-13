@@ -87,7 +87,7 @@ export const CAST_IRON_DISH     = `${CDN}/cast_iron_dish_324ad886.webp`;
 
 // ── BATCH 4 — MEAL PREP PHOTOS ────────────────────────────────────────────────
 // These small JPEGs were already well-compressed — WebP was larger, kept as JPG
-export const MEAL_PREP_OVERHEAD_MULTI  = `${CDN}/1000009793_640d446d.jpg`;
+export const MEAL_PREP_OVERHEAD_MULTI  = `${CDN}/meal-prep-hero-sharpened-v1.jpg`;  // Sharpened v1 — unsharp mask radius=2, percent=150, threshold=3
 export const MEAL_PREP_GRILLED_CHICKEN = `${CDN}/1000009791_6a881b13.jpg`;
 export const MEAL_PREP_GLAZED_SALMON   = `${CDN}/1000009792_bc162e7d.jpg`;
 export const MEAL_PREP_SHRIMP_FAJITA   = `${CDN}/1000009788_97b94012.jpg`;

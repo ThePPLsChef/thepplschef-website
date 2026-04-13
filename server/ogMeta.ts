@@ -62,7 +62,7 @@ const routeMetaMap: Record<string, RouteMeta> = {
   "/contact": {
     title: "Contact Us | The PPL's Chef | Las Vegas",
     description: "Ready to elevate your next gathering? Reach out to The PPL's Chef for private dining, catering, and meal prep inquiries in Las Vegas.",
-    ogImage: `${CDN}/og-images/og-contact-v2.jpg`,
+    ogImage: `${CDN}/og-images/og-contact-logo-v2.jpg`,
   },
   "/admin": {
     title: "Admin | The PPL's Chef",

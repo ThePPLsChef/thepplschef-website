@@ -330,3 +330,10 @@
 - [x] Verify with curl that social crawlers see correct meta per route
 - [x] Run all tests after changes (62 tests passing, 18 new ogMeta tests)
 - [x] Deploy to preview only (no GitHub push)
+
+## OG Image MIME Type Fix (Urgent — Launch Blocker)
+- [ ] Re-upload all 13 OG images with correct image/jpeg MIME type (currently serving as application/octet-stream)
+- [ ] Swap Gallery OG image to short rib photo (owner preference, keep Private Chef as-is)
+- [ ] Update ogMeta.ts and inject-og-meta.mjs with new CDN URLs
+- [ ] Verify all CDN URLs return content-type: image/jpeg
+- [ ] Run tests, push to GitHub

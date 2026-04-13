@@ -27,73 +27,73 @@ const routeMetaMap: Record<string, RouteMeta> = {
   "/": {
     title: "The PPL's Chef | Luxury Private Dining & Catering in Las Vegas",
     description: "Las Vegas's premier private chef and catering company. Five-star dining, custom menus, and full-service hospitality — brought directly to you.",
-    ogImage: `${CDN}/og-homepage_be185cdd.jpg`,
+    ogImage: `${CDN}/og-images/og-homepage-v2.jpg`,
   },
   "/about": {
     title: "About Chef Stephen Austin | The PPL's Chef | Las Vegas",
     description: "Meet Chef Stephen Austin — 25+ years of culinary mastery, CSN-trained, and the driving force behind Las Vegas's most sought-after private dining experiences.",
-    ogImage: `${CDN}/og-about_753eaa26.jpg`,
+    ogImage: `${CDN}/og-images/og-about-v2.jpg`,
   },
   "/menus": {
     title: "Sample Menus | The PPL's Chef | Las Vegas",
     description: "Explore our curated sample menus for intimate dinners, celebration catering, and weekly meal prep. Every menu is custom-designed to your vision.",
-    ogImage: `${CDN}/og-menus_39908185.jpg`,
+    ogImage: `${CDN}/og-images/og-menus-v2.jpg`,
   },
   "/gallery": {
     title: "Culinary Portfolio | The PPL's Chef | Las Vegas",
     description: "A curated gallery of private dining experiences, chef-crafted dishes, and behind-the-scenes moments from Las Vegas's premier private chef company.",
-    ogImage: `${CDN}/og-gallery_952ca341.jpg`,
+    ogImage: `${CDN}/og-images/og-gallery-v2.jpg`,
   },
   "/pricing": {
     title: "Pricing & Packages | The PPL's Chef | Las Vegas",
     description: "Transparent starting points for private chef experiences, full-service catering, and chef-crafted meal prep. Every package is tailored to your event.",
-    ogImage: `${CDN}/og-pricing_21d4a309.jpg`,
+    ogImage: `${CDN}/og-images/og-pricing-v2.jpg`,
   },
   "/book": {
     title: "Book Your Experience | The PPL's Chef | Las Vegas",
     description: "Reserve your private chef experience, catering event, or meal prep service in Las Vegas. Tell us your vision — we'll craft the perfect menu.",
-    ogImage: `${CDN}/og-book_c5073fd1.jpg`,
+    ogImage: `${CDN}/og-images/og-book-v2.jpg`,
   },
   "/faq": {
     title: "Frequently Asked Questions | The PPL's Chef | Las Vegas",
     description: "Everything you need to know about booking a private chef, catering services, meal prep, pricing, dietary accommodations, and our service area in Las Vegas.",
-    ogImage: `${CDN}/og-faq_d7b6e148.jpg`,
+    ogImage: `${CDN}/og-images/og-faq-v2.jpg`,
   },
   "/contact": {
     title: "Contact Us | The PPL's Chef | Las Vegas",
     description: "Ready to elevate your next gathering? Reach out to The PPL's Chef for private dining, catering, and meal prep inquiries in Las Vegas.",
-    ogImage: `${CDN}/og-contact_de01dd21.jpg`,
+    ogImage: `${CDN}/og-images/og-contact-v2.jpg`,
   },
   "/admin": {
     title: "Admin | The PPL's Chef",
     description: "Administration panel.",
-    ogImage: `${CDN}/og-homepage_be185cdd.jpg`,
+    ogImage: `${CDN}/og-images/og-homepage-v2.jpg`,
     noindex: true,
   },
   "/private-chef-las-vegas": {
     title: "Private Chef Experience | The PPL's Chef | Las Vegas",
     description: "Hire a private chef in Las Vegas for an unforgettable in-home dining experience. Custom menus, premium ingredients, and full-service hospitality.",
-    ogImage: `${CDN}/og-private-chef_d29ce8f6.jpg`,
+    ogImage: `${CDN}/og-images/og-private-chef-v2.jpg`,
   },
   "/catering-las-vegas": {
     title: "Full-Service Catering | The PPL's Chef | Las Vegas",
     description: "Luxury catering for weddings, parties, and large-scale events in Las Vegas. Custom menus, professional staff, and restaurant-quality food at your venue.",
-    ogImage: `${CDN}/og-catering_00c2f106.jpg`,
+    ogImage: `${CDN}/og-images/og-catering-v2.jpg`,
   },
   "/meal-prep-las-vegas": {
     title: "Chef-Crafted Meal Boxes | The PPL's Chef | Las Vegas",
     description: "Restaurant-quality meal boxes delivered in Las Vegas. Fresh, healthy, chef-crafted meals for busy professionals and families. Order your meal box today.",
-    ogImage: `${CDN}/og-meal-prep_e66dea91.jpg`,
+    ogImage: `${CDN}/og-images/og-meal-prep-v2.jpg`,
   },
   "/special-events-las-vegas": {
     title: "Special Event Catering | The PPL's Chef | Las Vegas",
     description: "Make your celebration unforgettable with bespoke catering for birthdays, engagements, showers, and milestone events in Las Vegas.",
-    ogImage: `${CDN}/og-special-events_5ec0f5d0.jpg`,
+    ogImage: `${CDN}/og-images/og-special-events-v2.jpg`,
   },
   "/corporate-catering-las-vegas": {
     title: "Corporate & Group Dining | The PPL's Chef | Las Vegas",
     description: "Premium corporate catering in Las Vegas for meetings, conferences, team events, and client dinners. Professional service and custom menus.",
-    ogImage: `${CDN}/og-corporate_91a9e154.jpg`,
+    ogImage: `${CDN}/og-images/og-corporate-v2.jpg`,
   },
 };
 

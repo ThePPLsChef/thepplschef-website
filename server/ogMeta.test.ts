@@ -29,7 +29,7 @@ describe("OG Meta Tag Injection", () => {
     expect(result).toContain("Luxury Private Dining");
     expect(result).toContain("<title>");
     expect(result).toContain('og:image" content="');
-    expect(result).toContain("og-homepage_be185cdd.jpg");
+    expect(result).toContain("og-images/og-homepage-v2.jpg");
     expect(result).toContain('twitter:card" content="summary_large_image"');
     expect(result).toContain('twitter:image" content="');
     expect(result).toContain('og:image:width" content="1200"');
@@ -39,70 +39,70 @@ describe("OG Meta Tag Injection", () => {
   it("injects gallery-specific meta tags for /gallery", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/gallery");
     expect(result).toContain("Culinary Portfolio");
-    expect(result).toContain("og-gallery_952ca341.jpg");
+    expect(result).toContain("og-images/og-gallery-v2.jpg");
     expect(result).toContain('og:url" content="https://www.thepplschef.com/gallery"');
   });
 
   it("injects private chef meta tags for /private-chef-las-vegas", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/private-chef-las-vegas");
     expect(result).toContain("Private Chef Experience");
-    expect(result).toContain("og-private-chef_d29ce8f6.jpg");
+    expect(result).toContain("og-images/og-private-chef-v2.jpg");
     expect(result).toContain("unforgettable in-home dining");
   });
 
   it("injects meal prep meta tags for /meal-prep-las-vegas", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/meal-prep-las-vegas");
     expect(result).toContain("Chef-Crafted Meal Boxes");
-    expect(result).toContain("og-meal-prep_e66dea91.jpg");
+    expect(result).toContain("og-images/og-meal-prep-v2.jpg");
     expect(result).not.toContain("Default OG Title");
   });
 
   it("injects catering meta tags for /catering-las-vegas", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/catering-las-vegas");
     expect(result).toContain("Full-Service Catering");
-    expect(result).toContain("og-catering_00c2f106.jpg");
+    expect(result).toContain("og-images/og-catering-v2.jpg");
   });
 
   it("injects special events meta tags for /special-events-las-vegas", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/special-events-las-vegas");
     expect(result).toContain("Special Event Catering");
-    expect(result).toContain("og-special-events_5ec0f5d0.jpg");
+    expect(result).toContain("og-images/og-special-events-v2.jpg");
   });
 
   it("injects corporate meta tags for /corporate-catering-las-vegas", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/corporate-catering-las-vegas");
     expect(result).toContain("Corporate");
-    expect(result).toContain("og-corporate_91a9e154.jpg");
+    expect(result).toContain("og-images/og-corporate-v2.jpg");
   });
 
   it("injects about page meta tags for /about", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/about");
     expect(result).toContain("Chef Stephen Austin");
-    expect(result).toContain("og-about_753eaa26.jpg");
+    expect(result).toContain("og-images/og-about-v2.jpg");
   });
 
   it("injects pricing page meta tags for /pricing", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/pricing");
     expect(result).toContain("Pricing");
-    expect(result).toContain("og-pricing_21d4a309.jpg");
+    expect(result).toContain("og-images/og-pricing-v2.jpg");
   });
 
   it("injects book page meta tags for /book", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/book");
     expect(result).toContain("Book Your Experience");
-    expect(result).toContain("og-book_c5073fd1.jpg");
+    expect(result).toContain("og-images/og-book-v2.jpg");
   });
 
   it("injects faq page meta tags for /faq", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/faq");
     expect(result).toContain("Frequently Asked Questions");
-    expect(result).toContain("og-faq_d7b6e148.jpg");
+    expect(result).toContain("og-images/og-faq-v2.jpg");
   });
 
   it("injects contact page meta tags for /contact", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/contact");
     expect(result).toContain("Contact Us");
-    expect(result).toContain("og-contact_de01dd21.jpg");
+    expect(result).toContain("og-images/og-contact-v2.jpg");
   });
 
   it("adds noindex for /admin route", () => {
@@ -113,7 +113,7 @@ describe("OG Meta Tag Injection", () => {
 
   it("falls back to homepage meta for unknown routes", () => {
     const result = injectMetaTags(TEMPLATE_HTML, "/some-unknown-page");
-    expect(result).toContain("og-homepage_be185cdd.jpg");
+    expect(result).toContain("og-images/og-homepage-v2.jpg");
     expect(result).toContain("Luxury Private Dining");
   });
 

@@ -279,14 +279,14 @@
 
 ## Card CSS/Design Overhaul + Hero Regeneration (Apr 12)
 
-- [ ] Replace thin borders with tiered soft shadows on ALL card components
-- [ ] Add "active" lift (translateY(-8px)) for selected cards
-- [ ] Double internal padding on all cards for premium breathing room
-- [ ] Replace flat gold borders with subtle gold glow (#ECA241) on selected state
-- [ ] Typography: Cheese Sauce for card headers, Rockyeah Sans for body copy
-- [ ] Ensure design feels luxury hospitality, not software UI
-- [ ] Regenerate homepage hero image — fix self-pouring wine decanter, natural human interactions
-- [ ] Run TypeScript checks and tests
+- [x] Replace thin borders with tiered soft shadows on ALL card components
+- [x] Add "active" lift (translateY(-8px)) for selected cards
+- [x] Double internal padding on all cards for premium breathing room
+- [x] Replace flat gold borders with subtle gold glow (#ECA241) on selected state
+- [x] Typography: Fredoka for card headers, Outfit for body copy (brand fonts)
+- [x] Ensure design feels luxury hospitality, not software UI
+- [x] Regenerate homepage hero image — cinematic overhead fine-dining v2
+- [x] Run TypeScript checks and tests
 - [x] Deploy to preview only (no GitHub push)
 
 ## Curated Culinary Storytelling Gallery (Apr 12)
@@ -302,7 +302,7 @@
 - [x] Visual standard: curated Las Vegas culinary gallery, NOT social media feed
 - [x] Update homepage gallery preview section to match new design language
 - [x] Run TypeScript checks and all vitest tests (16 new gallery tests + 28 existing = 44 total)
-- [ ] Deploy to preview only (no GitHub push)
+- [x] Deploy to preview only (no GitHub push)
 
 ## Pre-Launch Priority Fixes (Apr 13 — 7-Day Window)
 
@@ -315,4 +315,4 @@
 - [x] Fix analytics placeholder error — removed Umami script (GA4 already configured with G-QHP2QP8FHE)
 - [x] Fix homepage performance — hero image preload + fetchpriority=high, CDN preconnect, vendor/motion/trpc code splitting for smaller initial JS bundle
 - [x] Run all tests after changes (44 tests passing, 0 TypeScript errors)
-- [ ] Deploy to preview only (no GitHub push)
+- [x] Deploy to preview only (no GitHub push)

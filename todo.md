@@ -288,3 +288,18 @@
 - [ ] Regenerate homepage hero image — fix self-pouring wine decanter, natural human interactions
 - [ ] Run TypeScript checks and tests
 - [ ] Deploy to preview only (no GitHub push)
+
+## Curated Culinary Storytelling Gallery (Apr 12)
+
+- [x] Replace current gallery categories with 4 filters: All | Private Dining | Meal Prep | The Process
+- [x] Sticky experience filter bar at top of gallery with Gold (#ECA241) active state, editorial headline font
+- [x] Masonry layout with variable image heights (editorial/luxury hospitality feel, not uniform grid)
+- [x] Hover reveal on desktop: soft Cream (#F3F1E9) overlay at ~80% opacity with Chef's Note (title + one-line description)
+- [x] Full-screen lightbox: deep black (#000000) bg, high-res image, "Request This Experience" CTA linking to /book
+- [x] Smooth 300ms ease-in-out filter transitions — no flicker, snapping, or jarring rearrangement
+- [x] Categorize images by intent: Private Dining (elegant plated, tablescapes, service), Meal Prep (organized, abundant, practical luxury), The Process (behind-the-scenes, prep, finishing, hospitality details)
+- [x] Add Chef's Note metadata (title + description) to every gallery image
+- [x] Visual standard: curated Las Vegas culinary gallery, NOT social media feed
+- [x] Update homepage gallery preview section to match new design language
+- [x] Run TypeScript checks and all vitest tests (16 new gallery tests + 28 existing = 44 total)
+- [ ] Deploy to preview only (no GitHub push)

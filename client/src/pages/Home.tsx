@@ -112,42 +112,50 @@ const featuredDishes = [
   { src: GLAZED_RIBS, label: "Signature Ribs" },
 ];
 
-/* ─── HOMEPAGE GALLERY PREVIEW (6 images + View Full Gallery) ─── */
+/* ─── HOMEPAGE GALLERY PREVIEW — Curated storytelling teaser ─── */
 const galleryPreviewImages = [
-  { src: BEET_SALAD_SIDE, alt: "Roasted beet salad with citrus and goat cheese" },
-  { src: SHRIMP_CREAM_SAUCE, alt: "Jumbo shrimp in house cream sauce" },
-  { src: SEAFOOD_BOIL_CHEF, alt: "Chef Stephen's signature seafood boil" },
-  { src: GLAZED_RIBS, alt: "Fall-off-the-bone glazed ribs" },
-  { src: PASTRY_TURNOVER, alt: "Golden pastry turnover with dipping sauce" },
-  { src: ELEGANT_TABLE, alt: "Elegant table setting for a private dinner" },
+  { src: BEET_SALAD_SIDE, title: "Roasted Beet Salad", desc: "Citrus-kissed beets with goat cheese and pistachios.", tag: "Private Dining" },
+  { src: SHRIMP_CREAM_SAUCE, title: "Jumbo Shrimp", desc: "Pan-seared shrimp in house cream sauce.", tag: "Private Dining" },
+  { src: SEAFOOD_BOIL_CHEF, title: "Signature Seafood Boil", desc: "Crab, shrimp, corn — served communal style.", tag: "Private Dining" },
+  { src: GLAZED_RIBS, title: "Signature Glazed Ribs", desc: "Fall-off-the-bone ribs with house glaze.", tag: "Private Dining" },
+  { src: PASTRY_TURNOVER, title: "Golden Pastry Turnover", desc: "Flaky pastry with savory filling.", tag: "Private Dining" },
+  { src: ELEGANT_TABLE, title: "Private Dinner Setting", desc: "Elegant place settings for an intimate experience.", tag: "Private Dining" },
 ];
+
+const previewAspects = ["aspect-[3/4]", "aspect-[4/5]", "aspect-square", "aspect-[4/5]", "aspect-[3/4]", "aspect-[5/4]"];
 
 function HomepageGalleryPreview() {
   return (
-    <section id="gallery" className="section-cream py-24 lg:py-32 relative overflow-hidden">
+    <section id="gallery" className="section-dark py-24 lg:py-32 relative overflow-hidden">
       <div className="h-[1px] bg-gradient-to-r from-transparent via-[#ECA241]/40 to-transparent absolute top-0 left-0 right-0" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none z-0">
-        <img src={LOGO_PRIMARY} alt="" className="w-[500px] h-auto object-contain" />
-      </div>
       <div className="container relative z-10">
         <SectionHeader
           label="Our Work"
-          title="Event"
+          title="Culinary"
           titleAccent="Gallery"
-          subtitle="A glimpse into the events, dishes, and experiences we've crafted for our clients."
+          subtitle="A curated collection of dishes, experiences, and moments crafted by The PPL's Chef."
+          dark
         />
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="columns-2 lg:columns-3 gap-4 space-y-4">
           {galleryPreviewImages.map((img, i) => (
             <FadeIn key={i} delay={i * 0.08}>
-              <div className="group relative overflow-hidden aspect-[4/5]">
-                <img src={img.src} alt={img.alt} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="break-inside-avoid group relative overflow-hidden cursor-pointer">
+                <div className={`relative overflow-hidden ${previewAspects[i]}`}>
+                  <img src={img.src} alt={img.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" loading="lazy" />
+                  <div className="absolute inset-0 bg-[#F3F1E9]/0 group-hover:bg-[#F3F1E9]/80 transition-all duration-300 ease-in-out flex flex-col items-start justify-end p-5">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                      <span className="text-[#D82E2B] text-[10px] font-semibold tracking-[0.15em] uppercase mb-1 block" style={{ fontFamily: "var(--font-body)" }}>{img.tag}</span>
+                      <h3 className="text-black text-base font-semibold leading-tight mb-1" style={{ fontFamily: "var(--font-card-heading)" }}>{img.title}</h3>
+                      <p className="text-black/60 text-sm leading-relaxed" style={{ fontFamily: "var(--font-card-body)" }}>{img.desc}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </FadeIn>
           ))}
         </div>
-        <FadeIn className="text-center mt-12" delay={0.4}>
-          <Link href="/gallery" className="inline-flex items-center gap-3 px-10 py-4 border-2 border-[#D82E2B] text-[#D82E2B] font-bold tracking-wider uppercase hover:bg-[#D82E2B] hover:text-white transition-all duration-300" style={{ fontFamily: "var(--font-body)" }}>
+        <FadeIn className="text-center mt-14" delay={0.4}>
+          <Link href="/gallery" className="inline-flex items-center gap-3 px-10 py-4 bg-[#ECA241] text-black font-bold tracking-wider uppercase hover:bg-[#f0b050] transition-all duration-300 shadow-lg shadow-[#ECA241]/20" style={{ fontFamily: "var(--font-body)" }}>
             Explore Full Gallery <ArrowRight size={18} />
           </Link>
         </FadeIn>

@@ -270,3 +270,12 @@ html {
   background-color: rgba(236, 162, 65, 0.25);
   color: #000;
 }
+
+/* Scrollbar hide utility for horizontal scroll containers */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

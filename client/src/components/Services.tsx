@@ -1,6 +1,6 @@
 /*
  * Services — Homepage service cards linking to dedicated pages
- * Each card navigates to /services/:slug
+ * Each card navigates to the dedicated SEO page slug.
  * BRAND FONTS: Abril Fatface for headings, DM Sans for body.
  * BRAND COLORS: Red #D82E2B, Gold #ECA241, Black #000, Cream #F3F1E9.
  */
@@ -17,35 +17,35 @@ const services = [
   {
     icon: ChefHat,
     title: "Private Chef Experience",
-    slug: "private-chef",
+    slug: "private-chef-las-vegas",
     description: "Fine dining in your own home. A dedicated chef prepares a multi-course meal exclusively for you and your guests.",
     image: CHEF_REAL_PORTRAIT_2,
   },
   {
     icon: Users,
     title: "Full-Service Catering",
-    slug: "catering",
+    slug: "catering-las-vegas",
     description: "Buffet, plated, or family-style service for events of every scale — from 30 to 300+ guests.",
     image: NEW_EVENT_1,
   },
   {
     icon: UtensilsCrossed,
     title: "Chef-Crafted Meal Boxes",
-    slug: "meal-boxes",
+    slug: "meal-prep-las-vegas",
     description: "Restaurant-quality meals delivered to your door. Choose your protein, pick your style, and we handle the rest.",
     image: MEAL_PREP_4BOX_SPREAD,
   },
   {
     icon: PartyPopper,
     title: "Special Events & Celebrations",
-    slug: "special-events",
+    slug: "special-events-las-vegas",
     description: "Birthdays, engagements, baby showers — custom menus and creative presentation for your milestone moments.",
     image: EVENT_2025_OCT,
   },
   {
     icon: Building2,
     title: "Corporate & Group Dining",
-    slug: "corporate",
+    slug: "corporate-catering-las-vegas",
     description: "Executive lunches, team events, and company celebrations with polished, professional service.",
     image: NEW_EVENT_3,
   },
@@ -57,7 +57,7 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
   const Icon = service.icon;
 
   return (
-    <Link href={`/services/${service.slug}`}>
+    <Link href={`/${service.slug}`}>
       <motion.div
         ref={ref}
         initial={{ opacity: 0, y: 40 }}

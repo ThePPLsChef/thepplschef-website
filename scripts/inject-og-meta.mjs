@@ -34,6 +34,11 @@ const ROUTE_META = {
     description: "Las Vegas's premier private chef and catering company. Five-star dining, custom menus, and full-service hospitality — brought directly to you.",
     ogImage: `${CDN}/og-images/og-homepage-v2.jpg`,
   },
+  "/services": {
+    title: "Our Services | The PPL's Chef | Las Vegas Private Chef & Catering",
+    description: "Explore all services offered by The PPL's Chef — private chef experiences, full-service catering, chef-crafted meal boxes, special events, and corporate dining in Las Vegas.",
+    ogImage: `${CDN}/og-images/og-homepage-v2.jpg`,
+  },
   "/about": {
     title: "About Chef Stephen Austin | The PPL's Chef | Las Vegas",
     description: "Meet Chef Stephen Austin — 25+ years of culinary mastery, CSN-trained, and the driving force behind Las Vegas's most sought-after private dining experiences.",

@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import ServicePage from "./pages/ServicePage";
+import ServicesPage from "./pages/ServicesPage";
 import BookingWizard from "./pages/BookingWizard";
 import MealPrepPage from "./pages/MealPrepPage";
 import MenusPage from "./pages/MenusPage";
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/" component={Home} />
       {/* Dedicated pages */}
       <Route path="/about" component={AboutPage} />
+      <Route path="/services" component={ServicesPage} />
       <Route path="/menus" component={MenusPage} />
       <Route path="/gallery" component={GalleryPage} />
       <Route path="/faq" component={FAQPage} />

@@ -4,7 +4,7 @@
   <!-- Homepage -->
   <url>
     <loc>https://www.thepplschef.com/</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -12,56 +12,56 @@
   <!-- Core pages -->
   <url>
     <loc>https://www.thepplschef.com/about</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/services</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/menus</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/gallery</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/pricing</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/faq</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/contact</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/book</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -69,37 +69,45 @@
   <!-- Service pages (SEO slugs) -->
   <url>
     <loc>https://www.thepplschef.com/private-chef-las-vegas</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/catering-las-vegas</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/meal-prep-las-vegas</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/special-events-las-vegas</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://www.thepplschef.com/corporate-catering-las-vegas</loc>
-    <lastmod>2025-05-16</lastmod>
+    <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+
+  <!-- Experience subdomain — public chef profile pages -->
+  <url>
+    <loc>https://experience.thepplschef.com/otis-rolley</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 
 </urlset>

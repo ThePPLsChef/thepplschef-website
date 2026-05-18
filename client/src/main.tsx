@@ -63,10 +63,17 @@ const trpcClient = trpc.createClient({
   ],
 });
 
-createRoot(document.getElementById("root")!).render(
+const rootEl = document.getElementById("root")!;
+const app = (
   <trpc.Provider client={trpcClient} queryClient={queryClient}>
     <QueryClientProvider client={queryClient}>
       <App />
     </QueryClientProvider>
   </trpc.Provider>
 );
+
+// If the root has pre-rendered content (from build-time SEO injection),
+// use createRoot which will replace the content. We don't use hydrateRoot
+// because the pre-rendered HTML is simplified SEO content, not a full
+// React render tree, so hydration mismatch warnings would fire.
+createRoot(rootEl).render(app);

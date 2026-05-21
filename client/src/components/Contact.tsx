@@ -4,12 +4,72 @@
  * Gold accents, social media icons.
  * BRAND FONTS: Abril Fatface for headings, DM Sans for body.
  * BRAND COLORS: Red #D82E2B, Gold #ECA241, Black #000, Cream #F3F1E9.
+ *
+ * Spam protections:
+ *  1. Honeypot field  — hidden field bots fill out; silently rejected if present
+ *  2. reCAPTCHA v3    — score-based bot detection; token sent to backend
+ *  3. Rate limiting   — max 3 submissions per 10 minutes via sessionStorage
+ *  4. Timestamp check — reject submissions under 3 seconds (bot-speed)
  */
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Phone, Mail, Instagram, Facebook } from "lucide-react";
 import { toast } from "sonner";
 import { submitInquiry } from "@/lib/submitInquiry";
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+const RECAPTCHA_SITE_KEY = "6Lds9vUsAAAAAlvXTzjcrpZPL0-LatnVeoUiTeov";
+const RATE_LIMIT_KEY = "inquiry_submissions";
+const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const MIN_FILL_SECONDS = 3; // reject if submitted faster than this
+
+// ── Spam-protection helpers ───────────────────────────────────────────────────
+
+/** Returns true if the session has exceeded the submission rate limit. */
+function isRateLimited(): boolean {
+  try {
+    const raw = sessionStorage.getItem(RATE_LIMIT_KEY);
+    const timestamps: number[] = raw ? JSON.parse(raw) : [];
+    const now = Date.now();
+    const recent = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+    return recent.length >= RATE_LIMIT_MAX;
+  } catch {
+    return false;
+  }
+}
+
+/** Records the current timestamp in the session rate-limit store. */
+function recordSubmission(): void {
+  try {
+    const raw = sessionStorage.getItem(RATE_LIMIT_KEY);
+    const timestamps: number[] = raw ? JSON.parse(raw) : [];
+    const now = Date.now();
+    const recent = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+    recent.push(now);
+    sessionStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(recent));
+  } catch {
+    // sessionStorage unavailable — silently ignore
+  }
+}
+
+/** Executes reCAPTCHA v3 and returns the token, or null on failure. */
+async function getRecaptchaToken(): Promise<string | null> {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined" || !(window as any).grecaptcha) {
+      resolve(null);
+      return;
+    }
+    (window as any).grecaptcha.ready(() => {
+      (window as any).grecaptcha
+        .execute(RECAPTCHA_SITE_KEY, { action: "submit_inquiry" })
+        .then((token: string) => resolve(token))
+        .catch(() => resolve(null));
+    });
+  });
+}
+
+// ── Social icon components ────────────────────────────────────────────────────
 
 // TikTok SVG icon
 function TikTokIcon({ size = 20 }: { size?: number }) {
@@ -39,6 +99,8 @@ const socialLinks = [
 export default function Contact() {
   const headerRef = useRef(null);
   const isInView = useInView(headerRef, { once: true, margin: "-100px" });
+
+  // ── Form state ──────────────────────────────────────────────────────────────
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -47,21 +109,70 @@ export default function Contact() {
     message: "",
   });
 
+  // ── Spam protection state ───────────────────────────────────────────────────
+  // 1. Honeypot: tracks the hidden field value
+  const [honeypot, setHoneypot] = useState("");
+  // 4. Timestamp: record when the form first mounted
+  const formMountedAt = useRef<number>(Date.now());
+
+  // Reset mount timestamp whenever the form is reset after a successful submit
+  useEffect(() => {
+    formMountedAt.current = Date.now();
+  }, []);
+
   const [isPending, setIsPending] = useState(false);
 
+  // ── Submit handler ──────────────────────────────────────────────────────────
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsPending(true);
+
     try {
+      // ── Protection 3: Rate limiting ───────────────────────────────────────
+      if (isRateLimited()) {
+        toast.error("Please wait before submitting again.");
+        return;
+      }
+
+      // ── Protection 1: Honeypot check ─────────────────────────────────────
+      if (honeypot) {
+        // Bot filled the hidden field — fake success, do nothing
+        toast.success("Thank you for your inquiry! We'll be in touch within 24 hours.");
+        setFormData({ name: "", email: "", phone: "", eventType: "", message: "" });
+        setHoneypot("");
+        return;
+      }
+
+      // ── Protection 4: Timestamp validation ───────────────────────────────
+      const elapsedMs = Date.now() - formMountedAt.current;
+      if (elapsedMs < MIN_FILL_SECONDS * 1000) {
+        // Submitted too fast — fake success, do nothing
+        toast.success("Thank you for your inquiry! We'll be in touch within 24 hours.");
+        setFormData({ name: "", email: "", phone: "", eventType: "", message: "" });
+        return;
+      }
+
+      // ── Protection 2: reCAPTCHA v3 token ─────────────────────────────────
+      const recaptchaToken = await getRecaptchaToken();
+
+      // ── Submit to API ─────────────────────────────────────────────────────
       await submitInquiry({
         name: formData.name,
         email: formData.email,
         phone: formData.phone || undefined,
         serviceType: formData.eventType || undefined,
         notes: formData.message || undefined,
+        recaptchaToken: recaptchaToken || undefined,
       });
+
+      // Record successful submission for rate limiting
+      recordSubmission();
+
       toast.success("Thank you for your inquiry! We'll be in touch within 24 hours.");
       setFormData({ name: "", email: "", phone: "", eventType: "", message: "" });
+      setHoneypot("");
+      // Reset the mount timestamp so a second submission also gets timed
+      formMountedAt.current = Date.now();
     } catch (err: any) {
       toast.error(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -179,6 +290,33 @@ export default function Contact() {
               <h3 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-black mb-8">
                 Send an Inquiry
               </h3>
+
+              {/* ── Protection 1: Honeypot field (invisible to real users) ── */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  top: "-9999px",
+                  width: "1px",
+                  height: "1px",
+                  overflow: "hidden",
+                  opacity: 0,
+                  pointerEvents: "none",
+                  tabIndex: -1,
+                } as React.CSSProperties}
+              >
+                <label htmlFor="website_url">Website</label>
+                <input
+                  id="website_url"
+                  name="website_url"
+                  type="text"
+                  autoComplete="off"
+                  tabIndex={-1}
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
+              </div>
 
               <div className="grid sm:grid-cols-2 gap-5">
                 <div>

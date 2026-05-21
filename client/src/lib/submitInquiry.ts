@@ -15,6 +15,8 @@ export interface InquiryPayload {
   foodPreferences?: string;
   allergies?: string;
   notes?: string;
+  /** reCAPTCHA v3 token for bot-score verification on the backend */
+  recaptchaToken?: string;
 }
 
 export interface InquiryResult {

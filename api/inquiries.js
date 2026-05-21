@@ -7,10 +7,12 @@
  *  - Saves inquiry to Neon PostgreSQL via @neondatabase/serverless
  *  - Sends owner alert email to info@thepplschef.com via Resend
  *  - Sends confirmation email to the client via Resend
+ *  - Verifies Google reCAPTCHA v3 token (rejects score < 0.5)
  *
  * Required Vercel Environment Variables:
- *  - DATABASE_URL   : Neon PostgreSQL connection string
- *  - RESEND_API_KEY : Resend API key (resend.com — free tier: 3,000 emails/month)
+ *  - DATABASE_URL        : Neon PostgreSQL connection string
+ *  - RESEND_API_KEY      : Resend API key (resend.com — free tier: 3,000 emails/month)
+ *  - RECAPTCHA_SECRET_KEY: Google reCAPTCHA v3 secret key
  */
 
 import { neon } from "@neondatabase/serverless";
@@ -28,6 +30,37 @@ function getResend() {
   const key = process.env.RESEND_API_KEY;
   if (!key) return null;
   return new Resend(key);
+}
+
+/**
+ * Verifies a reCAPTCHA v3 token with Google's siteverify API.
+ * Returns { success, score, action } or throws on network failure.
+ * If RECAPTCHA_SECRET_KEY is not set, verification is skipped (returns success).
+ */
+async function verifyRecaptcha(token) {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  if (!secretKey) {
+    console.warn("[api/inquiries] RECAPTCHA_SECRET_KEY not set — skipping verification");
+    return { success: true, score: 1.0, skipped: true };
+  }
+  if (!token) {
+    return { success: false, score: 0, error: "Missing reCAPTCHA token" };
+  }
+
+  const params = new URLSearchParams({
+    secret: secretKey,
+    response: token,
+  });
+
+  const verifyRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params.toString(),
+  });
+
+  const verifyData = await verifyRes.json();
+  console.log("[api/inquiries] reCAPTCHA verify response:", JSON.stringify(verifyData));
+  return verifyData;
 }
 
 function formatDate(dateStr) {
@@ -166,6 +199,7 @@ export default async function handler(req, res) {
       foodPreferences = null,
       allergies = null,
       notes = null,
+      recaptchaToken = null,
     } = body;
 
     // Validation
@@ -174,6 +208,28 @@ export default async function handler(req, res) {
     }
     if (!email || typeof email !== "string" || !email.includes("@")) {
       return res.status(400).json({ success: false, error: "Valid email is required" });
+    }
+
+    // ── Protection 2: reCAPTCHA v3 verification ───────────────────────────────
+    try {
+      const captchaResult = await verifyRecaptcha(recaptchaToken);
+      if (!captchaResult.success && !captchaResult.skipped) {
+        console.warn("[api/inquiries] reCAPTCHA failed:", captchaResult);
+        return res.status(400).json({
+          success: false,
+          error: "Security verification failed. Please refresh the page and try again.",
+        });
+      }
+      if (captchaResult.success && !captchaResult.skipped && captchaResult.score < 0.5) {
+        console.warn("[api/inquiries] reCAPTCHA score too low:", captchaResult.score);
+        return res.status(400).json({
+          success: false,
+          error: "Security verification failed. Please refresh the page and try again.",
+        });
+      }
+    } catch (captchaErr) {
+      // Don't block legitimate users if reCAPTCHA network call fails
+      console.error("[api/inquiries] reCAPTCHA verification error:", captchaErr);
     }
 
     // ── Save to database ──────────────────────────────────────────────────────

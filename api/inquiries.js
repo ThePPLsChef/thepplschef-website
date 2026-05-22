@@ -7,7 +7,9 @@
  *  - Saves inquiry to Neon PostgreSQL via @neondatabase/serverless
  *  - Sends owner alert email to info@thepplschef.com via Resend
  *  - Sends confirmation email to the client via Resend
- *  - Verifies Google reCAPTCHA v3 token (rejects score < 0.5)
+ *  - Verifies Google reCAPTCHA v3 token (rejects score < 0.7)
+ *  - Validates name field (must contain a space; rejects random-character strings)
+ *  - Validates email domain has a live MX record via DNS lookup
  *
  * Required Vercel Environment Variables:
  *  - DATABASE_URL        : Neon PostgreSQL connection string
@@ -17,6 +19,7 @@
 
 import { neon } from "@neondatabase/serverless";
 import { Resend } from "resend";
+import dns from "dns/promises";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -30,6 +33,66 @@ function getResend() {
   const key = process.env.RESEND_API_KEY;
   if (!key) return null;
   return new Resend(key);
+}
+
+/**
+ * Checks whether a name looks like a real human name.
+ * Rejects:
+ *  - names with no space (no first+last)
+ *  - names that are purely random mixed-case with no vowel pattern
+ */
+function isValidName(name) {
+  const trimmed = name.trim();
+  // Must contain at least one space (first + last name)
+  if (!trimmed.includes(" ")) return false;
+
+  // Each word must contain at least one vowel (a e i o u — case-insensitive)
+  const words = trimmed.split(/\s+/);
+  const vowelPattern = /[aeiouAEIOU]/;
+  for (const word of words) {
+    if (word.length > 0 && !vowelPattern.test(word)) return false;
+  }
+
+  // Reject strings that look like random camelCase gibberish:
+  // High ratio of alternating upper/lower case transitions is a red flag.
+  // Count case transitions (e.g. aAbBcC has many transitions).
+  let transitions = 0;
+  for (let i = 1; i < trimmed.length; i++) {
+    const prev = trimmed[i - 1];
+    const curr = trimmed[i];
+    if (/[a-zA-Z]/.test(prev) && /[a-zA-Z]/.test(curr)) {
+      const prevUpper = prev === prev.toUpperCase();
+      const currUpper = curr === curr.toUpperCase();
+      if (prevUpper !== currUpper) transitions++;
+    }
+  }
+  const letters = trimmed.replace(/[^a-zA-Z]/g, "").length;
+  // If more than 40% of letter-pairs are case transitions, it's likely random
+  if (letters > 4 && transitions / (letters - 1) > 0.4) return false;
+
+  return true;
+}
+
+/**
+ * Checks whether the domain part of an email has at least one MX record.
+ * Returns true if valid MX records exist, false otherwise.
+ * On DNS lookup failure/timeout, returns true (fail-open) to avoid blocking real users.
+ */
+async function hasMxRecord(email) {
+  try {
+    const domain = email.split("@")[1];
+    if (!domain) return false;
+    const records = await dns.resolveMx(domain);
+    return Array.isArray(records) && records.length > 0;
+  } catch (err) {
+    // ENOTFOUND = domain doesn't exist; ENODATA = no MX records
+    if (err.code === "ENOTFOUND" || err.code === "ENODATA" || err.code === "ESERVFAIL") {
+      return false;
+    }
+    // For other errors (timeout, etc.) fail-open
+    console.warn("[api/inquiries] MX lookup error (fail-open):", err.code, err.message);
+    return true;
+  }
 }
 
 /**
@@ -210,6 +273,25 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, error: "Valid email is required" });
     }
 
+    // ── Protection: Name validation ──────────────────────────────────────────
+    if (!isValidName(name)) {
+      console.warn("[api/inquiries] Name validation failed:", name);
+      return res.status(400).json({
+        success: false,
+        error: "Please enter your full name (first and last name).",
+      });
+    }
+
+    // ── Protection: Email MX record validation ───────────────────────────────
+    const mxValid = await hasMxRecord(email.trim());
+    if (!mxValid) {
+      console.warn("[api/inquiries] MX record check failed for email domain:", email);
+      return res.status(400).json({
+        success: false,
+        error: "The email address provided does not appear to be valid. Please check and try again.",
+      });
+    }
+
     // ── Protection 2: reCAPTCHA v3 verification ───────────────────────────────
     try {
       const captchaResult = await verifyRecaptcha(recaptchaToken);
@@ -220,7 +302,7 @@ export default async function handler(req, res) {
           error: "Security verification failed. Please refresh the page and try again.",
         });
       }
-      if (captchaResult.success && !captchaResult.skipped && captchaResult.score < 0.5) {
+      if (captchaResult.success && !captchaResult.skipped && captchaResult.score < 0.7) {
         console.warn("[api/inquiries] reCAPTCHA score too low:", captchaResult.score);
         return res.status(400).json({
           success: false,

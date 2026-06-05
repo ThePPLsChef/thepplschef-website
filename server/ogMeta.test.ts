@@ -105,8 +105,8 @@ describe("OG Meta Tag Injection", () => {
     expect(result).toContain("og-images/og-contact-logo-v2.jpg");
   });
 
-  it("adds noindex for /admin route", () => {
-    const result = injectMetaTags(TEMPLATE_HTML, "/admin");
+  it("adds noindex for admin route", () => {
+    const result = injectMetaTags(TEMPLATE_HTML, "/admin-nvz3ufj23jsv");
     expect(result).toContain('name="robots" content="noindex, nofollow"');
     expect(result).toContain("Admin");
   });

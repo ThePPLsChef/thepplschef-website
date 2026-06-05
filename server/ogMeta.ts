@@ -64,7 +64,7 @@ const routeMetaMap: Record<string, RouteMeta> = {
     description: "Ready to elevate your next gathering? Reach out to The PPL's Chef for private dining, catering, and meal prep inquiries in Las Vegas.",
     ogImage: `${CDN}/og-images/og-contact-logo-v2.jpg`,
   },
-  "/admin": {
+  "/admin-nvz3ufj23jsv": {
     title: "Admin | The PPL's Chef",
     description: "Administration panel.",
     ogImage: `${CDN}/og-images/og-homepage-v2.jpg`,

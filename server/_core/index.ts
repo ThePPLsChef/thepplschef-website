@@ -40,7 +40,7 @@ async function startServer() {
       [
         "User-agent: *",
         "Allow: /",
-        "Disallow: /admin",
+        "Disallow: /admin-nvz3ufj23jsv",
         "Disallow: /api/",
         "",
         "Sitemap: https://www.thepplschef.com/sitemap.xml",

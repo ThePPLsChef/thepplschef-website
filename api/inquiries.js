@@ -7,7 +7,7 @@
  *  - Saves inquiry to Neon PostgreSQL via @neondatabase/serverless
  *  - Sends owner alert email to info@thepplschef.com via Resend
  *  - Sends confirmation email to the client via Resend
- *  - Verifies Google reCAPTCHA v3 token (rejects score < 0.7)
+ *  - Verifies Google reCAPTCHA v3 token (rejects score < 0.6)
  *  - Validates name field (must contain a space; rejects random-character strings)
  *  - Validates email domain has a live MX record via DNS lookup
  *
@@ -20,6 +20,25 @@
 import { neon } from "@neondatabase/serverless";
 import { Resend } from "resend";
 import dns from "dns/promises";
+import { z } from "zod";
+
+// ── Zod Input Validation Schema ──────────────────────────────────────────────
+
+const InquirySchema = z.object({
+  name: z.string().min(2).max(100).trim(),
+  email: z.string().email().max(254),
+  phone: z.string().max(30).optional(),
+  serviceType: z.string().max(100).optional(),
+  eventDate: z.string().max(100).optional(),
+  eventTime: z.string().max(100).optional(),
+  guestCount: z.string().max(50).optional(),
+  budget: z.string().max(50).optional(),
+  allergies: z.string().max(1000).optional(),
+  foodPreferences: z.string().max(1000).optional(),
+  location: z.string().max(200).optional(),
+  notes: z.string().max(2000).optional(),
+  recaptchaToken: z.string().optional(),
+});
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -249,6 +268,17 @@ export default async function handler(req, res) {
 
   try {
     const body = req.body || {};
+
+    // ── Zod schema validation ─────────────────────────────────────────────────
+    const parsed = InquirySchema.safeParse(body);
+    if (!parsed.success) {
+      console.warn("[api/inquiries] Zod validation failed:", parsed.error.flatten());
+      return res.status(400).json({
+        success: false,
+        error: "Invalid input. Please check your form fields and try again.",
+      });
+    }
+
     const {
       name,
       email,
@@ -263,9 +293,9 @@ export default async function handler(req, res) {
       allergies = null,
       notes = null,
       recaptchaToken = null,
-    } = body;
+    } = parsed.data;
 
-    // Validation
+    // Validation (legacy — kept as secondary check)
     if (!name || typeof name !== "string" || name.trim() === "") {
       return res.status(400).json({ success: false, error: "Name is required" });
     }
@@ -302,7 +332,7 @@ export default async function handler(req, res) {
           error: "Security verification failed. Please refresh the page and try again.",
         });
       }
-      if (captchaResult.success && !captchaResult.skipped && captchaResult.score < 0.7) {
+      if (captchaResult.success && !captchaResult.skipped && captchaResult.score < 0.6) {
         console.warn("[api/inquiries] reCAPTCHA score too low:", captchaResult.score);
         return res.status(400).json({
           success: false,

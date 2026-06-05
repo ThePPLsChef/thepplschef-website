@@ -31,7 +31,7 @@ function Router() {
       <Route path="/contact" component={ContactPage} />
       <Route path="/pricing" component={PricingPage} />
       <Route path="/book" component={BookingWizard} />
-      <Route path="/admin">{() => <AdminPasswordGate><AdminDashboard /></AdminPasswordGate>}</Route>
+      <Route path="/admin-nvz3ufj23jsv">{() => <AdminPasswordGate><AdminDashboard /></AdminPasswordGate>}</Route>
       {/* Service pages with SEO slugs */}
       <Route path="/meal-prep-las-vegas" component={MealPrepPage} />
       <Route path="/:slug">{(params) => {

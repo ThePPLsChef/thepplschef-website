@@ -20,7 +20,7 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!isUnauthorized) return;
 
   // Don't redirect if we're on the admin page — the password gate handles it
-  if (window.location.pathname.startsWith("/admin")) return;
+  if (window.location.pathname.startsWith("/admin-nvz3ufj23jsv")) return;
 
   window.location.href = getLoginUrl();
 };

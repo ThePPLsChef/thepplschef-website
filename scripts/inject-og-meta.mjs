@@ -143,6 +143,107 @@ function buildMetaBlock(meta, path) {
     `<link rel="canonical" href="${esc(canonical)}" />`,
   ].filter(Boolean);
 
+  // JSON-LD Schemas
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "The PPL's Chef",
+    "url": "https://www.thepplschef.com"
+  };
+
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "FoodService",
+    "name": "The PPL's Chef",
+    "description": "Las Vegas's premier private chef and catering company. Five-star dining, custom menus, and full-service hospitality — brought directly to you.",
+    "url": "https://www.thepplschef.com",
+    "telephone": "+1-725-212-2236",
+    "email": "saustin@thepplschef.com",
+    "priceRange": "$$$",
+    "image": "https://d2xsxph8kpxj0f.cloudfront.net/310519663502251693/FPcGgsvuUJ9d3gUJtCTgVQ/og-images/og-homepage-v2.jpg",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Las Vegas",
+      "addressRegion": "NV",
+      "addressCountry": "US"
+    },
+    "areaServed": [
+      {
+        "@type": "City",
+        "name": "Las Vegas",
+        "containedInPlace": { "@type": "State", "name": "Nevada" }
+      },
+      {
+        "@type": "City", 
+        "name": "Henderson",
+        "containedInPlace": { "@type": "State", "name": "Nevada" }
+      }
+    ],
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "description": "By appointment only"
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Chef Stephen Austin",
+      "jobTitle": "Executive Chef & Founder"
+    },
+    "sameAs": [],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Services",
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Private Chef Experience",
+            "description": "Intimate in-home dining with a personal chef crafting a custom multi-course menu"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Full-Service Catering",
+            "description": "Luxury catering for weddings, parties, and large-scale events"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Chef-Crafted Meal Boxes",
+            "description": "Restaurant-quality meal prep delivered weekly"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Special Event Catering",
+            "description": "Bespoke menus for birthdays, engagements, showers, and milestone celebrations"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Corporate & Group Dining",
+            "description": "Premium corporate catering for meetings, conferences, and client dinners"
+          }
+        }
+      ]
+    }
+  };
+
+  lines.push(`<script type="application/ld+json">\n${JSON.stringify(websiteSchema)}\n</script>`);
+  
+  if (path === "/") {
+    lines.push(`<script type="application/ld+json">\n${JSON.stringify(localBusinessSchema)}\n</script>`);
+  }
+
   return lines.join("\n    ");
 }
 

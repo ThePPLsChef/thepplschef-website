@@ -157,6 +157,8 @@ export default function Navbar() {
             className={`object-contain transition-all duration-300 drop-shadow-lg ${
               scrolled ? "h-12 w-auto" : "h-14 w-auto"
             }`}
+            decoding="async"
+            fetchPriority="high"
           />
         </Link>
 

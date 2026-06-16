@@ -71,6 +71,8 @@ function ServiceCard({ service, index }: { service: typeof services[0]; index: n
             src={service.image}
             alt={service.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
           {/* Icon badge */}

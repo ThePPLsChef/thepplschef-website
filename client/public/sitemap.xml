@@ -102,12 +102,5 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Experience subdomain — public chef profile pages -->
-  <url>
-    <loc>https://experience.thepplschef.com/ramona-helton</loc>
-    <lastmod>2026-05-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
 
 </urlset>

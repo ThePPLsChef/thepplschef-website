@@ -36,6 +36,8 @@ export default function About() {
                 src={ABOUT_IMG}
                 alt="Chef preparing food at an outdoor event"
                 className="w-full h-[500px] lg:h-[600px] object-cover"
+                loading="lazy"
+                decoding="async"
               />
               {/* Overlapping smaller image */}
               <div className="absolute -bottom-8 -right-4 lg:-right-8 w-48 h-48 lg:w-56 lg:h-56 border-4 border-[#F3F1E9] shadow-2xl">
@@ -43,6 +45,8 @@ export default function About() {
                   src={CHEF_ACTION}
                   alt="Chef plating food"
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               {/* Gold corner accent */}

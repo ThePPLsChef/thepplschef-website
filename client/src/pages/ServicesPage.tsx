@@ -102,6 +102,8 @@ function ServiceRow({ service, index }: { service: typeof serviceList[0]; index:
             src={service.image}
             alt={service.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-black/40" />
           <div className="absolute top-4 left-4 w-12 h-12 bg-[#D82E2B] flex items-center justify-center shadow-lg shadow-[#D82E2B]/30">

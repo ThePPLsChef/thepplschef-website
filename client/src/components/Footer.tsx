@@ -49,6 +49,8 @@ export default function Footer() {
           src={LOGO_PRIMARY}
           alt="The PPL's Chef"
           className="h-28 w-auto object-contain drop-shadow-xl mb-3"
+          loading="lazy"
+          decoding="async"
         />
         <p className="text-[#ECA241]/50 text-[10px] tracking-[0.3em] uppercase mt-1" style={{ fontFamily: "var(--font-body)" }}>
           Las Vegas Private Chef & Catering

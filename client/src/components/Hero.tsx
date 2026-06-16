@@ -49,6 +49,8 @@ export default function Hero() {
               src={LOGO_URL}
               alt="The PPL's Chef Logo"
               className="h-24 w-24 sm:h-32 sm:w-32 rounded-full object-cover border-4 border-[#ECA241] shadow-2xl shadow-[#ECA241]/30"
+              decoding="async"
+              fetchPriority="high"
             />
           </motion.div>
 

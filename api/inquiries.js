@@ -254,7 +254,7 @@ function buildClientEmailHtml(name, serviceType) {
 
 export default async function handler(req, res) {
   // CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "https://www.thepplschef.com");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
@@ -332,7 +332,7 @@ export default async function handler(req, res) {
           error: "Security verification failed. Please refresh the page and try again.",
         });
       }
-      if (captchaResult.success && !captchaResult.skipped && captchaResult.score < 0.6) {
+      if (captchaResult.success && !captchaResult.skipped && captchaResult.score < 0.7) {
         console.warn("[api/inquiries] reCAPTCHA score too low:", captchaResult.score);
         return res.status(400).json({
           success: false,

@@ -69,6 +69,8 @@ export default function AboutPage() {
                   src={CHEF_BW_PORTRAIT}
                   alt="Chef Stephen Austin — Founder & Director of Culinary Operations, The PPL's Chef"
                   className="w-full h-[560px] lg:h-[700px] object-cover object-top"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute top-4 left-4 w-14 h-14 border-t-2 border-l-2 border-[#ECA241]" />
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#D82E2B]" />
@@ -77,7 +79,7 @@ export default function AboutPage() {
 
             <FadeIn delay={0.2}>
               <div className="flex items-center gap-4 mb-6">
-                <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain drop-shadow-lg" />
+                <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-20 w-auto object-contain drop-shadow-lg" loading="lazy" decoding="async" />
                 <div>
                   <div className="font-[family-name:var(--font-display)] text-lg text-black">The PPL's <span className="text-[#D82E2B]">Chef</span></div>
                   <div className="text-[#D82E2B]/60 text-[10px] tracking-[0.25em] uppercase" style={fontBody}>The People's Chef</div>
@@ -167,6 +169,8 @@ export default function AboutPage() {
                   src={SEAFOOD_BOIL_CHEF}
                   alt="Chef Stephen Austin preparing a signature seafood boil"
                   className="w-full h-[480px] lg:h-[560px] object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute bottom-4 right-4 w-14 h-14 border-b-2 border-r-2 border-[#ECA241]" />
               </div>
@@ -218,7 +222,7 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-black/80" />
         <div className="relative z-10 container text-center">
           <FadeIn>
-            <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-24 w-auto object-contain mx-auto mb-6 drop-shadow-xl" />
+            <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-24 w-auto object-contain mx-auto mb-6 drop-shadow-xl" loading="lazy" decoding="async" />
             <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-[#F3F1E9] leading-tight mb-5">
               Ready to Experience the <span className="text-[#ECA241]">Difference?</span>
             </h2>

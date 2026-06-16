@@ -141,7 +141,7 @@ function HomepageGalleryPreview() {
             <FadeIn key={i} delay={i * 0.08}>
               <div className="break-inside-avoid group relative overflow-hidden cursor-pointer">
                 <div className={`relative overflow-hidden ${previewAspects[i]}`}>
-                  <img src={img.src} alt={img.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" loading="lazy" />
+                  <img src={img.src} alt={img.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" loading="lazy" decoding="async" />
                   <div className="absolute inset-0 bg-[#F3F1E9]/0 group-hover:bg-[#F3F1E9]/80 transition-all duration-300 ease-in-out flex flex-col items-start justify-end p-5">
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
                       <span className="text-[#D82E2B] text-[10px] font-semibold tracking-[0.15em] uppercase mb-1 block" style={{ fontFamily: "var(--font-body)" }}>{img.tag}</span>
@@ -224,6 +224,8 @@ function HeroSection() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
           className="h-44 w-auto sm:h-60 object-contain mb-8 drop-shadow-2xl"
+          decoding="async"
+          fetchPriority="high"
         />
 
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }} className="flex items-center gap-3 mb-6">
@@ -331,7 +333,7 @@ function ServiceCard({ s, i }: { s: typeof serviceCards[0]; i: number }) {
     <motion.div ref={ref} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: i * 0.08 }}>
       <Link href={`/${s.slug}`} className="group block relative overflow-hidden bg-[#0a0a0a] rounded-2xl shadow-[0_20px_25px_-5px_rgba(0,0,0,0.25),0_10px_10px_-5px_rgba(0,0,0,0.10)] hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.30),0_10px_10px_-5px_rgba(0,0,0,0.12),0_0_20px_rgba(236,162,65,0.10)] transition-all duration-500 hover:-translate-y-2">
         <div className="relative h-56 overflow-hidden rounded-t-2xl">
-          <img src={s.image} alt={s.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+          <img src={s.image} alt={s.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
         </div>
         <div className="p-8 lg:p-10">
@@ -382,7 +384,7 @@ function SignatureExperience() {
     <section className="relative overflow-hidden">
       <div className="grid lg:grid-cols-2 min-h-[600px]">
         <div className="relative">
-          <img src={ELEGANT_TABLE} alt="Elegant table setting by The PPL's Chef" className="w-full h-full object-cover min-h-[400px]" />
+          <img src={ELEGANT_TABLE} alt="Elegant table setting by The PPL's Chef" className="w-full h-full object-cover min-h-[400px]" loading="lazy" decoding="async" />
           <div className="absolute inset-0 bg-black/20" />
         </div>
         <div className="bg-black flex items-center py-16 lg:py-0">
@@ -431,7 +433,7 @@ function FeaturedDishes() {
           {featuredDishes.map((d, i) => (
             <FadeIn key={d.label} delay={i * 0.1}>
               <div className="group relative overflow-hidden aspect-[4/5]">
-                <img src={d.src} alt={d.label} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                <img src={d.src} alt={d.label} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" decoding="async" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-5">
                   <p className="text-[#F3F1E9] text-sm font-semibold tracking-wider uppercase" style={{ fontFamily: "var(--font-body)" }}>{d.label}</p>
@@ -594,7 +596,7 @@ function FinalCTA() {
       <div className="absolute inset-0 bg-black/75" />
       <div className="relative z-10 container text-center">
         <FadeIn>
-          <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-44 w-auto sm:h-60 object-contain mx-auto mb-6 drop-shadow-xl" />
+          <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-44 w-auto sm:h-60 object-contain mx-auto mb-6 drop-shadow-xl" loading="lazy" decoding="async" />
           <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl lg:text-5xl text-[#F3F1E9] leading-tight mb-5">
             Ready to Create Something <span className="text-[#ECA241]">Extraordinary?</span>
           </h2>
@@ -624,6 +626,8 @@ function AboutChef() {
                 src={CHEF_BW_PORTRAIT}
                 alt="Chef Stephen Austin — CEO & Director of Culinary Operations, The PPL's Chef"
                 className="w-full h-[520px] lg:h-[640px] object-cover object-top"
+                loading="lazy"
+                decoding="async"
               />
               {/* Gold corner accent */}
               <div className="absolute top-4 left-4 w-14 h-14 border-t-2 border-l-2 border-[#ECA241]" />
@@ -634,7 +638,7 @@ function AboutChef() {
 
           <FadeIn delay={0.2} className="pb-10 lg:pb-0">
             <div className="flex items-center gap-4 mb-6">
-              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-16 w-auto object-contain drop-shadow-lg" />
+              <img src={LOGO_PRIMARY} alt="The PPL's Chef" className="h-16 w-auto object-contain drop-shadow-lg" loading="lazy" decoding="async" />
               <div>
                 <div className="font-[family-name:var(--font-display)] text-lg text-black">The PPL's <span className="text-[#D82E2B]">Chef</span></div>
                 <div className="text-[#D82E2B]/60 text-[10px] tracking-[0.25em] uppercase" style={{ fontFamily: "var(--font-body)" }}>The People's Chef</div>

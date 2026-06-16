@@ -228,7 +228,7 @@ export default function ServicePage() {
               <div className="grid grid-cols-2 gap-3">
                 {service.galleryImages.map((img, i) => (
                   <div key={i} className={`overflow-hidden ${i === 0 ? "col-span-2 h-52" : "h-40"}`}>
-                    <img src={img.src} alt={img.alt} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+                    <img src={img.src} alt={img.alt} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
                   </div>
                 ))}
               </div>
@@ -340,11 +340,12 @@ export default function ServicePage() {
               </FadeIn>
               <FadeIn delay={0.15} className="order-1 lg:order-2">
                 <div className="relative overflow-hidden aspect-[3/4] max-w-sm mx-auto lg:mx-0 lg:ml-auto">
-                  <img
+                    <img
                     src={CHEF_REAL_PORTRAIT_2}
                     alt="Chef Stephen Austin — The PPL's Chef"
                     className="w-full h-full object-cover object-top"
                     loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>
@@ -358,7 +359,7 @@ export default function ServicePage() {
       <section className="section-cream py-20 lg:py-28">
         <div className="container text-center">
           <FadeIn>
-            <img src={LOGO_P_ICON} alt="The PPL's Chef" className="h-20 w-20 object-contain drop-shadow-lg mx-auto mb-5" />
+            <img src={LOGO_P_ICON} alt="The PPL's Chef" className="h-20 w-20 object-contain drop-shadow-lg mx-auto mb-5" loading="lazy" decoding="async" />
             <h2 className="font-[family-name:var(--font-display)] text-3xl lg:text-4xl text-black mb-4">
               Ready to Book Your <span className="text-[#D82E2B]">{service.title}?</span>
             </h2>
@@ -382,7 +383,7 @@ export default function ServicePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {services.filter((s) => s.slug !== service.slug).map((s) => (
               <Link key={s.slug} href={`/${s.slug}`} className="group relative overflow-hidden h-36 sm:h-44">
-                <img src={s.heroImage} alt={s.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
+                <img src={s.heroImage} alt={s.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" decoding="async" />
                 <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-300" />
                 <div className="absolute inset-0 flex items-center justify-center p-3">
                   <span className="font-[family-name:var(--font-display)] text-[#F3F1E9] text-sm sm:text-base text-center group-hover:text-[#ECA241] transition-colors duration-300">{s.title}</span>

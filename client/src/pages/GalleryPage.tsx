@@ -504,6 +504,7 @@ export default function GalleryPage() {
                       alt={item.title}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                       loading="lazy"
+                      decoding="async"
                     />
 
                     {/* Hover overlay — soft Cream at ~80% opacity with Chef's Note */}

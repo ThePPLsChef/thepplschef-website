@@ -434,13 +434,13 @@ export default function MealPrepPage() {
             <FadeIn delay={0.15}>
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2 h-56 overflow-hidden">
-                  <img src={MEAL_PREP_OVERHEAD_MULTI} alt="Chef-crafted meal prep containers" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                  <img src={MEAL_PREP_OVERHEAD_MULTI} alt="Chef-crafted meal prep containers" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
                 </div>
                 <div className="h-40 overflow-hidden">
-                  <img src={MEAL_PREP_GLAZED_SALMON} alt="Glazed salmon with rice" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                  <img src={MEAL_PREP_GLAZED_SALMON} alt="Glazed salmon with rice" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
                 </div>
                 <div className="h-40 overflow-hidden">
-                  <img src={MEAL_PREP_GRILLED_CHICKEN} alt="Grilled chicken with lime" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                  <img src={MEAL_PREP_GRILLED_CHICKEN} alt="Grilled chicken with lime" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
                 </div>
               </div>
             </FadeIn>
@@ -506,7 +506,7 @@ export default function MealPrepPage() {
               <FadeIn key={meal.name} delay={i * 0.08}>
                 <div className="group overflow-hidden bg-white shadow-sm hover:shadow-lg transition-shadow duration-500">
                   <div className="h-52 overflow-hidden">
-                    <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+                    <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
                   </div>
                   <div className="p-5">
                     <h4 className="font-[family-name:var(--font-display)] text-base text-black leading-snug">{meal.name}</h4>
@@ -578,7 +578,7 @@ export default function MealPrepPage() {
             {galleryImages.map((img, i) => (
               <FadeIn key={i} delay={i * 0.06}>
                 <div className="overflow-hidden aspect-square">
-                  <img src={img.src} alt={img.alt} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+                  <img src={img.src} alt={img.alt} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async" />
                 </div>
               </FadeIn>
             ))}
@@ -605,6 +605,8 @@ export default function MealPrepPage() {
                   src={LOGO_ALT_HORIZONTAL}
                   alt="The PPL's Chef"
                   className="h-20 w-auto object-contain mb-5"
+                  loading="lazy"
+                  decoding="async"
                   style={{
                     filter:
                       "drop-shadow(0 0 1px white) drop-shadow(0 0 1px white) drop-shadow(0 0 2px white) drop-shadow(1px 0 0 white) drop-shadow(-1px 0 0 white) drop-shadow(0 1px 0 white) drop-shadow(0 -1px 0 white)",
@@ -665,7 +667,7 @@ export default function MealPrepPage() {
         <div className="container text-center">
           <FadeIn>
             <div className="inline-block bg-black/10 rounded-xl px-5 py-3 mb-5">
-              <img src={LOGO_ALT_HORIZONTAL} alt="The PPL's Chef" className="h-20 w-auto object-contain" />
+              <img src={LOGO_ALT_HORIZONTAL} alt="The PPL's Chef" className="h-20 w-auto object-contain" loading="lazy" decoding="async" />
             </div>
             <h2 className="font-[family-name:var(--font-display)] text-3xl lg:text-4xl text-black mb-4">
               Ready to Eat <span className="text-[#D82E2B]">Better?</span>

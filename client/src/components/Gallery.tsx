@@ -60,14 +60,15 @@ export default function Gallery() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-30px" }}
               transition={{ duration: 0.5, delay: (i % 4) * 0.08 }}
-              className="break-inside-avoid group cursor-pointer relative overflow-hidden border-2 border-transparent hover:border-[#ECA241] transition-all duration-300"
+              className="break-inside-avoid group cursor-pointer relative overflow-hidden border-2 border-transparent hover:border-[#ECA241] transition-all duration-300 aspect-[4/5]"
               onClick={() => openLightbox(i)}
             >
               <img
                 src={img.src}
                 alt={img.alt}
-                className="w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
                 <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm tracking-wider uppercase font-semibold" style={{ fontFamily: "var(--font-body)" }}>

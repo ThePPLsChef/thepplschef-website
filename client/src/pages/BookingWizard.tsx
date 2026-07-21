@@ -25,6 +25,25 @@ import Layout from "@/components/Layout";
 import { LOGO_PRIMARY, HERO_BG, SEAFOOD_BOIL_OVERHEAD, ELEGANT_TABLE, BUFFET_SERVICE } from "@/lib/images";
 import { submitInquiry } from "@/lib/submitInquiry";
 
+/* ─── reCAPTCHA v3 ─── */
+const RECAPTCHA_SITE_KEY = "6Lds9vUsAAAAAlvXTzjcrpZPL0-LatnVeoUiTeov";
+
+/** Executes reCAPTCHA v3 and returns the token, or null on failure. */
+async function getRecaptchaToken(): Promise<string | null> {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined" || !(window as any).grecaptcha) {
+      resolve(null);
+      return;
+    }
+    (window as any).grecaptcha.ready(() => {
+      (window as any).grecaptcha
+        .execute(RECAPTCHA_SITE_KEY, { action: "submit_inquiry" })
+        .then((token: string) => resolve(token))
+        .catch(() => resolve(null));
+    });
+  });
+}
+
 /* ─── Types ─── */
 type ServiceType = "private-chef" | "catering" | "meal-prep" | "special-event" | "corporate";
 type SpecialEventType = "Birthday" | "Anniversary" | "Holiday" | "Proposal" | "Other";
@@ -481,6 +500,7 @@ export default function BookingWizard() {
       notes = [data.vision, specialEventNote, referralNote].filter(Boolean).join("\n");
     }
     try {
+      const recaptchaToken = await getRecaptchaToken();
       await submitInquiry({
         name: data.name.trim(), email: data.email.trim(),
         phone: data.phone.trim() || undefined, serviceType: serviceLabel,
@@ -491,6 +511,7 @@ export default function BookingWizard() {
           ? data.mpDietaryNeeds.join(", ") || undefined
           : data.dietaryNeeds.join(", ") || undefined,
         notes: notes || undefined,
+        recaptchaToken: recaptchaToken || undefined,
       });
       setSubmitted(true);
     } catch (err: any) {

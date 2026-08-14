@@ -169,10 +169,16 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ["react", "react-dom"],
-          motion: ["framer-motion"],
-          trpc: ["@trpc/client", "@trpc/react-query", "@tanstack/react-query"],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            // Order matters: more specific matches first
+            if (id.includes('framer-motion')) return 'vendor-motion';
+            if (id.includes('react-dom') || id.includes('scheduler')) return 'vendor-react';
+            if (id.includes('@trpc') || id.includes('@tanstack/react-query')) return 'vendor-trpc';
+            if (id.includes('lucide-react')) return 'vendor-icons';
+            if (id.includes('@radix-ui')) return 'vendor-radix';
+            if (id.includes('zod') || id.includes('superjson')) return 'vendor-utils';
+          }
         },
       },
     },

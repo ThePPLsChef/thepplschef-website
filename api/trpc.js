@@ -1084,7 +1084,7 @@ async function consumeAdminLoginAttempt() {
         THEN statement_timestamp() ELSE limits."windowStartedAt" END
     RETURNING attempts,
       GREATEST(1, CEIL(EXTRACT(EPOCH FROM
-        ("windowStartedAt" + make_interval(secs => ${ADMIN_LOGIN_WINDOW_SECONDS}) - statement_timestamp()))))::integer AS "retryAfterSeconds"
+        ("windowStartedAt" + make_interval(secs => ${ADMIN_LOGIN_WINDOW_SECONDS}) - clock_timestamp()))))::integer AS "retryAfterSeconds"
   `;
   const row2 = Array.isArray(rows) ? rows[0] : void 0;
   if (!row2 || !Number.isInteger(row2.attempts) || row2.attempts < 1 || !Number.isInteger(row2.retryAfterSeconds) || row2.retryAfterSeconds < 1) {

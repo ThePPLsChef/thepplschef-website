@@ -210,6 +210,49 @@ describe.skipIf(!url)(
         )
       ).toBe(true);
     });
+    it("bounds the wait when a request predates a concurrent window reset", async () => {
+      let locked!: () => void;
+      let release!: () => void;
+      const acquired = new Promise<void>(resolve => {
+        locked = resolve;
+      });
+      const proceed = new Promise<void>(resolve => {
+        release = resolve;
+      });
+      await fixture.db!`INSERT INTO admin_login_rate_limits ("key", attempts, "windowStartedAt")
+        VALUES ('admin-password', 1, NOW())`;
+      const winner = fixture.db!.begin(async tx => {
+        await tx`SELECT 1 FROM admin_login_rate_limits WHERE "key" = 'admin-password' FOR UPDATE`;
+        locked();
+        await proceed;
+        await tx`UPDATE admin_login_rate_limits SET "windowStartedAt" = clock_timestamp()
+          WHERE "key" = 'admin-password'`;
+      });
+      await acquired;
+      const pending = consumeAdminLoginAttempt();
+      let waiting = false;
+      try {
+        for (let count = 0; count < 100; count++) {
+          const rows = await fixture.db!`
+            SELECT 1 FROM pg_stat_activity
+            WHERE datname = current_database() AND wait_event_type = 'Lock'
+              AND position('INSERT INTO admin_login_rate_limits AS limits' in query) > 0
+          `;
+          if (rows.length) {
+            waiting = true;
+            break;
+          }
+        }
+      } finally {
+        release();
+      }
+      await winner;
+      const result = await pending;
+      expect(waiting).toBe(true);
+      expect(result.allowed).toBe(true);
+      expect(result.retryAfterSeconds).toBeGreaterThan(0);
+      expect(result.retryAfterSeconds).toBeLessThanOrEqual(900);
+    });
     it("automatically restores the login budget after fifteen minutes", async () => {
       await fixture.db!`INSERT INTO admin_login_rate_limits ("key", attempts, "windowStartedAt") VALUES ('admin-password', 11, NOW() - INTERVAL '16 minutes')`;
       expect(await consumeAdminLoginAttempt()).toMatchObject({

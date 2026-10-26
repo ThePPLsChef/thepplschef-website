@@ -15,6 +15,9 @@ export async function consumeAdminLoginAttempt(): Promise<{
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("Login rate limiter is unavailable");
   const sql = neon(url);
+  // Keep window updates on one stable statement timestamp, but calculate the
+  // response wait from wall-clock time after acquiring the row lock. A waiting
+  // statement may have started before another request created the window.
   const rows = await sql`
     INSERT INTO admin_login_rate_limits AS limits ("key", attempts, "windowStartedAt")
     VALUES ('admin-password', 1, statement_timestamp())
@@ -27,7 +30,7 @@ export async function consumeAdminLoginAttempt(): Promise<{
         THEN statement_timestamp() ELSE limits."windowStartedAt" END
     RETURNING attempts,
       GREATEST(1, CEIL(EXTRACT(EPOCH FROM
-        ("windowStartedAt" + make_interval(secs => ${ADMIN_LOGIN_WINDOW_SECONDS}) - statement_timestamp()))))::integer AS "retryAfterSeconds"
+        ("windowStartedAt" + make_interval(secs => ${ADMIN_LOGIN_WINDOW_SECONDS}) - clock_timestamp()))))::integer AS "retryAfterSeconds"
   `;
   const row = Array.isArray(rows) ? rows[0] : undefined;
   if (

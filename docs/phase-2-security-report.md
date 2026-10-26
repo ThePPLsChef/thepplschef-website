@@ -26,14 +26,18 @@ The initial repairs and the authorized follow-up (durable login throttling, matc
 
 The checked-in generated `api/trpc.js` has been rebuilt from source, so it no longer contains the old token implementation. Manus components, image URLs/storage, branding, and website layout were preserved. No dependency or lockfile changes were required. The follow-up adds one small database migration for login counters, with matching Drizzle schema and metadata. It has only been applied to the disposable local test database; it must be separately approved and applied before deploying the new authentication code.
 
+## Verification follow-up
+
+A fresh local recheck found a concurrency edge in the login wait estimate: using the request’s statement start time after waiting for another writer could report 901 seconds for a 900-second window. The attempt budget remained enforced. Calculate the response wait from the database wall clock after acquiring the lock; retain a stable statement timestamp for counter updates. A controlled row-lock regression test fails against the previous calculation and passes against the correction. See `docs/phase-2-review-update.md` for the executive update. No production changes were made.
+
 ## Automated verification
 
-Final full-suite result: **179 passed, 0 failed, 0 skipped across 11 test files**, including nine opt-in local PostgreSQL tests. TypeScript checking, the local Vercel build pipeline, standalone server bundling, and whitespace validation passed.
+Final full-suite result: **180 passed, 0 failed, 0 skipped across 11 test files**, including ten opt-in local PostgreSQL tests. TypeScript checking, the local Vercel build pipeline, standalone server bundling, and whitespace validation passed.
 
 | Verification | Result | Evidence and limits |
 | --- | --- | --- |
 | Actual admin login and authorization | Passed | Correct/wrong passwords; missing, malformed, tampered and legacy tokens; exact one-hour expiry; weak/missing signing configuration; signing-key and password-version changes; wrong audience and missing expiry. Existing inquiry list/detail/status/statistics tests now use signed sessions. |
-| Durable login throttling | Passed | Atomic counter migration applied only locally; thirty concurrent attempts permit exactly ten, with one bounded counter row. Verify automatic window recovery, that blocked attempts do not extend the window, missing-table/database/configuration failures, rejection before bcrypt, wrong-password counting, forwarded-header bypass prevention, and continued access for authenticated sessions. |
+| Durable login throttling | Passed | Atomic counter migration applied only locally; thirty concurrent attempts permit exactly ten, with one bounded counter row. Verify automatic window recovery, that blocked attempts do not extend the window, missing-table/database/configuration failures, a controlled concurrent-window-reset wait regression, rejection before bcrypt, wrong-password counting, forwarded-header bypass prevention, and continued access for authenticated sessions. |
 | Validation parity | Passed | Both actual REST and tRPC handlers reject every oversized field and invalid names before side effects. Check valid international/single-word names, whitespace normalization, service-label control characters, and matching MX rejection. Shared DNS helper tests cover positive, negative, and transient-failure cases without contacting DNS. |
 | CORS preflight | Passed | Actual Express preflight requests over loopback only; compare website origin and credentials with the existing Vercel configuration; check arbitrary origins are not reflected and missing-Origin requests still work. |
 | HTML email safety | Passed | Both REST and legacy owner/customer templates; malicious tags, quotes, attribute content, ampersands, trusted note line breaks, and international names. Original recipient address remains intact. |
@@ -45,13 +49,13 @@ Final full-suite result: **179 passed, 0 failed, 0 skipped across 11 test files*
 | Vercel build pipeline | Passed locally | `pnpm run build:vercel`: Vite, metadata injection, SEO prerender, and tRPC bundling. This compiles local artifacts; it does not deploy or create a preview. |
 | Standalone server bundle | Passed locally | Existing esbuild server-bundling command. |
 | Migration consistency | Passed locally | `drizzle-kit check` and snapshot comparison confirm only the login-counter table is added; all existing tables and enums match the prior snapshot. |
-| Default test safety | Passed | Without the explicit local-database URL, all nine database tests are skipped before fixture setup or migrations. The full explicitly configured local run executed and passed all nine. |
+| Default test safety | Passed | Without the explicit local-database URL, all ten database tests are skipped before fixture setup or migrations. The full explicitly configured local run executed and passed all ten. |
 | Diff validation | Passed | `git diff --check`. |
 | Live providers, production/preview runtime, manual browser end-to-end | Not executed | Deliberately excluded by authorization. Local database tests use a Neon-compatible query adapter over a local PostgreSQL client; they do not validate Neon HTTP transport or the deployed Vercel runtime. |
 
 An initial PostgreSQL test run reported a service-link assertion failure because the local test adapter did not execute awaited service queries. The adapter was corrected to implement the Neon query thenable contract, and the final suite passes. There are no unresolved automated test failures.
 
-To reproduce unit tests, install the frozen lockfile with the repository-pinned pnpm version and run `pnpm test`. Without the explicit local-database setting, the nine PostgreSQL integration tests are skipped. To run those tests, start a disposable local PostgreSQL 16 database named `phase2_test` on `127.0.0.1:55432`, set `PPLCHEF_TEST_POSTGRES_URL` to that database’s local connection string, and run `pnpm test`. The integration suite refuses other hosts, ports, and database names before creating or truncating fixture tables or applying the counter migration. Never set this variable to a production database. Email, DNS, and CAPTCHA are mocked in these tests.
+To reproduce unit tests, install the frozen lockfile with the repository-pinned pnpm version and run `pnpm test`. Without the explicit local-database setting, the ten PostgreSQL integration tests are skipped. To run those tests, start a disposable local PostgreSQL 16 database named `phase2_test` on `127.0.0.1:55432`, set `PPLCHEF_TEST_POSTGRES_URL` to that database’s local connection string, and run `pnpm test`. The integration suite refuses other hosts, ports, and database names before creating or truncating fixture tables or applying the counter migration. Never set this variable to a production database. Email, DNS, and CAPTCHA are mocked in these tests.
 
 ## Remaining risks and deliberate limits
 
@@ -91,6 +95,7 @@ This is the complete proposed change set relative to the original main branch, i
 - `client/src/main.tsx`
 - `docs/phase-2-proposed-pull-request.md`
 - `docs/phase-2-security-report.md`
+- `docs/phase-2-review-update.md`
 - `drizzle/0001_admin_login_rate_limits.sql`
 - `drizzle/meta/0001_snapshot.json`
 - `drizzle/meta/_journal.json`

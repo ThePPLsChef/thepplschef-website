@@ -235,7 +235,7 @@ var systemRouter = router({
 });
 
 // server/routers/inquiry.ts
-import { z as z2 } from "zod";
+import { z as z3 } from "zod";
 import { TRPCError as TRPCError3 } from "@trpc/server";
 
 // server/db.ts
@@ -351,6 +351,11 @@ var notifications = pgTable("notifications", {
   message: text("message").notNull(),
   isRead: boolean("isRead").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull()
+});
+var adminLoginRateLimits = pgTable("admin_login_rate_limits", {
+  key: varchar("key", { length: 64 }).primaryKey(),
+  attempts: integer("attempts").notNull(),
+  windowStartedAt: timestamp("windowStartedAt", { withTimezone: true }).notNull()
 });
 
 // server/db.ts
@@ -834,6 +839,48 @@ async function sendInquiryEmails(data) {
   }
 }
 
+// shared/inquiryValidation.js
+import { z as z2 } from "zod";
+var InquirySchema = z2.object({
+  name: z2.string().trim().min(1).max(100).refine(
+    (name) => /\p{L}/u.test(name) && !/[\p{Cc}\p{Cs}]/u.test(name),
+    "Please enter your name."
+  ),
+  email: z2.string().trim().email().max(254),
+  phone: z2.string().max(30).optional(),
+  serviceType: z2.string().max(100).regex(/^[^\p{Cc}\p{Cs}]*$/u).optional(),
+  eventDate: z2.string().max(50).optional(),
+  eventTime: z2.string().max(50).optional(),
+  guestCount: z2.string().max(50).optional(),
+  budget: z2.string().max(50).optional(),
+  allergies: z2.string().max(1e3).optional(),
+  foodPreferences: z2.string().max(1e3).optional(),
+  location: z2.string().max(200).optional(),
+  notes: z2.string().max(2e3).optional(),
+  recaptchaToken: z2.string().max(4096).optional()
+});
+
+// api/_lib/emailDomain.js
+import dns from "dns/promises";
+async function hasMxRecord(email) {
+  try {
+    const domain = email.split("@")[1];
+    if (!domain) return false;
+    const records = await dns.resolveMx(domain);
+    return Array.isArray(records) && records.length > 0;
+  } catch (err) {
+    if (err.code === "ENOTFOUND" || err.code === "ENODATA" || err.code === "ESERVFAIL") {
+      return false;
+    }
+    console.warn(
+      "[inquiry validation] MX lookup error (fail-open):",
+      err.code,
+      err.message
+    );
+    return true;
+  }
+}
+
 // api/_lib/recaptcha.js
 async function verifyRecaptcha(token) {
   const secret = process.env.RECAPTCHA_SECRET_KEY;
@@ -860,23 +907,13 @@ var inquiryRouter = router({
   /**
    * Public: submit a new inquiry from any contact/booking form.
    */
-  submit: publicProcedure.input(
-    z2.object({
-      name: z2.string().trim().min(1, "Name is required"),
-      recaptchaToken: z2.string().optional(),
-      email: z2.string().email("Valid email is required"),
-      phone: z2.string().optional(),
-      serviceType: z2.string().optional(),
-      eventDate: z2.string().optional(),
-      eventTime: z2.string().optional(),
-      location: z2.string().optional(),
-      guestCount: z2.string().optional(),
-      budget: z2.string().optional(),
-      foodPreferences: z2.string().optional(),
-      allergies: z2.string().optional(),
-      notes: z2.string().optional()
-    })
-  ).mutation(async ({ input }) => {
+  submit: publicProcedure.input(InquirySchema).mutation(async ({ input }) => {
+    if (!await hasMxRecord(input.email)) {
+      throw new TRPCError3({
+        code: "BAD_REQUEST",
+        message: "The email address provided does not appear to be valid. Please check and try again."
+      });
+    }
     let verified;
     try {
       verified = await verifyRecaptcha(input.recaptchaToken);
@@ -969,9 +1006,9 @@ var inquiryRouter = router({
    * Admin: list all inquiries, newest first.
    */
   list: adminTokenProcedure.input(
-    z2.object({
-      limit: z2.number().min(1).max(500).optional(),
-      offset: z2.number().min(0).optional()
+    z3.object({
+      limit: z3.number().min(1).max(500).optional(),
+      offset: z3.number().min(0).optional()
     }).optional()
   ).query(async ({ input }) => {
     const [rows, types] = await Promise.all([
@@ -987,7 +1024,7 @@ var inquiryRouter = router({
   /**
    * Admin: get a single inquiry by ID.
    */
-  detail: adminTokenProcedure.input(z2.object({ id: z2.number() })).query(async ({ input }) => {
+  detail: adminTokenProcedure.input(z3.object({ id: z3.number() })).query(async ({ input }) => {
     const inquiry = await getInquiryById(input.id);
     if (!inquiry) {
       throw new TRPCError3({
@@ -1007,9 +1044,9 @@ var inquiryRouter = router({
    * Admin: update inquiry status.
    */
   updateStatus: adminTokenProcedure.input(
-    z2.object({
-      id: z2.number(),
-      status: z2.enum(["new", "reviewed", "quoted", "booked", "cancelled"])
+    z3.object({
+      id: z3.number(),
+      status: z3.enum(["new", "reviewed", "quoted", "booked", "cancelled"])
     })
   ).mutation(async ({ input }) => {
     return updateInquiryStatus(input.id, input.status);
@@ -1023,8 +1060,43 @@ var inquiryRouter = router({
 });
 
 // server/routers.ts
-import { z as z3 } from "zod";
+import { z as z4 } from "zod";
 import bcrypt from "bcrypt";
+import { TRPCError as TRPCError4 } from "@trpc/server";
+
+// server/_core/adminLoginRateLimit.ts
+import { neon as neon2 } from "@neondatabase/serverless";
+var ADMIN_LOGIN_ATTEMPTS = 10;
+var ADMIN_LOGIN_WINDOW_SECONDS = 15 * 60;
+async function consumeAdminLoginAttempt() {
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new Error("Login rate limiter is unavailable");
+  const sql2 = neon2(url);
+  const rows = await sql2`
+    INSERT INTO admin_login_rate_limits AS limits ("key", attempts, "windowStartedAt")
+    VALUES ('admin-password', 1, statement_timestamp())
+    ON CONFLICT ("key") DO UPDATE SET
+      attempts = CASE
+        WHEN limits."windowStartedAt" <= statement_timestamp() - make_interval(secs => ${ADMIN_LOGIN_WINDOW_SECONDS})
+        THEN 1 ELSE LEAST(limits.attempts + 1, ${ADMIN_LOGIN_ATTEMPTS + 1}) END,
+      "windowStartedAt" = CASE
+        WHEN limits."windowStartedAt" <= statement_timestamp() - make_interval(secs => ${ADMIN_LOGIN_WINDOW_SECONDS})
+        THEN statement_timestamp() ELSE limits."windowStartedAt" END
+    RETURNING attempts,
+      GREATEST(1, CEIL(EXTRACT(EPOCH FROM
+        ("windowStartedAt" + make_interval(secs => ${ADMIN_LOGIN_WINDOW_SECONDS}) - statement_timestamp()))))::integer AS "retryAfterSeconds"
+  `;
+  const row2 = Array.isArray(rows) ? rows[0] : void 0;
+  if (!row2 || !Number.isInteger(row2.attempts) || row2.attempts < 1 || !Number.isInteger(row2.retryAfterSeconds) || row2.retryAfterSeconds < 1) {
+    throw new Error("Invalid login rate limiter response");
+  }
+  return {
+    allowed: row2.attempts <= ADMIN_LOGIN_ATTEMPTS,
+    retryAfterSeconds: row2.retryAfterSeconds
+  };
+}
+
+// server/routers.ts
 var appRouter = router({
   system: systemRouter,
   auth: router({
@@ -1045,9 +1117,25 @@ var appRouter = router({
    */
   admin: router({
     session: adminTokenProcedure.query(() => ({ success: true })),
-    verifyPassword: publicProcedure.input(z3.object({ password: z3.string().min(1).max(200) })).mutation(async ({ input }) => {
+    verifyPassword: publicProcedure.input(z4.object({ password: z4.string().min(1).max(200) })).mutation(async ({ input }) => {
       if (!ENV.adminPasswordHash) {
         throw new Error("[Admin] ADMIN_PASSWORD_HASH is not configured.");
+      }
+      let limit;
+      try {
+        limit = await consumeAdminLoginAttempt();
+      } catch {
+        throw new TRPCError4({
+          code: "SERVICE_UNAVAILABLE",
+          message: "Sign-in is temporarily unavailable. Please try again shortly."
+        });
+      }
+      if (!limit.allowed) {
+        const minutes = Math.ceil(limit.retryAfterSeconds / 60);
+        throw new TRPCError4({
+          code: "TOO_MANY_REQUESTS",
+          message: `Too many sign-in attempts. Please try again in about ${minutes} minute${minutes === 1 ? "" : "s"}.`
+        });
       }
       const hash = Buffer.from(ENV.adminPasswordHash, "base64").toString(
         "utf8"
@@ -1308,8 +1396,12 @@ var app = express();
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.options("*", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT");
+  res.setHeader("Access-Control-Allow-Origin", "https://www.thepplschef.com");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+  );
   res.setHeader(
     "Access-Control-Allow-Headers",
     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, x-admin-token"

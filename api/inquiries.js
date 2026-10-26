@@ -19,29 +19,11 @@
 
 import { neon } from "@neondatabase/serverless";
 import { Resend } from "resend";
-import dns from "dns/promises";
-import { z } from "zod";
+import { InquirySchema } from "../shared/inquiryValidation.js";
+import { hasMxRecord } from "./_lib/emailDomain.js";
 import { createHash } from "node:crypto";
 import { escapeHtml } from "../shared/escapeHtml.js";
 import { verifyRecaptcha } from "./_lib/recaptcha.js";
-
-// ── Zod Input Validation Schema ──────────────────────────────────────────────
-
-const InquirySchema = z.object({
-  name: z.string().trim().min(1).max(100),
-  email: z.string().email().max(254),
-  phone: z.string().max(30).optional(),
-  serviceType: z.string().max(100).optional(),
-  eventDate: z.string().max(100).optional(),
-  eventTime: z.string().max(100).optional(),
-  guestCount: z.string().max(50).optional(),
-  budget: z.string().max(50).optional(),
-  allergies: z.string().max(1000).optional(),
-  foodPreferences: z.string().max(1000).optional(),
-  location: z.string().max(200).optional(),
-  notes: z.string().max(2000).optional(),
-  recaptchaToken: z.string().optional(),
-});
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -55,42 +37,6 @@ function getResend() {
   const key = process.env.RESEND_API_KEY;
   if (!key) return null;
   return new Resend(key);
-}
-
-// Names are Unicode text, not a Latin vowel/case heuristic. Security comes
-// from encoding at output; names with a single word are legitimate too.
-function isValidName(name) {
-  return /\p{L}/u.test(name) && !/[\p{Cc}\p{Cs}]/u.test(name);
-}
-
-/**
- * Checks whether the domain part of an email has at least one MX record.
- * Returns true if valid MX records exist, false otherwise.
- * On DNS lookup failure/timeout, returns true (fail-open) to avoid blocking real users.
- */
-async function hasMxRecord(email) {
-  try {
-    const domain = email.split("@")[1];
-    if (!domain) return false;
-    const records = await dns.resolveMx(domain);
-    return Array.isArray(records) && records.length > 0;
-  } catch (err) {
-    // ENOTFOUND = domain doesn't exist; ENODATA = no MX records
-    if (
-      err.code === "ENOTFOUND" ||
-      err.code === "ENODATA" ||
-      err.code === "ESERVFAIL"
-    ) {
-      return false;
-    }
-    // For other errors (timeout, etc.) fail-open
-    console.warn(
-      "[api/inquiries] MX lookup error (fail-open):",
-      err.code,
-      err.message
-    );
-    return true;
-  }
 }
 
 function formatDate(dateStr) {
@@ -256,27 +202,6 @@ export default async function handler(req, res) {
       notes = null,
       recaptchaToken = null,
     } = parsed.data;
-
-    // Validation (legacy — kept as secondary check)
-    if (!name || typeof name !== "string" || name.trim() === "") {
-      return res
-        .status(400)
-        .json({ success: false, error: "Name is required" });
-    }
-    if (!email || typeof email !== "string" || !email.includes("@")) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Valid email is required" });
-    }
-
-    // ── Protection: Name validation ──────────────────────────────────────────
-    if (!isValidName(name)) {
-      console.warn("[api/inquiries] Name validation failed:", name);
-      return res.status(400).json({
-        success: false,
-        error: "Please enter your name.",
-      });
-    }
 
     // ── Protection: Email MX record validation ───────────────────────────────
     const mxValid = await hasMxRecord(email.trim());

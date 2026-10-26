@@ -298,3 +298,55 @@ describe("shared contact and booking submission helper", () => {
     expect(mocks.fetch).toHaveBeenCalledOnce();
   });
 });
+
+describe("REST enforces the shared inquiry validation rules", () => {
+  it.each([
+    { name: "12345" },
+    { name: "  " },
+    { name: "Name\u0000" },
+    { name: "x".repeat(101) },
+    { email: "not-an-email" },
+    { phone: "x".repeat(31) },
+    { serviceType: "x".repeat(101) },
+    { serviceType: "Private Chef\r\nInjected" },
+    { eventDate: "x".repeat(51) },
+    { eventTime: "x".repeat(51) },
+    { guestCount: "x".repeat(51) },
+    { budget: "x".repeat(51) },
+    { allergies: "x".repeat(1001) },
+    { foodPreferences: "x".repeat(1001) },
+    { location: "x".repeat(201) },
+    { notes: "x".repeat(2001) },
+    { recaptchaToken: "x".repeat(4097) },
+  ])(
+    "rejects invalid or oversized fields before side effects %#",
+    async fields => {
+      expect((await request({ ...body, ...fields })).status).toBe(400);
+      expect(mocks.sql).not.toHaveBeenCalled();
+      expect(mocks.sql.transaction).not.toHaveBeenCalled();
+      expect(mocks.mx).not.toHaveBeenCalled();
+      expect(mocks.fetch).not.toHaveBeenCalled();
+      expect(mocks.send).not.toHaveBeenCalled();
+    }
+  );
+  it("rejects domains without MX records before saving or CAPTCHA", async () => {
+    mocks.mx.mockResolvedValueOnce([]);
+    expect((await request()).status).toBe(400);
+    expect(mocks.sql.transaction).not.toHaveBeenCalled();
+    expect(mocks.fetch).not.toHaveBeenCalled();
+    expect(mocks.send).not.toHaveBeenCalled();
+  });
+  it("trims surrounding whitespace in legitimate names and email addresses", async () => {
+    expect(
+      (
+        await request({
+          ...body,
+          name: "  李  ",
+          email: " customer@example.com ",
+        })
+      ).status
+    ).toBe(200);
+    expect(mocks.send.mock.calls[1][0].to).toEqual(["customer@example.com"]);
+    expect(mocks.mx).toHaveBeenCalledWith("example.com");
+  });
+});

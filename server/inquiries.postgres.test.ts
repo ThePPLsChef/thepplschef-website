@@ -9,6 +9,8 @@ import {
   vi,
 } from "vitest";
 import postgres from "postgres";
+import { readFileSync } from "node:fs";
+import { consumeAdminLoginAttempt } from "./_core/adminLoginRateLimit";
 const fixture = vi.hoisted(() => ({
   db: null as ReturnType<typeof postgres> | null,
   send: vi.fn().mockResolvedValue({ data: { id: "local-only" } }),
@@ -123,6 +125,17 @@ describe.skipIf(!url)(
         "createdAt" timestamp NOT NULL DEFAULT NOW()
       );
     `);
+      // Only the strictly guarded disposable DB above can reach this migration.
+      await fixture.db!.unsafe("DROP TABLE IF EXISTS admin_login_rate_limits");
+      await fixture.db!.unsafe(
+        readFileSync(
+          new URL(
+            "../drizzle/0001_admin_login_rate_limits.sql",
+            import.meta.url
+          ),
+          "utf8"
+        )
+      );
     });
     beforeEach(async () => {
       fixture.send.mockClear();
@@ -130,6 +143,7 @@ describe.skipIf(!url)(
         "TRUNCATE inquiries, service_types RESTART IDENTITY CASCADE"
       );
       await fixture.db!`INSERT INTO service_types(name) VALUES ('Private Chef')`;
+      await fixture.db!`TRUNCATE admin_login_rate_limits`;
     });
     afterAll(async () => {
       await fixture.db?.end();
@@ -178,6 +192,47 @@ describe.skipIf(!url)(
         expect(await fixture.db!`SELECT * FROM inquiries`).toHaveLength(0);
       } finally {
         await fixture.db!`ALTER TABLE inquiries DROP CONSTRAINT reject_fixture`;
+      }
+    });
+    it("enforces one shared login budget across concurrent requests", async () => {
+      const results = await Promise.all(
+        Array.from({ length: 30 }, () => consumeAdminLoginAttempt())
+      );
+      expect(results.filter(result => result.allowed)).toHaveLength(10);
+      expect(results.filter(result => !result.allowed)).toHaveLength(20);
+      const rows = await fixture.db!`SELECT * FROM admin_login_rate_limits`;
+      expect(rows).toHaveLength(1);
+      expect(rows[0]).toMatchObject({ key: "admin-password", attempts: 11 });
+      expect(
+        results.every(
+          result =>
+            result.retryAfterSeconds > 0 && result.retryAfterSeconds <= 900
+        )
+      ).toBe(true);
+    });
+    it("automatically restores the login budget after fifteen minutes", async () => {
+      await fixture.db!`INSERT INTO admin_login_rate_limits ("key", attempts, "windowStartedAt") VALUES ('admin-password', 11, NOW() - INTERVAL '16 minutes')`;
+      expect(await consumeAdminLoginAttempt()).toMatchObject({
+        allowed: true,
+        retryAfterSeconds: 900,
+      });
+      const rows =
+        await fixture.db!`SELECT attempts FROM admin_login_rate_limits`;
+      expect(rows[0].attempts).toBe(1);
+    });
+    it("blocked requests do not prolong the current login window", async () => {
+      await fixture.db!`INSERT INTO admin_login_rate_limits ("key", attempts, "windowStartedAt") VALUES ('admin-password', 11, NOW() - INTERVAL '10 minutes')`;
+      const result = await consumeAdminLoginAttempt();
+      expect(result.allowed).toBe(false);
+      expect(result.retryAfterSeconds).toBeGreaterThan(0);
+      expect(result.retryAfterSeconds).toBeLessThanOrEqual(300);
+    });
+    it("fails closed if the required counter table is missing", async () => {
+      await fixture.db!`ALTER TABLE admin_login_rate_limits RENAME TO missing_login_rate_limits`;
+      try {
+        await expect(consumeAdminLoginAttempt()).rejects.toThrow();
+      } finally {
+        await fixture.db!`ALTER TABLE missing_login_rate_limits RENAME TO admin_login_rate_limits`;
       }
     });
   }

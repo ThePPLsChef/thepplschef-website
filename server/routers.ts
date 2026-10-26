@@ -6,6 +6,8 @@ import { inquiryRouter } from "./routers/inquiry";
 import { ENV } from "./_core/env";
 import { z } from "zod";
 import bcrypt from "bcrypt";
+import { TRPCError } from "@trpc/server";
+import { consumeAdminLoginAttempt } from "./_core/adminLoginRateLimit";
 import { createAdminSession } from "./_core/adminSession";
 
 export const appRouter = router({
@@ -35,6 +37,23 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         if (!ENV.adminPasswordHash) {
           throw new Error("[Admin] ADMIN_PASSWORD_HASH is not configured.");
+        }
+        let limit: Awaited<ReturnType<typeof consumeAdminLoginAttempt>>;
+        try {
+          limit = await consumeAdminLoginAttempt();
+        } catch {
+          throw new TRPCError({
+            code: "SERVICE_UNAVAILABLE",
+            message:
+              "Sign-in is temporarily unavailable. Please try again shortly.",
+          });
+        }
+        if (!limit.allowed) {
+          const minutes = Math.ceil(limit.retryAfterSeconds / 60);
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: `Too many sign-in attempts. Please try again in about ${minutes} minute${minutes === 1 ? "" : "s"}.`,
+          });
         }
         // The hash is stored as base64 in the env var to avoid $ character
         // stripping by the secrets system. Decode it before comparing.

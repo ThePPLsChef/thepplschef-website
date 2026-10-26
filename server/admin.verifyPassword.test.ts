@@ -8,6 +8,11 @@ import {
   vi,
 } from "vitest";
 import bcrypt from "bcrypt";
+vi.mock("./_core/adminLoginRateLimit", () => ({
+  consumeAdminLoginAttempt: vi
+    .fn()
+    .mockResolvedValue({ allowed: true, retryAfterSeconds: 900 }),
+}));
 import { SignJWT } from "jose";
 import { appRouter } from "./routers";
 import { ENV } from "./_core/env";

@@ -16,7 +16,14 @@ import { verifyRecaptcha } from "../api/_lib/recaptcha.js";
 vi.mock("../api/_lib/recaptcha.js", () => ({
   verifyRecaptcha: vi.fn().mockResolvedValue(true),
 }));
-beforeEach(() => vi.mocked(verifyRecaptcha).mockResolvedValue(true));
+import { hasMxRecord } from "../api/_lib/emailDomain.js";
+vi.mock("../api/_lib/emailDomain.js", () => ({
+  hasMxRecord: vi.fn().mockResolvedValue(true),
+}));
+beforeEach(() => {
+  vi.mocked(verifyRecaptcha).mockClear().mockResolvedValue(true);
+  vi.mocked(hasMxRecord).mockClear().mockResolvedValue(true);
+});
 let adminToken: string;
 const originalHash = ENV.adminPasswordHash;
 beforeAll(async () => {
@@ -314,5 +321,88 @@ describe("legacy inquiry security", () => {
         .inquiry.submit({ name: "Test User", email: "test@example.com" })
     ).rejects.toThrow();
     expect(sendInquiryEmails).not.toHaveBeenCalled();
+  });
+});
+
+describe("shared REST and tRPC inquiry validation", () => {
+  const valid = {
+    name: "Renée 李",
+    email: "customer@example.com",
+    recaptchaToken: "token",
+  };
+  it.each([
+    { name: "12345" },
+    { name: "  " },
+    { name: "Name\u0000" },
+    { name: "x".repeat(101) },
+    { email: "not-an-email" },
+    { phone: "x".repeat(31) },
+    { serviceType: "x".repeat(101) },
+    { serviceType: "Private Chef\r\nInjected" },
+    { eventDate: "x".repeat(51) },
+    { eventTime: "x".repeat(51) },
+    { guestCount: "x".repeat(51) },
+    { budget: "x".repeat(51) },
+    { allergies: "x".repeat(1001) },
+    { foodPreferences: "x".repeat(1001) },
+    { location: "x".repeat(201) },
+    { notes: "x".repeat(2001) },
+    { recaptchaToken: "x".repeat(4097) },
+  ])(
+    "rejects invalid or oversized fields before side effects %#",
+    async fields => {
+      const { createInquiry } = await import("./db");
+      vi.mocked(createInquiry).mockClear();
+      await expect(
+        appRouter
+          .createCaller(createPublicContext())
+          .inquiry.submit({ ...valid, ...fields })
+      ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+      expect(createInquiry).not.toHaveBeenCalled();
+      expect(hasMxRecord).not.toHaveBeenCalled();
+      expect(verifyRecaptcha).not.toHaveBeenCalled();
+    }
+  );
+  it.each([
+    "李",
+    "Nguyễn Thị Mỹ",
+    "محمد علي",
+    "Ch Ng",
+    "Björk",
+    "D’Arcy O'Neill",
+  ])("accepts Unicode and single-word names: %s", async name => {
+    await expect(
+      appRouter
+        .createCaller(createPublicContext())
+        .inquiry.submit({ ...valid, name })
+    ).resolves.toEqual({ success: true, id: 42 });
+  });
+  it("trims names and email addresses before validation and persistence", async () => {
+    const { createInquiry } = await import("./db");
+    vi.mocked(createInquiry).mockClear();
+    await appRouter
+      .createCaller(createPublicContext())
+      .inquiry.submit({
+        ...valid,
+        name: "  李  ",
+        email: " customer@example.com ",
+      });
+    expect(createInquiry).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "李", email: "customer@example.com" })
+    );
+    expect(hasMxRecord).toHaveBeenCalledWith("customer@example.com");
+  });
+  it("rejects domains without MX records before CAPTCHA, saving or email", async () => {
+    const { createInquiry } = await import("./db");
+    const { sendInquiryEmails } = await import("./email");
+    vi.mocked(createInquiry).mockClear();
+    vi.mocked(sendInquiryEmails).mockClear();
+    vi.mocked(hasMxRecord).mockResolvedValueOnce(false);
+    await expect(
+      appRouter.createCaller(createPublicContext()).inquiry.submit(valid)
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    expect(createInquiry).not.toHaveBeenCalled();
+    expect(sendInquiryEmails).not.toHaveBeenCalled();
+    expect(verifyRecaptcha).not.toHaveBeenCalled();
   });
 });

@@ -39,8 +39,13 @@ export default function AdminPasswordGate({
         triggerError("Incorrect password. Please try again.");
       }
     },
-    onError() {
-      triggerError("Unable to verify password. Please try again.");
+    onError(error) {
+      triggerError(
+        error.data?.code === "TOO_MANY_REQUESTS" ||
+          error.data?.code === "SERVICE_UNAVAILABLE"
+          ? error.message
+          : "Unable to verify password. Please try again."
+      );
     },
   });
 

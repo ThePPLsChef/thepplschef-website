@@ -11,6 +11,7 @@ import {
 } from "../db";
 import { notifyOwner } from "../_core/notification";
 import { sendInquiryEmails } from "../email";
+import { verifyRecaptcha } from "../../api/_lib/recaptcha.js";
 
 export const inquiryRouter = router({
   /**
@@ -19,7 +20,8 @@ export const inquiryRouter = router({
   submit: publicProcedure
     .input(
       z.object({
-        name: z.string().min(1, "Name is required"),
+        name: z.string().trim().min(1, "Name is required"),
+        recaptchaToken: z.string().optional(),
         email: z.string().email("Valid email is required"),
         phone: z.string().optional(),
         serviceType: z.string().optional(),
@@ -34,14 +36,33 @@ export const inquiryRouter = router({
       })
     )
     .mutation(async ({ input }) => {
+      // The legacy public mutation must not bypass the REST endpoint's CAPTCHA.
+      let verified: boolean;
+      try {
+        verified = await verifyRecaptcha(input.recaptchaToken);
+      } catch {
+        throw new TRPCError({
+          code: "SERVICE_UNAVAILABLE",
+          message:
+            "Security verification is temporarily unavailable. Please try again shortly or call us directly.",
+        });
+      }
+      if (!verified)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            "Security verification failed. Please refresh and try again.",
+        });
       // Map serviceType string to serviceTypeId if possible
       let serviceTypeId: number | undefined;
       if (input.serviceType) {
         try {
           const types = await getServiceTypes();
           const match = types.find(
-            (t) => t.name.toLowerCase() === input.serviceType!.toLowerCase()
-              || t.name.toLowerCase().replace(/\s+/g, "-") === input.serviceType!.toLowerCase()
+            t =>
+              t.name.toLowerCase() === input.serviceType!.toLowerCase() ||
+              t.name.toLowerCase().replace(/\s+/g, "-") ===
+                input.serviceType!.toLowerCase()
           );
           if (match) serviceTypeId = match.id;
         } catch {
@@ -80,7 +101,9 @@ export const inquiryRouter = router({
             input.location ? `**Location:** ${input.location}` : "",
             input.guestCount ? `**Guests:** ${input.guestCount}` : "",
             input.budget ? `**Budget:** ${input.budget}` : "",
-            input.foodPreferences ? `**Food Preferences:** ${input.foodPreferences}` : "",
+            input.foodPreferences
+              ? `**Food Preferences:** ${input.foodPreferences}`
+              : "",
             input.allergies ? `**Allergies:** ${input.allergies}` : "",
             input.notes ? `**Notes:** ${input.notes}` : "",
           ]
@@ -138,10 +161,12 @@ export const inquiryRouter = router({
         listInquiries(input?.limit ?? 100, input?.offset ?? 0),
         getServiceTypes(),
       ]);
-      const typeMap = new Map(types.map((t) => [t.id, t.name]));
-      return rows.map((r) => ({
+      const typeMap = new Map(types.map(t => [t.id, t.name]));
+      return rows.map(r => ({
         ...r,
-        serviceTypeName: r.serviceTypeId ? typeMap.get(r.serviceTypeId) ?? null : null,
+        serviceTypeName: r.serviceTypeId
+          ? (typeMap.get(r.serviceTypeId) ?? null)
+          : null,
       }));
     }),
 
@@ -153,13 +178,16 @@ export const inquiryRouter = router({
     .query(async ({ input }) => {
       const inquiry = await getInquiryById(input.id);
       if (!inquiry) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Inquiry not found" });
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Inquiry not found",
+        });
       }
       // Resolve service type name
       let serviceTypeName: string | null = null;
       if (inquiry.serviceTypeId) {
         const types = await getServiceTypes();
-        const match = types.find((t) => t.id === inquiry.serviceTypeId);
+        const match = types.find(t => t.id === inquiry.serviceTypeId);
         if (match) serviceTypeName = match.name;
       }
       return { ...inquiry, serviceTypeName };

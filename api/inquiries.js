@@ -7,8 +7,8 @@
  *  - Saves inquiry to Neon PostgreSQL via @neondatabase/serverless
  *  - Sends owner alert email to info@thepplschef.com via Resend
  *  - Sends confirmation email to the client via Resend
- *  - Verifies Google reCAPTCHA v3 token (rejects score < 0.6)
- *  - Validates name field (must contain a space; rejects random-character strings)
+ *  - Verifies Google reCAPTCHA v3 token (rejects score < 0.7)
+ *  - Accepts international names; escapes untrusted HTML email content
  *  - Validates email domain has a live MX record via DNS lookup
  *
  * Required Vercel Environment Variables:
@@ -21,11 +21,14 @@ import { neon } from "@neondatabase/serverless";
 import { Resend } from "resend";
 import dns from "dns/promises";
 import { z } from "zod";
+import { createHash } from "node:crypto";
+import { escapeHtml } from "../shared/escapeHtml.js";
+import { verifyRecaptcha } from "./_lib/recaptcha.js";
 
 // ── Zod Input Validation Schema ──────────────────────────────────────────────
 
 const InquirySchema = z.object({
-  name: z.string().min(2).max(100).trim(),
+  name: z.string().trim().min(1).max(100),
   email: z.string().email().max(254),
   phone: z.string().max(30).optional(),
   serviceType: z.string().max(100).optional(),
@@ -54,42 +57,10 @@ function getResend() {
   return new Resend(key);
 }
 
-/**
- * Checks whether a name looks like a real human name.
- * Rejects:
- *  - names with no space (no first+last)
- *  - names that are purely random mixed-case with no vowel pattern
- */
+// Names are Unicode text, not a Latin vowel/case heuristic. Security comes
+// from encoding at output; names with a single word are legitimate too.
 function isValidName(name) {
-  const trimmed = name.trim();
-  // Must contain at least one space (first + last name)
-  if (!trimmed.includes(" ")) return false;
-
-  // Each word must contain at least one vowel (a e i o u — case-insensitive)
-  const words = trimmed.split(/\s+/);
-  const vowelPattern = /[aeiouAEIOU]/;
-  for (const word of words) {
-    if (word.length > 0 && !vowelPattern.test(word)) return false;
-  }
-
-  // Reject strings that look like random camelCase gibberish:
-  // High ratio of alternating upper/lower case transitions is a red flag.
-  // Count case transitions (e.g. aAbBcC has many transitions).
-  let transitions = 0;
-  for (let i = 1; i < trimmed.length; i++) {
-    const prev = trimmed[i - 1];
-    const curr = trimmed[i];
-    if (/[a-zA-Z]/.test(prev) && /[a-zA-Z]/.test(curr)) {
-      const prevUpper = prev === prev.toUpperCase();
-      const currUpper = curr === curr.toUpperCase();
-      if (prevUpper !== currUpper) transitions++;
-    }
-  }
-  const letters = trimmed.replace(/[^a-zA-Z]/g, "").length;
-  // If more than 40% of letter-pairs are case transitions, it's likely random
-  if (letters > 4 && transitions / (letters - 1) > 0.4) return false;
-
-  return true;
+  return /\p{L}/u.test(name) && !/[\p{Cc}\p{Cs}]/u.test(name);
 }
 
 /**
@@ -105,44 +76,21 @@ async function hasMxRecord(email) {
     return Array.isArray(records) && records.length > 0;
   } catch (err) {
     // ENOTFOUND = domain doesn't exist; ENODATA = no MX records
-    if (err.code === "ENOTFOUND" || err.code === "ENODATA" || err.code === "ESERVFAIL") {
+    if (
+      err.code === "ENOTFOUND" ||
+      err.code === "ENODATA" ||
+      err.code === "ESERVFAIL"
+    ) {
       return false;
     }
     // For other errors (timeout, etc.) fail-open
-    console.warn("[api/inquiries] MX lookup error (fail-open):", err.code, err.message);
+    console.warn(
+      "[api/inquiries] MX lookup error (fail-open):",
+      err.code,
+      err.message
+    );
     return true;
   }
-}
-
-/**
- * Verifies a reCAPTCHA v3 token with Google's siteverify API.
- * Returns { success, score, action } or throws on network failure.
- * If RECAPTCHA_SECRET_KEY is not set, verification is skipped (returns success).
- */
-async function verifyRecaptcha(token) {
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-  if (!secretKey) {
-    console.warn("[api/inquiries] RECAPTCHA_SECRET_KEY not set — skipping verification");
-    return { success: true, score: 1.0, skipped: true };
-  }
-  if (!token) {
-    return { success: false, score: 0, error: "Missing reCAPTCHA token" };
-  }
-
-  const params = new URLSearchParams({
-    secret: secretKey,
-    response: token,
-  });
-
-  const verifyRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: params.toString(),
-  });
-
-  const verifyData = await verifyRes.json();
-  console.log("[api/inquiries] reCAPTCHA verify response:", JSON.stringify(verifyData));
-  return verifyData;
 }
 
 function formatDate(dateStr) {
@@ -159,7 +107,14 @@ function formatDate(dateStr) {
   }
 }
 
-function buildOwnerEmailHtml(data) {
+export function buildOwnerEmailHtml(data) {
+  const emailHref = `mailto:${encodeURIComponent(data.email)}`;
+  data = Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [
+      key,
+      value == null ? value : escapeHtml(value),
+    ])
+  );
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><title>New Inquiry — The PPL's Chef</title></head>
@@ -178,7 +133,7 @@ function buildOwnerEmailHtml(data) {
           <h2 style="color:#000;margin:0;font-size:16px;text-transform:uppercase;letter-spacing:1px;">Client Information</h2>
         </td></tr>
         <tr><td style="padding:10px 0;color:#666;font-size:14px;width:40%;font-weight:bold;">Name</td><td style="padding:10px 0;color:#000;font-size:14px;">${data.name}</td></tr>
-        <tr style="background:#fafafa;"><td style="padding:10px 8px;color:#666;font-size:14px;font-weight:bold;">Email</td><td style="padding:10px 8px;color:#000;font-size:14px;"><a href="mailto:${data.email}" style="color:#D82E2B;">${data.email}</a></td></tr>
+        <tr style="background:#fafafa;"><td style="padding:10px 8px;color:#666;font-size:14px;font-weight:bold;">Email</td><td style="padding:10px 8px;color:#000;font-size:14px;"><a href="${emailHref}" style="color:#D82E2B;">${data.email}</a></td></tr>
         <tr><td style="padding:10px 0;color:#666;font-size:14px;font-weight:bold;">Phone</td><td style="padding:10px 0;color:#000;font-size:14px;">${data.phone || "Not provided"}</td></tr>
         <tr><td colspan="2" style="padding:24px 0 16px;">
           <h2 style="color:#000;margin:0;font-size:16px;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #ECA241;padding-bottom:8px;">Event Details</h2>
@@ -203,7 +158,9 @@ function buildOwnerEmailHtml(data) {
 </html>`;
 }
 
-function buildClientEmailHtml(name, serviceType) {
+export function buildClientEmailHtml(name, serviceType) {
+  name = escapeHtml(name);
+  serviceType = escapeHtml(serviceType);
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><title>We Received Your Inquiry — The PPL's Chef</title></head>
@@ -263,7 +220,9 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== "POST") {
-    return res.status(405).json({ success: false, error: "Method not allowed" });
+    return res
+      .status(405)
+      .json({ success: false, error: "Method not allowed" });
   }
 
   try {
@@ -272,7 +231,10 @@ export default async function handler(req, res) {
     // ── Zod schema validation ─────────────────────────────────────────────────
     const parsed = InquirySchema.safeParse(body);
     if (!parsed.success) {
-      console.warn("[api/inquiries] Zod validation failed:", parsed.error.flatten());
+      console.warn(
+        "[api/inquiries] Zod validation failed:",
+        parsed.error.flatten()
+      );
       return res.status(400).json({
         success: false,
         error: "Invalid input. Please check your form fields and try again.",
@@ -297,10 +259,14 @@ export default async function handler(req, res) {
 
     // Validation (legacy — kept as secondary check)
     if (!name || typeof name !== "string" || name.trim() === "") {
-      return res.status(400).json({ success: false, error: "Name is required" });
+      return res
+        .status(400)
+        .json({ success: false, error: "Name is required" });
     }
     if (!email || typeof email !== "string" || !email.includes("@")) {
-      return res.status(400).json({ success: false, error: "Valid email is required" });
+      return res
+        .status(400)
+        .json({ success: false, error: "Valid email is required" });
     }
 
     // ── Protection: Name validation ──────────────────────────────────────────
@@ -308,44 +274,45 @@ export default async function handler(req, res) {
       console.warn("[api/inquiries] Name validation failed:", name);
       return res.status(400).json({
         success: false,
-        error: "Please enter your full name (first and last name).",
+        error: "Please enter your name.",
       });
     }
 
     // ── Protection: Email MX record validation ───────────────────────────────
     const mxValid = await hasMxRecord(email.trim());
     if (!mxValid) {
-      console.warn("[api/inquiries] MX record check failed for email domain:", email);
+      console.warn(
+        "[api/inquiries] MX record check failed for email domain:",
+        email
+      );
       return res.status(400).json({
         success: false,
-        error: "The email address provided does not appear to be valid. Please check and try again.",
+        error:
+          "The email address provided does not appear to be valid. Please check and try again.",
       });
     }
 
     // ── Protection 2: reCAPTCHA v3 verification ───────────────────────────────
     try {
-      const captchaResult = await verifyRecaptcha(recaptchaToken);
-      if (!captchaResult.success && !captchaResult.skipped) {
-        console.warn("[api/inquiries] reCAPTCHA failed:", captchaResult);
+      if (!(await verifyRecaptcha(recaptchaToken))) {
         return res.status(400).json({
           success: false,
-          error: "Security verification failed. Please refresh the page and try again.",
+          error:
+            "Security verification failed. Please refresh the page and try again, or call us directly.",
         });
       }
-      if (captchaResult.success && !captchaResult.skipped && captchaResult.score < 0.7) {
-        console.warn("[api/inquiries] reCAPTCHA score too low:", captchaResult.score);
-        return res.status(400).json({
-          success: false,
-          error: "Security verification failed. Please refresh the page and try again.",
-        });
-      }
-    } catch (captchaErr) {
-      // Don't block legitimate users if reCAPTCHA network call fails
-      console.error("[api/inquiries] reCAPTCHA verification error:", captchaErr);
+    } catch {
+      console.error("[api/inquiries] reCAPTCHA unavailable");
+      return res.status(503).json({
+        success: false,
+        error:
+          "Security verification is temporarily unavailable. Please try again shortly or call (725) 212-2236.",
+      });
     }
 
     // ── Save to database ──────────────────────────────────────────────────────
     let inquiryId = null;
+    let duplicate = false;
 
     try {
       const sql = getDb();
@@ -356,7 +323,47 @@ export default async function handler(req, res) {
         : [];
       const serviceTypeId = serviceRows.length > 0 ? serviceRows[0].id : null;
 
-      const inserted = await sql`
+      // Serialize identical submissions across serverless instances without a
+      // schema change. READ COMMITTED gives the second statement a fresh snapshot
+      // after acquiring the transaction-scoped lock. Compare every stored field.
+      const fingerprint = createHash("sha256")
+        .update(
+          JSON.stringify([
+            name.trim(),
+            email.trim(),
+            phone,
+            serviceTypeId,
+            eventDate,
+            eventTime,
+            location,
+            guestCount,
+            budget,
+            foodPreferences,
+            allergies,
+            notes,
+          ])
+        )
+        .digest();
+      const [, inserted] = await sql.transaction(
+        [
+          sql`SELECT pg_advisory_xact_lock(${fingerprint.readInt32BE(0)}, ${fingerprint.readInt32BE(4)})`,
+          sql`
+        WITH existing AS (
+          SELECT id FROM inquiries WHERE
+            name = ${name.trim()} AND email = ${email.trim()}
+            AND phone IS NOT DISTINCT FROM ${phone}
+            AND "serviceTypeId" IS NOT DISTINCT FROM ${serviceTypeId}
+            AND "eventDate" IS NOT DISTINCT FROM ${eventDate}
+            AND "eventTime" IS NOT DISTINCT FROM ${eventTime}
+            AND location IS NOT DISTINCT FROM ${location}
+            AND "guestCount" IS NOT DISTINCT FROM ${guestCount}
+            AND budget IS NOT DISTINCT FROM ${budget}
+            AND "foodPreferences" IS NOT DISTINCT FROM ${foodPreferences}
+            AND allergies IS NOT DISTINCT FROM ${allergies}
+            AND notes IS NOT DISTINCT FROM ${notes}
+            AND "createdAt" >= NOW() - INTERVAL '10 minutes'
+          ORDER BY id DESC LIMIT 1
+        ), saved AS (
         INSERT INTO inquiries (
           name, email, phone,
           "serviceTypeId",
@@ -364,75 +371,100 @@ export default async function handler(req, res) {
           "guestCount", budget,
           "foodPreferences", allergies, notes,
           status, "createdAt"
-        ) VALUES (
+        ) SELECT
           ${name.trim()}, ${email.trim()}, ${phone},
           ${serviceTypeId},
           ${eventDate}, ${eventTime}, ${location},
           ${guestCount}, ${budget},
           ${foodPreferences}, ${allergies}, ${notes},
           'new', NOW()
-        )
+        WHERE NOT EXISTS (SELECT 1 FROM existing)
         RETURNING id
-      `;
+        )
+        SELECT id, false AS duplicate FROM saved
+        UNION ALL SELECT id, true AS duplicate FROM existing
+      `,
+        ],
+        { isolationLevel: "ReadCommitted" }
+      );
       inquiryId = inserted[0]?.id;
+      duplicate = inserted[0]?.duplicate === true;
+      if (!inquiryId) throw new Error("Insert did not return an inquiry ID");
     } catch (dbErr) {
-      console.error("[api/inquiries] DB error:", dbErr);
-      // Don't fail the whole request for DB errors
+      console.error("[api/inquiries] Database save failed");
+      return res.status(503).json({
+        success: false,
+        error:
+          "We could not confirm your inquiry was saved. Please try again shortly or call (725) 212-2236.",
+      });
     }
 
     // ── Send emails via Resend ────────────────────────────────────────────────
-    const resend = getResend();
-    if (resend) {
-      // send.thepplschef.com is the verified Resend sending domain
-      const FROM_ADDRESS = "The PPL's Chef <notifications@send.thepplschef.com>";
-      const OWNER_EMAIL = "saustin@thepplschef.com";
+    try {
+      const resend = duplicate ? null : getResend();
+      if (resend) {
+        // send.thepplschef.com is the verified Resend sending domain
+        const FROM_ADDRESS =
+          "The PPL's Chef <notifications@send.thepplschef.com>";
+        const OWNER_EMAIL = "saustin@thepplschef.com";
 
-      const emailData = {
-        name: name.trim(),
-        email: email.trim(),
-        phone,
-        serviceType,
-        eventDate,
-        eventTime,
-        location,
-        guestCount,
-        budget,
-        foodPreferences,
-        allergies,
-        notes,
-        inquiryId: inquiryId || "N/A",
-      };
+        const emailData = {
+          name: name.trim(),
+          email: email.trim(),
+          phone,
+          serviceType,
+          eventDate,
+          eventTime,
+          location,
+          guestCount,
+          budget,
+          foodPreferences,
+          allergies,
+          notes,
+          inquiryId: inquiryId || "N/A",
+        };
 
-      // Await both emails so Vercel doesn't terminate before delivery
-      const emailResults = await Promise.allSettled([
-        resend.emails.send({
-          from: FROM_ADDRESS,
-          to: [OWNER_EMAIL],
-          replyTo: email.trim(),
-          subject: `New Inquiry — ${serviceType || "General"} — ${name.trim()}`,
-          html: buildOwnerEmailHtml(emailData),
-        }),
-        resend.emails.send({
-          from: FROM_ADDRESS,
-          to: [email.trim()],
-          replyTo: OWNER_EMAIL,
-          subject: "Your Experience Starts Here — The PPL's Chef",
-          html: buildClientEmailHtml(name.trim(), serviceType),
-        }),
-      ]);
+        // Await both emails so Vercel doesn't terminate before delivery
+        const emailResults = await Promise.allSettled([
+          resend.emails.send({
+            from: FROM_ADDRESS,
+            to: [OWNER_EMAIL],
+            replyTo: email.trim(),
+            subject: `New Inquiry — ${serviceType || "General"} — ${name.trim()}`,
+            html: buildOwnerEmailHtml(emailData),
+          }),
+          resend.emails.send({
+            from: FROM_ADDRESS,
+            to: [email.trim()],
+            replyTo: OWNER_EMAIL,
+            subject: "Your Experience Starts Here — The PPL's Chef",
+            html: buildClientEmailHtml(name.trim(), serviceType),
+          }),
+        ]);
 
-      emailResults.forEach((r, i) => {
-        const label = i === 0 ? "owner" : "client";
-        if (r.status === "rejected") {
-          console.error(`[api/inquiries] Email ${label} rejected:`, r.reason);
-        } else if (r.value?.error) {
-          console.error(`[api/inquiries] Email ${label} Resend error:`, r.value.error);
-        } else {
-          console.log(`[api/inquiries] Email ${label} sent OK, id:`, r.value?.data?.id);
-        }
-      });
-    } else {
-      console.warn("[api/inquiries] RESEND_API_KEY not set — emails skipped");
+        emailResults.forEach((r, i) => {
+          const label = i === 0 ? "owner" : "client";
+          if (r.status === "rejected") {
+            console.error(`[api/inquiries] Email ${label} rejected:`, r.reason);
+          } else if (r.value?.error) {
+            console.error(
+              `[api/inquiries] Email ${label} Resend error:`,
+              r.value.error
+            );
+          } else {
+            console.log(
+              `[api/inquiries] Email ${label} sent OK, id:`,
+              r.value?.data?.id
+            );
+          }
+        });
+      } else if (!duplicate) {
+        console.warn("[api/inquiries] RESEND_API_KEY not set — emails skipped");
+      }
+    } catch {
+      console.error(
+        "[api/inquiries] Email delivery failed after saving inquiry"
+      );
     }
 
     return res.status(200).json({

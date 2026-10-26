@@ -10,6 +10,7 @@
 
 import { Resend } from "resend";
 import { ENV } from "./_core/env";
+import { escapeHtml } from "../shared/escapeHtml.js";
 
 // ─── Resend client (lazy-init so missing key doesn't crash the server) ───────
 let _resend: Resend | null = null;
@@ -65,15 +66,31 @@ function row(label: string, value: string | null | undefined): string {
 }
 
 // ─── Template 1: Internal notification email ─────────────────────────────────
-function buildInternalEmailHtml(data: InquiryEmailData): string {
+export function buildInternalEmailHtml(data: InquiryEmailData): string {
+  const emailHref = `mailto:${encodeURIComponent(data.email)}`;
+  const phoneHref = `tel:${encodeURIComponent(data.phone || "")}`;
+  data = Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [
+      key,
+      value == null ? value : escapeHtml(value),
+    ])
+  ) as unknown as InquiryEmailData;
   const serviceLabel = data.serviceType || "General Inquiry";
   const firstName = data.name.split(" ")[0];
 
   const detailRows = [
     row("Service", serviceLabel),
     row("Name", data.name),
-    row("Email", `<a href="mailto:${data.email}" style="color:${BRAND.gold};text-decoration:none;">${data.email}</a>`),
-    row("Phone", data.phone ? `<a href="tel:${data.phone}" style="color:${BRAND.gold};text-decoration:none;">${data.phone}</a>` : null),
+    row(
+      "Email",
+      `<a href="${emailHref}" style="color:${BRAND.gold};text-decoration:none;">${data.email}</a>`
+    ),
+    row(
+      "Phone",
+      data.phone
+        ? `<a href="${phoneHref}" style="color:${BRAND.gold};text-decoration:none;">${data.phone}</a>`
+        : null
+    ),
     row("Event Date", data.eventDate),
     row("Event Time", data.eventTime),
     row("Location", data.location),
@@ -126,7 +143,7 @@ function buildInternalEmailHtml(data: InquiryEmailData): string {
           <!-- CTA -->
           <tr>
             <td style="padding:0 32px 32px;text-align:center;">
-              <a href="mailto:${data.email}" style="display:inline-block;background-color:${BRAND.gold};color:#1A1A1A;font-size:14px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:14px 32px;border-radius:3px;text-decoration:none;">Reply to ${firstName}</a>
+              <a href="${emailHref}" style="display:inline-block;background-color:${BRAND.gold};color:#1A1A1A;font-size:14px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:14px 32px;border-radius:3px;text-decoration:none;">Reply to ${firstName}</a>
             </td>
           </tr>
 
@@ -152,7 +169,13 @@ function buildInternalEmailHtml(data: InquiryEmailData): string {
 }
 
 // ─── Template 2: Customer confirmation email ─────────────────────────────────
-function buildCustomerEmailHtml(data: InquiryEmailData): string {
+export function buildCustomerEmailHtml(data: InquiryEmailData): string {
+  data = Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [
+      key,
+      value == null ? value : escapeHtml(value),
+    ])
+  ) as unknown as InquiryEmailData;
   const firstName = data.name.split(" ")[0];
   const serviceLabel = data.serviceType || "your upcoming event";
 
@@ -283,7 +306,7 @@ function buildInternalEmailText(data: InquiryEmailData): string {
     ``,
     `Reply to ${data.name}: ${data.email}`,
   ];
-  return lines.filter((l) => l !== null).join("\n");
+  return lines.filter(l => l !== null).join("\n");
 }
 
 function buildCustomerEmailText(data: InquiryEmailData): string {
@@ -342,7 +365,9 @@ export async function sendInquiryEmails(data: InquiryEmailData): Promise<void> {
       console.error("[Email] Internal notification failed:", error);
       errors.push(`Internal: ${error.message}`);
     } else {
-      console.log(`[Email] Internal notification sent → saustin@thepplschef.com (${serviceLabel} from ${data.name})`);
+      console.log(
+        `[Email] Internal notification sent → saustin@thepplschef.com (${serviceLabel} from ${data.name})`
+      );
     }
   } catch (err) {
     console.error("[Email] Internal notification exception:", err);
@@ -363,7 +388,9 @@ export async function sendInquiryEmails(data: InquiryEmailData): Promise<void> {
       console.error("[Email] Customer confirmation failed:", error);
       errors.push(`Customer: ${error.message}`);
     } else {
-      console.log(`[Email] Customer confirmation sent → ${data.email} (${firstName})`);
+      console.log(
+        `[Email] Customer confirmation sent → ${data.email} (${firstName})`
+      );
     }
   } catch (err) {
     console.error("[Email] Customer confirmation exception:", err);
@@ -372,7 +399,10 @@ export async function sendInquiryEmails(data: InquiryEmailData): Promise<void> {
 
   // Log combined errors but don't throw — email failure should never break the inquiry submission
   if (errors.length > 0) {
-    console.error(`[Email] ${errors.length} email(s) failed for inquiry from ${data.name}:`, errors);
+    console.error(
+      `[Email] ${errors.length} email(s) failed for inquiry from ${data.name}:`,
+      errors
+    );
   }
 }
 

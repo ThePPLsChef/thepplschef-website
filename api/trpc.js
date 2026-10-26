@@ -130,6 +130,47 @@ async function notifyOwner(payload) {
 // server/_core/trpc.ts
 import { initTRPC, TRPCError as TRPCError2 } from "@trpc/server";
 import superjson from "superjson";
+
+// server/_core/adminSession.ts
+import { SignJWT, jwtVerify } from "jose";
+import { createHash, randomUUID } from "node:crypto";
+var ADMIN_SESSION_SECONDS = 60 * 60;
+var issuer = "pplschef-admin";
+var audience = "pplschef-admin-api";
+function signingKey() {
+  const secret = process.env.ADMIN_SESSION_SECRET ?? "";
+  if (Buffer.byteLength(secret, "utf8") < 32) {
+    throw new Error("ADMIN_SESSION_SECRET must contain at least 32 bytes");
+  }
+  return new TextEncoder().encode(secret);
+}
+function passwordVersion() {
+  return createHash("sha256").update(ENV.adminPasswordHash).digest("hex");
+}
+async function createAdminSession() {
+  const expiresAt = Math.floor(Date.now() / 1e3) + ADMIN_SESSION_SECONDS;
+  const token = await new SignJWT({ passwordVersion: passwordVersion() }).setProtectedHeader({ alg: "HS256", typ: "JWT" }).setIssuer(issuer).setAudience(audience).setSubject("admin").setJti(randomUUID()).setIssuedAt().setExpirationTime(expiresAt).sign(signingKey());
+  return { token, expiresAt };
+}
+async function verifyAdminSession(token) {
+  if (typeof token !== "string" || !token || token.length > 4096 || !ENV.adminPasswordHash)
+    return false;
+  try {
+    const { payload } = await jwtVerify(token, signingKey(), {
+      algorithms: ["HS256"],
+      issuer,
+      audience,
+      subject: "admin",
+      requiredClaims: ["exp", "iat", "jti"],
+      maxTokenAge: ADMIN_SESSION_SECONDS
+    });
+    return payload.passwordVersion === passwordVersion();
+  } catch {
+    return false;
+  }
+}
+
+// server/_core/trpc.ts
 var t = initTRPC.context().create({
   transformer: superjson
 });
@@ -163,15 +204,8 @@ var adminProcedure = t.procedure.use(
   })
 );
 var adminTokenProcedure = t.procedure.use(
-  t.middleware(async (opts) => {
-    const { ctx, next } = opts;
-    const token = ctx.req.headers["x-admin-token"];
-    if (!token || !ENV.adminPasswordHash) {
-      throw new TRPCError2({ code: "UNAUTHORIZED", message: UNAUTHED_ERR_MSG });
-    }
-    const hash = Buffer.from(ENV.adminPasswordHash, "base64").toString("utf8");
-    const expectedToken = Buffer.from(hash.slice(-20)).toString("base64");
-    if (token !== expectedToken) {
+  t.middleware(async ({ ctx, next }) => {
+    if (!await verifyAdminSession(ctx.req.headers["x-admin-token"])) {
       throw new TRPCError2({ code: "UNAUTHORIZED", message: UNAUTHED_ERR_MSG });
     }
     return next({ ctx });
@@ -443,6 +477,22 @@ async function getServiceTypes() {
 
 // server/email.ts
 import { Resend } from "resend";
+
+// shared/escapeHtml.js
+function escapeHtml(value) {
+  return String(value ?? "").replace(
+    /[&<>"']/g,
+    (character) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[character]
+  );
+}
+
+// server/email.ts
 var _resend = null;
 function getResend() {
   if (!_resend) {
@@ -474,13 +524,27 @@ function row(label, value) {
     </tr>`;
 }
 function buildInternalEmailHtml(data) {
+  const emailHref = `mailto:${encodeURIComponent(data.email)}`;
+  const phoneHref = `tel:${encodeURIComponent(data.phone || "")}`;
+  data = Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [
+      key,
+      value == null ? value : escapeHtml(value)
+    ])
+  );
   const serviceLabel = data.serviceType || "General Inquiry";
   const firstName = data.name.split(" ")[0];
   const detailRows = [
     row("Service", serviceLabel),
     row("Name", data.name),
-    row("Email", `<a href="mailto:${data.email}" style="color:${BRAND.gold};text-decoration:none;">${data.email}</a>`),
-    row("Phone", data.phone ? `<a href="tel:${data.phone}" style="color:${BRAND.gold};text-decoration:none;">${data.phone}</a>` : null),
+    row(
+      "Email",
+      `<a href="${emailHref}" style="color:${BRAND.gold};text-decoration:none;">${data.email}</a>`
+    ),
+    row(
+      "Phone",
+      data.phone ? `<a href="${phoneHref}" style="color:${BRAND.gold};text-decoration:none;">${data.phone}</a>` : null
+    ),
     row("Event Date", data.eventDate),
     row("Event Time", data.eventTime),
     row("Location", data.location),
@@ -530,7 +594,7 @@ function buildInternalEmailHtml(data) {
           <!-- CTA -->
           <tr>
             <td style="padding:0 32px 32px;text-align:center;">
-              <a href="mailto:${data.email}" style="display:inline-block;background-color:${BRAND.gold};color:#1A1A1A;font-size:14px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:14px 32px;border-radius:3px;text-decoration:none;">Reply to ${firstName}</a>
+              <a href="${emailHref}" style="display:inline-block;background-color:${BRAND.gold};color:#1A1A1A;font-size:14px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:14px 32px;border-radius:3px;text-decoration:none;">Reply to ${firstName}</a>
             </td>
           </tr>
 
@@ -555,6 +619,12 @@ function buildInternalEmailHtml(data) {
 </html>`;
 }
 function buildCustomerEmailHtml(data) {
+  data = Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [
+      key,
+      value == null ? value : escapeHtml(value)
+    ])
+  );
   const firstName = data.name.split(" ")[0];
   const serviceLabel = data.serviceType || "your upcoming event";
   return `<!DOCTYPE html>
@@ -727,7 +797,9 @@ async function sendInquiryEmails(data) {
       console.error("[Email] Internal notification failed:", error);
       errors.push(`Internal: ${error.message}`);
     } else {
-      console.log(`[Email] Internal notification sent \u2192 saustin@thepplschef.com (${serviceLabel} from ${data.name})`);
+      console.log(
+        `[Email] Internal notification sent \u2192 saustin@thepplschef.com (${serviceLabel} from ${data.name})`
+      );
     }
   } catch (err) {
     console.error("[Email] Internal notification exception:", err);
@@ -746,15 +818,41 @@ async function sendInquiryEmails(data) {
       console.error("[Email] Customer confirmation failed:", error);
       errors.push(`Customer: ${error.message}`);
     } else {
-      console.log(`[Email] Customer confirmation sent \u2192 ${data.email} (${firstName})`);
+      console.log(
+        `[Email] Customer confirmation sent \u2192 ${data.email} (${firstName})`
+      );
     }
   } catch (err) {
     console.error("[Email] Customer confirmation exception:", err);
     errors.push(`Customer exception: ${String(err)}`);
   }
   if (errors.length > 0) {
-    console.error(`[Email] ${errors.length} email(s) failed for inquiry from ${data.name}:`, errors);
+    console.error(
+      `[Email] ${errors.length} email(s) failed for inquiry from ${data.name}:`,
+      errors
+    );
   }
+}
+
+// api/_lib/recaptcha.js
+async function verifyRecaptcha(token) {
+  const secret = process.env.RECAPTCHA_SECRET_KEY;
+  if (!secret) throw new Error("reCAPTCHA is not configured");
+  if (typeof token !== "string" || !token) return false;
+  const response = await fetch(
+    "https://www.google.com/recaptcha/api/siteverify",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ secret, response: token }).toString(),
+      signal: AbortSignal.timeout(5e3)
+    }
+  );
+  if (!response.ok) throw new Error("reCAPTCHA provider unavailable");
+  const result = await response.json();
+  if (typeof result?.success !== "boolean")
+    throw new Error("Invalid reCAPTCHA response");
+  return result.success === true && Number.isFinite(result.score) && result.score >= 0.7 && result.score <= 1 && result.action === "submit_inquiry" && ["thepplschef.com", "www.thepplschef.com"].includes(result.hostname);
 }
 
 // server/routers/inquiry.ts
@@ -764,7 +862,8 @@ var inquiryRouter = router({
    */
   submit: publicProcedure.input(
     z2.object({
-      name: z2.string().min(1, "Name is required"),
+      name: z2.string().trim().min(1, "Name is required"),
+      recaptchaToken: z2.string().optional(),
       email: z2.string().email("Valid email is required"),
       phone: z2.string().optional(),
       serviceType: z2.string().optional(),
@@ -778,6 +877,20 @@ var inquiryRouter = router({
       notes: z2.string().optional()
     })
   ).mutation(async ({ input }) => {
+    let verified;
+    try {
+      verified = await verifyRecaptcha(input.recaptchaToken);
+    } catch {
+      throw new TRPCError3({
+        code: "SERVICE_UNAVAILABLE",
+        message: "Security verification is temporarily unavailable. Please try again shortly or call us directly."
+      });
+    }
+    if (!verified)
+      throw new TRPCError3({
+        code: "BAD_REQUEST",
+        message: "Security verification failed. Please refresh and try again."
+      });
     let serviceTypeId;
     if (input.serviceType) {
       try {
@@ -877,7 +990,10 @@ var inquiryRouter = router({
   detail: adminTokenProcedure.input(z2.object({ id: z2.number() })).query(async ({ input }) => {
     const inquiry = await getInquiryById(input.id);
     if (!inquiry) {
-      throw new TRPCError3({ code: "NOT_FOUND", message: "Inquiry not found" });
+      throw new TRPCError3({
+        code: "NOT_FOUND",
+        message: "Inquiry not found"
+      });
     }
     let serviceTypeName = null;
     if (inquiry.serviceTypeId) {
@@ -928,17 +1044,19 @@ var appRouter = router({
    * The hash lives only in ADMIN_PASSWORD_HASH env var, never sent to the browser.
    */
   admin: router({
+    session: adminTokenProcedure.query(() => ({ success: true })),
     verifyPassword: publicProcedure.input(z3.object({ password: z3.string().min(1).max(200) })).mutation(async ({ input }) => {
       if (!ENV.adminPasswordHash) {
         throw new Error("[Admin] ADMIN_PASSWORD_HASH is not configured.");
       }
-      const hash = Buffer.from(ENV.adminPasswordHash, "base64").toString("utf8");
+      const hash = Buffer.from(ENV.adminPasswordHash, "base64").toString(
+        "utf8"
+      );
       const valid = await bcrypt.compare(input.password, hash);
       if (!valid) {
         return { success: false };
       }
-      const token = Buffer.from(hash.slice(-20)).toString("base64");
-      return { success: true, token };
+      return { success: true, ...await createAdminSession() };
     })
   })
 });
@@ -956,7 +1074,7 @@ var ForbiddenError = (msg) => new HttpError(403, msg);
 // server/_core/sdk.ts
 import axios from "axios";
 import { parse as parseCookieHeader } from "cookie";
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT as SignJWT2, jwtVerify as jwtVerify2 } from "jose";
 var isNonEmptyString2 = (value) => typeof value === "string" && value.length > 0;
 var EXCHANGE_TOKEN_PATH = `/webdev.v1.WebDevAuthPublicService/ExchangeToken`;
 var GET_USER_INFO_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfo`;
@@ -1082,7 +1200,7 @@ var SDKServer = class {
     const expiresInMs = options.expiresInMs ?? ONE_YEAR_MS;
     const expirationSeconds = Math.floor((issuedAt + expiresInMs) / 1e3);
     const secretKey = this.getSessionSecret();
-    return new SignJWT({
+    return new SignJWT2({
       openId: payload.openId,
       appId: payload.appId,
       name: payload.name
@@ -1095,7 +1213,7 @@ var SDKServer = class {
     }
     try {
       const secretKey = this.getSessionSecret();
-      const { payload } = await jwtVerify(cookieValue, secretKey, {
+      const { payload } = await jwtVerify2(cookieValue, secretKey, {
         algorithms: ["HS256"]
       });
       const { openId, appId, name } = payload;

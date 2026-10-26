@@ -1,11 +1,12 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { publicProcedure, router, adminTokenProcedure } from "./_core/trpc";
 import { inquiryRouter } from "./routers/inquiry";
 import { ENV } from "./_core/env";
 import { z } from "zod";
 import bcrypt from "bcrypt";
+import { createAdminSession } from "./_core/adminSession";
 
 export const appRouter = router({
   system: systemRouter,
@@ -28,6 +29,7 @@ export const appRouter = router({
    * The hash lives only in ADMIN_PASSWORD_HASH env var, never sent to the browser.
    */
   admin: router({
+    session: adminTokenProcedure.query(() => ({ success: true as const })),
     verifyPassword: publicProcedure
       .input(z.object({ password: z.string().min(1).max(200) }))
       .mutation(async ({ input }) => {
@@ -36,16 +38,15 @@ export const appRouter = router({
         }
         // The hash is stored as base64 in the env var to avoid $ character
         // stripping by the secrets system. Decode it before comparing.
-        const hash = Buffer.from(ENV.adminPasswordHash, "base64").toString("utf8");
+        const hash = Buffer.from(ENV.adminPasswordHash, "base64").toString(
+          "utf8"
+        );
         const valid = await bcrypt.compare(input.password, hash);
         if (!valid) {
           // Return false rather than throwing so the client can show a friendly error
           return { success: false as const };
         }
-        // Return a simple signed token: base64(hash slice) so the client can
-        // persist access without storing the real hash or the plain password.
-        const token = Buffer.from(hash.slice(-20)).toString("base64");
-        return { success: true as const, token };
+        return { success: true as const, ...(await createAdminSession()) };
       }),
   }),
 });

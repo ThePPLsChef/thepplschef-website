@@ -1,68 +1,138 @@
-/**
- * Tests for admin.verifyPassword tRPC procedure
- * Verifies bcrypt server-side password checking works correctly,
- * including the base64-decode step for the env var.
- */
-import { describe, it, expect, beforeAll } from "vitest";
+import {
+  beforeAll,
+  afterAll,
+  afterEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import bcrypt from "bcrypt";
+import { SignJWT } from "jose";
+import { appRouter } from "./routers";
+import { ENV } from "./_core/env";
+import { createAdminSession, verifyAdminSession } from "./_core/adminSession";
+import type { TrpcContext } from "./_core/context";
 
-// The real admin password
-const ADMIN_PASSWORD = "15Lessproblem$";
-let RAW_HASH: string;
-let BASE64_HASH: string;
-
+const password = "local-test-fixture-not-a-real-password";
+const secret = "local-only-test-signing-secret-32-bytes-minimum";
+const originalHash = ENV.adminPasswordHash;
+const context = (token?: string): TrpcContext => ({
+  user: null,
+  req: {
+    headers: token ? { "x-admin-token": token } : {},
+  } as TrpcContext["req"],
+  res: {} as TrpcContext["res"],
+});
 beforeAll(async () => {
-  RAW_HASH = await bcrypt.hash(ADMIN_PASSWORD, 12);
-  BASE64_HASH = Buffer.from(RAW_HASH).toString("base64");
+  ENV.adminPasswordHash = Buffer.from(await bcrypt.hash(password, 4)).toString(
+    "base64"
+  );
+});
+afterAll(() => {
+  ENV.adminPasswordHash = originalHash;
+});
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllEnvs();
 });
 
-describe("admin password bcrypt verification", () => {
-  it("bcrypt.compare returns true for correct password against raw hash", async () => {
-    const result = await bcrypt.compare(ADMIN_PASSWORD, RAW_HASH);
-    expect(result).toBe(true);
+describe("signed administrative authentication", () => {
+  it("authenticates the real password procedure and allows protected session access", async () => {
+    vi.stubEnv("ADMIN_SESSION_SECRET", secret);
+    const result = await appRouter
+      .createCaller(context())
+      .admin.verifyPassword({ password });
+    expect(result.success).toBe(true);
+    if (!result.success) throw new Error("Expected login");
+    expect(result.expiresAt).toBeGreaterThan(Date.now() / 1000);
+    await expect(
+      appRouter.createCaller(context(result.token)).admin.session()
+    ).resolves.toEqual({ success: true });
+    const another = await createAdminSession();
+    expect(another.token).not.toBe(result.token);
   });
-
-  it("bcrypt.compare returns false for wrong password", async () => {
-    const result = await bcrypt.compare("wrongpassword", RAW_HASH);
-    expect(result).toBe(false);
-  });
-
-  it("bcrypt.compare returns false for empty string", async () => {
-    const result = await bcrypt.compare("", RAW_HASH);
-    expect(result).toBe(false);
-  });
-
-  it("bcrypt hash has correct cost factor ($2b$12$)", () => {
-    expect(RAW_HASH.startsWith("$2b$12$")).toBe(true);
-  });
-
-  it("base64 round-trip: decode then bcrypt.compare succeeds (simulates env var path)", async () => {
-    // This mirrors exactly what the server does:
-    // 1. Read base64 from env var
-    // 2. Decode to raw bcrypt hash
-    // 3. bcrypt.compare(submittedPassword, decodedHash)
-    const decoded = Buffer.from(BASE64_HASH, "base64").toString("utf8");
-    expect(decoded).toBe(RAW_HASH);
-    const result = await bcrypt.compare(ADMIN_PASSWORD, decoded);
-    expect(result).toBe(true);
-  });
-
-  it("ADMIN_PASSWORD_HASH env var (base64) decodes and verifies correctly", async () => {
-    const storedBase64 = process.env.ADMIN_PASSWORD_HASH ?? "";
-    if (!storedBase64) {
-      // Skip if env not set (CI without secrets)
-      return;
+  it.each(["wrong-password", " "])(
+    "rejects an incorrect password",
+    async password => {
+      vi.stubEnv("ADMIN_SESSION_SECRET", secret);
+      await expect(
+        appRouter.createCaller(context()).admin.verifyPassword({ password })
+      ).resolves.toEqual({ success: false });
     }
-    const decoded = Buffer.from(storedBase64, "base64").toString("utf8");
-    expect(decoded).toMatch(/^\$2[ab]\$\d{2}\$/);
-    const result = await bcrypt.compare(ADMIN_PASSWORD, decoded);
-    expect(result).toBe(true);
+  );
+  it("rejects missing, malformed, tampered, and legacy hash-derived tokens", async () => {
+    vi.stubEnv("ADMIN_SESSION_SECRET", secret);
+    const { token } = await createAdminSession();
+    const legacy = Buffer.from(
+      Buffer.from(ENV.adminPasswordHash, "base64").toString().slice(-20)
+    ).toString("base64");
+    for (const invalid of [
+      undefined,
+      "bad-token",
+      token.slice(0, -10) + "tamperedxx",
+      legacy,
+    ]) {
+      await expect(
+        appRouter.createCaller(context(invalid)).admin.session()
+      ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+    }
+    expect(await verifyAdminSession([token])).toBe(false);
   });
-
-  it("token generation from hash slice is deterministic", () => {
-    const token = Buffer.from(RAW_HASH.slice(-20)).toString("base64");
-    const token2 = Buffer.from(RAW_HASH.slice(-20)).toString("base64");
-    expect(token).toBe(token2);
-    expect(token.length).toBeGreaterThan(0);
+  it("rejects expiry at the exact one-hour boundary", async () => {
+    vi.stubEnv("ADMIN_SESSION_SECRET", secret);
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
+    const { token } = await createAdminSession();
+    vi.advanceTimersByTime(3_599_000);
+    expect(await verifyAdminSession(token)).toBe(true);
+    vi.advanceTimersByTime(1000);
+    await expect(
+      appRouter.createCaller(context(token)).admin.session()
+    ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+  });
+  it("fails closed for missing or weak signing configuration", async () => {
+    for (const value of ["", "too-short"]) {
+      vi.stubEnv("ADMIN_SESSION_SECRET", value);
+      await expect(createAdminSession()).rejects.toThrow(
+        "ADMIN_SESSION_SECRET"
+      );
+      expect(await verifyAdminSession("token")).toBe(false);
+    }
+  });
+  it("invalidates sessions when the signing key or password hash changes", async () => {
+    vi.stubEnv("ADMIN_SESSION_SECRET", secret);
+    const { token } = await createAdminSession();
+    vi.stubEnv("ADMIN_SESSION_SECRET", secret + "rotated");
+    expect(await verifyAdminSession(token)).toBe(false);
+    vi.stubEnv("ADMIN_SESSION_SECRET", secret);
+    const saved = ENV.adminPasswordHash;
+    try {
+      ENV.adminPasswordHash = "changed";
+      expect(await verifyAdminSession(token)).toBe(false);
+    } finally {
+      ENV.adminPasswordHash = saved;
+    }
+  });
+  it("rejects wrong audience and missing expiry even when signed with the test key", async () => {
+    vi.stubEnv("ADMIN_SESSION_SECRET", secret);
+    for (const builder of [
+      new SignJWT({})
+        .setIssuer("pplschef-admin")
+        .setSubject("admin")
+        .setAudience("wrong")
+        .setIssuedAt()
+        .setExpirationTime("1h"),
+      new SignJWT({})
+        .setIssuer("pplschef-admin")
+        .setSubject("admin")
+        .setAudience("pplschef-admin-api")
+        .setIssuedAt(),
+    ]) {
+      const token = await builder
+        .setProtectedHeader({ alg: "HS256" })
+        .sign(new TextEncoder().encode(secret));
+      expect(await verifyAdminSession(token)).toBe(false);
+    }
   });
 });

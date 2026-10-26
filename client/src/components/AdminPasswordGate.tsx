@@ -1,17 +1,6 @@
-/**
- * AdminPasswordGate — Bcrypt-secured password gate for the /admin route.
- *
- * Security model:
- *   - Password is submitted to the server via tRPC (admin.verifyPassword)
- *   - Server runs bcrypt.compare() against ADMIN_PASSWORD_HASH env var
- *   - The hash NEVER leaves the server; the plain password is never stored
- *   - On success the server returns a short-lived session token stored in
- *     sessionStorage — cleared automatically when the browser tab closes
- *   - The token is a base64 slice of the hash (not the hash itself), so
- *     even if sessionStorage is inspected, the real hash is not exposed
- */
+/** Password gate backed by server-validated, signed one-hour sessions. */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ChefHat, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { LOGO_PRIMARY } from "@/lib/images";
 import { trpc } from "@/lib/trpc";
@@ -22,9 +11,18 @@ interface AdminPasswordGateProps {
   children: React.ReactNode;
 }
 
-export default function AdminPasswordGate({ children }: AdminPasswordGateProps) {
+export default function AdminPasswordGate({
+  children,
+}: AdminPasswordGateProps) {
   const [unlocked, setUnlocked] = useState(false);
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const utils = trpc.useUtils();
+  const lock = useCallback(() => {
+    sessionStorage.removeItem(SESSION_KEY);
+    setUnlocked(false);
+    utils.inquiry.list.reset();
+    utils.inquiry.detail.reset();
+    utils.inquiry.stats.reset();
+  }, [utils]);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -34,30 +32,51 @@ export default function AdminPasswordGate({ children }: AdminPasswordGateProps) 
     onSuccess(data) {
       if (data.success) {
         sessionStorage.setItem(SESSION_KEY, data.token);
-        setSessionToken(data.token);
+        setPassword("");
         setUnlocked(true);
         setError("");
       } else {
         triggerError("Incorrect password. Please try again.");
       }
     },
-    onError() {
-      triggerError("Unable to verify password. Please try again.");
+    onError(error) {
+      triggerError(
+        error.data?.code === "TOO_MANY_REQUESTS" ||
+          error.data?.code === "SERVICE_UNAVAILABLE"
+          ? error.message
+          : "Unable to verify password. Please try again."
+      );
     },
   });
 
-  // Restore session on mount — persists within the same browser tab session
+  // Validate restored sessions on the server before rendering customer data.
   useEffect(() => {
-    const stored = sessionStorage.getItem(SESSION_KEY);
-    if (stored) {
-      setSessionToken(stored);
-      setUnlocked(true);
-    }
-  }, []);
+    let active = true;
+    const validate = async () => {
+      if (!sessionStorage.getItem(SESSION_KEY)) return;
+      try {
+        await utils.admin.session.fetch();
+        if (active) setUnlocked(true);
+      } catch {
+        if (active) lock();
+      }
+    };
+    void validate();
+    const interval = window.setInterval(validate, 30_000);
+    const onInvalid = () => lock();
+    window.addEventListener("admin-session-invalid", onInvalid);
+    return () => {
+      active = false;
+      window.clearInterval(interval);
+      window.removeEventListener("admin-session-invalid", onInvalid);
+    };
+  }, [utils, lock]);
 
   // Prevent search engines from indexing the admin route
   useEffect(() => {
-    let meta = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+    let meta = document.querySelector(
+      'meta[name="robots"]'
+    ) as HTMLMetaElement | null;
     if (!meta) {
       meta = document.createElement("meta");
       meta.name = "robots";
@@ -126,7 +145,7 @@ export default function AdminPasswordGate({ children }: AdminPasswordGateProps) 
             <input
               type={showPassword ? "text" : "password"}
               value={password}
-              onChange={(e) => {
+              onChange={e => {
                 setPassword(e.target.value);
                 setError("");
               }}

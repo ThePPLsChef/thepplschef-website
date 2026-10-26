@@ -1,8 +1,43 @@
-import { describe, it, expect, vi, beforeAll } from "vitest";
+import {
+  describe,
+  it,
+  expect,
+  vi,
+  beforeAll,
+  beforeEach,
+  afterAll,
+} from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 import { UNAUTHED_ERR_MSG } from "../shared/const";
 import { ENV } from "./_core/env";
+import { createAdminSession } from "./_core/adminSession";
+import { verifyRecaptcha } from "../api/_lib/recaptcha.js";
+vi.mock("../api/_lib/recaptcha.js", () => ({
+  verifyRecaptcha: vi.fn().mockResolvedValue(true),
+}));
+import { hasMxRecord } from "../api/_lib/emailDomain.js";
+vi.mock("../api/_lib/emailDomain.js", () => ({
+  hasMxRecord: vi.fn().mockResolvedValue(true),
+}));
+beforeEach(() => {
+  vi.mocked(verifyRecaptcha).mockClear().mockResolvedValue(true);
+  vi.mocked(hasMxRecord).mockClear().mockResolvedValue(true);
+});
+let adminToken: string;
+const originalHash = ENV.adminPasswordHash;
+beforeAll(async () => {
+  vi.stubEnv(
+    "ADMIN_SESSION_SECRET",
+    "local-only-inquiry-test-signing-secret-32-bytes"
+  );
+  ENV.adminPasswordHash = "local-fixture-hash";
+  adminToken = (await createAdminSession()).token;
+});
+afterAll(() => {
+  ENV.adminPasswordHash = originalHash;
+  vi.unstubAllEnvs();
+});
 
 // ─── Mock DB helpers ───
 vi.mock("./db", () => ({
@@ -80,14 +115,6 @@ vi.mock("./email", () => ({
   sendInquiryEmails: vi.fn().mockResolvedValue(undefined),
 }));
 
-// ─── Derive the admin token from the env var (same logic as the server) ───
-function getAdminToken(): string {
-  const base64Hash = ENV.adminPasswordHash ?? "";
-  if (!base64Hash) return "test-token-no-hash";
-  const hash = Buffer.from(base64Hash, "base64").toString("utf8");
-  return Buffer.from(hash.slice(-20)).toString("base64");
-}
-
 // ─── Context helpers ───
 function createPublicContext(): TrpcContext {
   return {
@@ -103,7 +130,7 @@ function createAdminTokenContext(): TrpcContext {
     user: null,
     req: {
       protocol: "https",
-      headers: { "x-admin-token": getAdminToken() },
+      headers: { "x-admin-token": adminToken },
     } as TrpcContext["req"],
     res: { clearCookie: vi.fn() } as unknown as TrpcContext["res"],
   };
@@ -204,19 +231,26 @@ describe("inquiry.detail (adminToken)", () => {
 
   it("throws NOT_FOUND for non-existent inquiry", async () => {
     const caller = appRouter.createCaller(createAdminTokenContext());
-    await expect(caller.inquiry.detail({ id: 999 })).rejects.toThrow("Inquiry not found");
+    await expect(caller.inquiry.detail({ id: 999 })).rejects.toThrow(
+      "Inquiry not found"
+    );
   });
 
   it("rejects requests with no token", async () => {
     const caller = appRouter.createCaller(createPublicContext());
-    await expect(caller.inquiry.detail({ id: 1 })).rejects.toThrow(UNAUTHED_ERR_MSG);
+    await expect(caller.inquiry.detail({ id: 1 })).rejects.toThrow(
+      UNAUTHED_ERR_MSG
+    );
   });
 });
 
 describe("inquiry.updateStatus (adminToken)", () => {
   it("updates status for valid admin token", async () => {
     const caller = appRouter.createCaller(createAdminTokenContext());
-    const result = await caller.inquiry.updateStatus({ id: 1, status: "reviewed" });
+    const result = await caller.inquiry.updateStatus({
+      id: 1,
+      status: "reviewed",
+    });
 
     expect(result).toEqual({ success: true });
   });
@@ -251,5 +285,124 @@ describe("inquiry.stats (adminToken)", () => {
   it("rejects requests with no token", async () => {
     const caller = appRouter.createCaller(createPublicContext());
     await expect(caller.inquiry.stats()).rejects.toThrow(UNAUTHED_ERR_MSG);
+  });
+});
+
+describe("legacy inquiry security", () => {
+  it("rejects CAPTCHA rejection before persistence", async () => {
+    vi.mocked(verifyRecaptcha).mockResolvedValueOnce(false);
+    const { createInquiry } = await import("./db");
+    vi.mocked(createInquiry).mockClear();
+    await expect(
+      appRouter
+        .createCaller(createPublicContext())
+        .inquiry.submit({ name: "Test User", email: "test@example.com" })
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    expect(createInquiry).not.toHaveBeenCalled();
+  });
+  it("rejects CAPTCHA outages before persistence", async () => {
+    vi.mocked(verifyRecaptcha).mockRejectedValueOnce(new Error("offline"));
+    await expect(
+      appRouter
+        .createCaller(createPublicContext())
+        .inquiry.submit({ name: "Test User", email: "test@example.com" })
+    ).rejects.toMatchObject({ code: "SERVICE_UNAVAILABLE" });
+  });
+  it("does not report success or send confirmation after a database error", async () => {
+    const { createInquiry } = await import("./db");
+    const { sendInquiryEmails } = await import("./email");
+    vi.mocked(sendInquiryEmails).mockClear();
+    vi.mocked(createInquiry).mockRejectedValueOnce(
+      new Error("database unavailable")
+    );
+    await expect(
+      appRouter
+        .createCaller(createPublicContext())
+        .inquiry.submit({ name: "Test User", email: "test@example.com" })
+    ).rejects.toThrow();
+    expect(sendInquiryEmails).not.toHaveBeenCalled();
+  });
+});
+
+describe("shared REST and tRPC inquiry validation", () => {
+  const valid = {
+    name: "Renée 李",
+    email: "customer@example.com",
+    recaptchaToken: "token",
+  };
+  it.each([
+    { name: "12345" },
+    { name: "  " },
+    { name: "Name\u0000" },
+    { name: "x".repeat(101) },
+    { email: "not-an-email" },
+    { phone: "x".repeat(31) },
+    { serviceType: "x".repeat(101) },
+    { serviceType: "Private Chef\r\nInjected" },
+    { eventDate: "x".repeat(51) },
+    { eventTime: "x".repeat(51) },
+    { guestCount: "x".repeat(51) },
+    { budget: "x".repeat(51) },
+    { allergies: "x".repeat(1001) },
+    { foodPreferences: "x".repeat(1001) },
+    { location: "x".repeat(201) },
+    { notes: "x".repeat(2001) },
+    { recaptchaToken: "x".repeat(4097) },
+  ])(
+    "rejects invalid or oversized fields before side effects %#",
+    async fields => {
+      const { createInquiry } = await import("./db");
+      vi.mocked(createInquiry).mockClear();
+      await expect(
+        appRouter
+          .createCaller(createPublicContext())
+          .inquiry.submit({ ...valid, ...fields })
+      ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+      expect(createInquiry).not.toHaveBeenCalled();
+      expect(hasMxRecord).not.toHaveBeenCalled();
+      expect(verifyRecaptcha).not.toHaveBeenCalled();
+    }
+  );
+  it.each([
+    "李",
+    "Nguyễn Thị Mỹ",
+    "محمد علي",
+    "Ch Ng",
+    "Björk",
+    "D’Arcy O'Neill",
+  ])("accepts Unicode and single-word names: %s", async name => {
+    await expect(
+      appRouter
+        .createCaller(createPublicContext())
+        .inquiry.submit({ ...valid, name })
+    ).resolves.toEqual({ success: true, id: 42 });
+  });
+  it("trims names and email addresses before validation and persistence", async () => {
+    const { createInquiry } = await import("./db");
+    vi.mocked(createInquiry).mockClear();
+    await appRouter
+      .createCaller(createPublicContext())
+      .inquiry.submit({
+        ...valid,
+        name: "  李  ",
+        email: " customer@example.com ",
+      });
+    expect(createInquiry).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "李", email: "customer@example.com" })
+    );
+    expect(hasMxRecord).toHaveBeenCalledWith("customer@example.com");
+  });
+  it("rejects domains without MX records before CAPTCHA, saving or email", async () => {
+    const { createInquiry } = await import("./db");
+    const { sendInquiryEmails } = await import("./email");
+    vi.mocked(createInquiry).mockClear();
+    vi.mocked(sendInquiryEmails).mockClear();
+    vi.mocked(hasMxRecord).mockResolvedValueOnce(false);
+    await expect(
+      appRouter.createCaller(createPublicContext()).inquiry.submit(valid)
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    expect(createInquiry).not.toHaveBeenCalled();
+    expect(sendInquiryEmails).not.toHaveBeenCalled();
+    expect(verifyRecaptcha).not.toHaveBeenCalled();
   });
 });

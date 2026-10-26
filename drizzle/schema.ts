@@ -182,3 +182,10 @@ export const notifications = pgTable("notifications", {
 
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
+
+/** Shared-password login throttle. Contains counters only, no customer data. */
+export const adminLoginRateLimits = pgTable("admin_login_rate_limits", {
+  key: varchar("key", { length: 64 }).primaryKey(),
+  attempts: integer("attempts").notNull(),
+  windowStartedAt: timestamp("windowStartedAt", { withTimezone: true }).notNull(),
+});

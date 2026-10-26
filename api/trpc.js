@@ -130,6 +130,47 @@ async function notifyOwner(payload) {
 // server/_core/trpc.ts
 import { initTRPC, TRPCError as TRPCError2 } from "@trpc/server";
 import superjson from "superjson";
+
+// server/_core/adminSession.ts
+import { SignJWT, jwtVerify } from "jose";
+import { createHash, randomUUID } from "node:crypto";
+var ADMIN_SESSION_SECONDS = 60 * 60;
+var issuer = "pplschef-admin";
+var audience = "pplschef-admin-api";
+function signingKey() {
+  const secret = process.env.ADMIN_SESSION_SECRET ?? "";
+  if (Buffer.byteLength(secret, "utf8") < 32) {
+    throw new Error("ADMIN_SESSION_SECRET must contain at least 32 bytes");
+  }
+  return new TextEncoder().encode(secret);
+}
+function passwordVersion() {
+  return createHash("sha256").update(ENV.adminPasswordHash).digest("hex");
+}
+async function createAdminSession() {
+  const expiresAt = Math.floor(Date.now() / 1e3) + ADMIN_SESSION_SECONDS;
+  const token = await new SignJWT({ passwordVersion: passwordVersion() }).setProtectedHeader({ alg: "HS256", typ: "JWT" }).setIssuer(issuer).setAudience(audience).setSubject("admin").setJti(randomUUID()).setIssuedAt().setExpirationTime(expiresAt).sign(signingKey());
+  return { token, expiresAt };
+}
+async function verifyAdminSession(token) {
+  if (typeof token !== "string" || !token || token.length > 4096 || !ENV.adminPasswordHash)
+    return false;
+  try {
+    const { payload } = await jwtVerify(token, signingKey(), {
+      algorithms: ["HS256"],
+      issuer,
+      audience,
+      subject: "admin",
+      requiredClaims: ["exp", "iat", "jti"],
+      maxTokenAge: ADMIN_SESSION_SECONDS
+    });
+    return payload.passwordVersion === passwordVersion();
+  } catch {
+    return false;
+  }
+}
+
+// server/_core/trpc.ts
 var t = initTRPC.context().create({
   transformer: superjson
 });
@@ -163,15 +204,8 @@ var adminProcedure = t.procedure.use(
   })
 );
 var adminTokenProcedure = t.procedure.use(
-  t.middleware(async (opts) => {
-    const { ctx, next } = opts;
-    const token = ctx.req.headers["x-admin-token"];
-    if (!token || !ENV.adminPasswordHash) {
-      throw new TRPCError2({ code: "UNAUTHORIZED", message: UNAUTHED_ERR_MSG });
-    }
-    const hash = Buffer.from(ENV.adminPasswordHash, "base64").toString("utf8");
-    const expectedToken = Buffer.from(hash.slice(-20)).toString("base64");
-    if (token !== expectedToken) {
+  t.middleware(async ({ ctx, next }) => {
+    if (!await verifyAdminSession(ctx.req.headers["x-admin-token"])) {
       throw new TRPCError2({ code: "UNAUTHORIZED", message: UNAUTHED_ERR_MSG });
     }
     return next({ ctx });
@@ -201,7 +235,7 @@ var systemRouter = router({
 });
 
 // server/routers/inquiry.ts
-import { z as z2 } from "zod";
+import { z as z3 } from "zod";
 import { TRPCError as TRPCError3 } from "@trpc/server";
 
 // server/db.ts
@@ -317,6 +351,11 @@ var notifications = pgTable("notifications", {
   message: text("message").notNull(),
   isRead: boolean("isRead").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull()
+});
+var adminLoginRateLimits = pgTable("admin_login_rate_limits", {
+  key: varchar("key", { length: 64 }).primaryKey(),
+  attempts: integer("attempts").notNull(),
+  windowStartedAt: timestamp("windowStartedAt", { withTimezone: true }).notNull()
 });
 
 // server/db.ts
@@ -443,6 +482,22 @@ async function getServiceTypes() {
 
 // server/email.ts
 import { Resend } from "resend";
+
+// shared/escapeHtml.js
+function escapeHtml(value) {
+  return String(value ?? "").replace(
+    /[&<>"']/g,
+    (character) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[character]
+  );
+}
+
+// server/email.ts
 var _resend = null;
 function getResend() {
   if (!_resend) {
@@ -474,13 +529,27 @@ function row(label, value) {
     </tr>`;
 }
 function buildInternalEmailHtml(data) {
+  const emailHref = `mailto:${encodeURIComponent(data.email)}`;
+  const phoneHref = `tel:${encodeURIComponent(data.phone || "")}`;
+  data = Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [
+      key,
+      value == null ? value : escapeHtml(value)
+    ])
+  );
   const serviceLabel = data.serviceType || "General Inquiry";
   const firstName = data.name.split(" ")[0];
   const detailRows = [
     row("Service", serviceLabel),
     row("Name", data.name),
-    row("Email", `<a href="mailto:${data.email}" style="color:${BRAND.gold};text-decoration:none;">${data.email}</a>`),
-    row("Phone", data.phone ? `<a href="tel:${data.phone}" style="color:${BRAND.gold};text-decoration:none;">${data.phone}</a>` : null),
+    row(
+      "Email",
+      `<a href="${emailHref}" style="color:${BRAND.gold};text-decoration:none;">${data.email}</a>`
+    ),
+    row(
+      "Phone",
+      data.phone ? `<a href="${phoneHref}" style="color:${BRAND.gold};text-decoration:none;">${data.phone}</a>` : null
+    ),
     row("Event Date", data.eventDate),
     row("Event Time", data.eventTime),
     row("Location", data.location),
@@ -530,7 +599,7 @@ function buildInternalEmailHtml(data) {
           <!-- CTA -->
           <tr>
             <td style="padding:0 32px 32px;text-align:center;">
-              <a href="mailto:${data.email}" style="display:inline-block;background-color:${BRAND.gold};color:#1A1A1A;font-size:14px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:14px 32px;border-radius:3px;text-decoration:none;">Reply to ${firstName}</a>
+              <a href="${emailHref}" style="display:inline-block;background-color:${BRAND.gold};color:#1A1A1A;font-size:14px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:14px 32px;border-radius:3px;text-decoration:none;">Reply to ${firstName}</a>
             </td>
           </tr>
 
@@ -555,6 +624,12 @@ function buildInternalEmailHtml(data) {
 </html>`;
 }
 function buildCustomerEmailHtml(data) {
+  data = Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [
+      key,
+      value == null ? value : escapeHtml(value)
+    ])
+  );
   const firstName = data.name.split(" ")[0];
   const serviceLabel = data.serviceType || "your upcoming event";
   return `<!DOCTYPE html>
@@ -727,7 +802,9 @@ async function sendInquiryEmails(data) {
       console.error("[Email] Internal notification failed:", error);
       errors.push(`Internal: ${error.message}`);
     } else {
-      console.log(`[Email] Internal notification sent \u2192 saustin@thepplschef.com (${serviceLabel} from ${data.name})`);
+      console.log(
+        `[Email] Internal notification sent \u2192 saustin@thepplschef.com (${serviceLabel} from ${data.name})`
+      );
     }
   } catch (err) {
     console.error("[Email] Internal notification exception:", err);
@@ -746,15 +823,83 @@ async function sendInquiryEmails(data) {
       console.error("[Email] Customer confirmation failed:", error);
       errors.push(`Customer: ${error.message}`);
     } else {
-      console.log(`[Email] Customer confirmation sent \u2192 ${data.email} (${firstName})`);
+      console.log(
+        `[Email] Customer confirmation sent \u2192 ${data.email} (${firstName})`
+      );
     }
   } catch (err) {
     console.error("[Email] Customer confirmation exception:", err);
     errors.push(`Customer exception: ${String(err)}`);
   }
   if (errors.length > 0) {
-    console.error(`[Email] ${errors.length} email(s) failed for inquiry from ${data.name}:`, errors);
+    console.error(
+      `[Email] ${errors.length} email(s) failed for inquiry from ${data.name}:`,
+      errors
+    );
   }
+}
+
+// shared/inquiryValidation.js
+import { z as z2 } from "zod";
+var InquirySchema = z2.object({
+  name: z2.string().trim().min(1).max(100).refine(
+    (name) => /\p{L}/u.test(name) && !/[\p{Cc}\p{Cs}]/u.test(name),
+    "Please enter your name."
+  ),
+  email: z2.string().trim().email().max(254),
+  phone: z2.string().max(30).optional(),
+  serviceType: z2.string().max(100).regex(/^[^\p{Cc}\p{Cs}]*$/u).optional(),
+  eventDate: z2.string().max(50).optional(),
+  eventTime: z2.string().max(50).optional(),
+  guestCount: z2.string().max(50).optional(),
+  budget: z2.string().max(50).optional(),
+  allergies: z2.string().max(1e3).optional(),
+  foodPreferences: z2.string().max(1e3).optional(),
+  location: z2.string().max(200).optional(),
+  notes: z2.string().max(2e3).optional(),
+  recaptchaToken: z2.string().max(4096).optional()
+});
+
+// api/_lib/emailDomain.js
+import dns from "dns/promises";
+async function hasMxRecord(email) {
+  try {
+    const domain = email.split("@")[1];
+    if (!domain) return false;
+    const records = await dns.resolveMx(domain);
+    return Array.isArray(records) && records.length > 0;
+  } catch (err) {
+    if (err.code === "ENOTFOUND" || err.code === "ENODATA" || err.code === "ESERVFAIL") {
+      return false;
+    }
+    console.warn(
+      "[inquiry validation] MX lookup error (fail-open):",
+      err.code,
+      err.message
+    );
+    return true;
+  }
+}
+
+// api/_lib/recaptcha.js
+async function verifyRecaptcha(token) {
+  const secret = process.env.RECAPTCHA_SECRET_KEY;
+  if (!secret) throw new Error("reCAPTCHA is not configured");
+  if (typeof token !== "string" || !token) return false;
+  const response = await fetch(
+    "https://www.google.com/recaptcha/api/siteverify",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ secret, response: token }).toString(),
+      signal: AbortSignal.timeout(5e3)
+    }
+  );
+  if (!response.ok) throw new Error("reCAPTCHA provider unavailable");
+  const result = await response.json();
+  if (typeof result?.success !== "boolean")
+    throw new Error("Invalid reCAPTCHA response");
+  return result.success === true && Number.isFinite(result.score) && result.score >= 0.7 && result.score <= 1 && result.action === "submit_inquiry" && ["thepplschef.com", "www.thepplschef.com"].includes(result.hostname);
 }
 
 // server/routers/inquiry.ts
@@ -762,22 +907,27 @@ var inquiryRouter = router({
   /**
    * Public: submit a new inquiry from any contact/booking form.
    */
-  submit: publicProcedure.input(
-    z2.object({
-      name: z2.string().min(1, "Name is required"),
-      email: z2.string().email("Valid email is required"),
-      phone: z2.string().optional(),
-      serviceType: z2.string().optional(),
-      eventDate: z2.string().optional(),
-      eventTime: z2.string().optional(),
-      location: z2.string().optional(),
-      guestCount: z2.string().optional(),
-      budget: z2.string().optional(),
-      foodPreferences: z2.string().optional(),
-      allergies: z2.string().optional(),
-      notes: z2.string().optional()
-    })
-  ).mutation(async ({ input }) => {
+  submit: publicProcedure.input(InquirySchema).mutation(async ({ input }) => {
+    if (!await hasMxRecord(input.email)) {
+      throw new TRPCError3({
+        code: "BAD_REQUEST",
+        message: "The email address provided does not appear to be valid. Please check and try again."
+      });
+    }
+    let verified;
+    try {
+      verified = await verifyRecaptcha(input.recaptchaToken);
+    } catch {
+      throw new TRPCError3({
+        code: "SERVICE_UNAVAILABLE",
+        message: "Security verification is temporarily unavailable. Please try again shortly or call us directly."
+      });
+    }
+    if (!verified)
+      throw new TRPCError3({
+        code: "BAD_REQUEST",
+        message: "Security verification failed. Please refresh and try again."
+      });
     let serviceTypeId;
     if (input.serviceType) {
       try {
@@ -856,9 +1006,9 @@ var inquiryRouter = router({
    * Admin: list all inquiries, newest first.
    */
   list: adminTokenProcedure.input(
-    z2.object({
-      limit: z2.number().min(1).max(500).optional(),
-      offset: z2.number().min(0).optional()
+    z3.object({
+      limit: z3.number().min(1).max(500).optional(),
+      offset: z3.number().min(0).optional()
     }).optional()
   ).query(async ({ input }) => {
     const [rows, types] = await Promise.all([
@@ -874,10 +1024,13 @@ var inquiryRouter = router({
   /**
    * Admin: get a single inquiry by ID.
    */
-  detail: adminTokenProcedure.input(z2.object({ id: z2.number() })).query(async ({ input }) => {
+  detail: adminTokenProcedure.input(z3.object({ id: z3.number() })).query(async ({ input }) => {
     const inquiry = await getInquiryById(input.id);
     if (!inquiry) {
-      throw new TRPCError3({ code: "NOT_FOUND", message: "Inquiry not found" });
+      throw new TRPCError3({
+        code: "NOT_FOUND",
+        message: "Inquiry not found"
+      });
     }
     let serviceTypeName = null;
     if (inquiry.serviceTypeId) {
@@ -891,9 +1044,9 @@ var inquiryRouter = router({
    * Admin: update inquiry status.
    */
   updateStatus: adminTokenProcedure.input(
-    z2.object({
-      id: z2.number(),
-      status: z2.enum(["new", "reviewed", "quoted", "booked", "cancelled"])
+    z3.object({
+      id: z3.number(),
+      status: z3.enum(["new", "reviewed", "quoted", "booked", "cancelled"])
     })
   ).mutation(async ({ input }) => {
     return updateInquiryStatus(input.id, input.status);
@@ -907,8 +1060,43 @@ var inquiryRouter = router({
 });
 
 // server/routers.ts
-import { z as z3 } from "zod";
+import { z as z4 } from "zod";
 import bcrypt from "bcrypt";
+import { TRPCError as TRPCError4 } from "@trpc/server";
+
+// server/_core/adminLoginRateLimit.ts
+import { neon as neon2 } from "@neondatabase/serverless";
+var ADMIN_LOGIN_ATTEMPTS = 10;
+var ADMIN_LOGIN_WINDOW_SECONDS = 15 * 60;
+async function consumeAdminLoginAttempt() {
+  const url = process.env.DATABASE_URL;
+  if (!url) throw new Error("Login rate limiter is unavailable");
+  const sql2 = neon2(url);
+  const rows = await sql2`
+    INSERT INTO admin_login_rate_limits AS limits ("key", attempts, "windowStartedAt")
+    VALUES ('admin-password', 1, statement_timestamp())
+    ON CONFLICT ("key") DO UPDATE SET
+      attempts = CASE
+        WHEN limits."windowStartedAt" <= statement_timestamp() - make_interval(secs => ${ADMIN_LOGIN_WINDOW_SECONDS})
+        THEN 1 ELSE LEAST(limits.attempts + 1, ${ADMIN_LOGIN_ATTEMPTS + 1}) END,
+      "windowStartedAt" = CASE
+        WHEN limits."windowStartedAt" <= statement_timestamp() - make_interval(secs => ${ADMIN_LOGIN_WINDOW_SECONDS})
+        THEN statement_timestamp() ELSE limits."windowStartedAt" END
+    RETURNING attempts,
+      GREATEST(1, CEIL(EXTRACT(EPOCH FROM
+        ("windowStartedAt" + make_interval(secs => ${ADMIN_LOGIN_WINDOW_SECONDS}) - clock_timestamp()))))::integer AS "retryAfterSeconds"
+  `;
+  const row2 = Array.isArray(rows) ? rows[0] : void 0;
+  if (!row2 || !Number.isInteger(row2.attempts) || row2.attempts < 1 || !Number.isInteger(row2.retryAfterSeconds) || row2.retryAfterSeconds < 1) {
+    throw new Error("Invalid login rate limiter response");
+  }
+  return {
+    allowed: row2.attempts <= ADMIN_LOGIN_ATTEMPTS,
+    retryAfterSeconds: row2.retryAfterSeconds
+  };
+}
+
+// server/routers.ts
 var appRouter = router({
   system: systemRouter,
   auth: router({
@@ -928,17 +1116,35 @@ var appRouter = router({
    * The hash lives only in ADMIN_PASSWORD_HASH env var, never sent to the browser.
    */
   admin: router({
-    verifyPassword: publicProcedure.input(z3.object({ password: z3.string().min(1).max(200) })).mutation(async ({ input }) => {
+    session: adminTokenProcedure.query(() => ({ success: true })),
+    verifyPassword: publicProcedure.input(z4.object({ password: z4.string().min(1).max(200) })).mutation(async ({ input }) => {
       if (!ENV.adminPasswordHash) {
         throw new Error("[Admin] ADMIN_PASSWORD_HASH is not configured.");
       }
-      const hash = Buffer.from(ENV.adminPasswordHash, "base64").toString("utf8");
+      let limit;
+      try {
+        limit = await consumeAdminLoginAttempt();
+      } catch {
+        throw new TRPCError4({
+          code: "SERVICE_UNAVAILABLE",
+          message: "Sign-in is temporarily unavailable. Please try again shortly."
+        });
+      }
+      if (!limit.allowed) {
+        const minutes = Math.ceil(limit.retryAfterSeconds / 60);
+        throw new TRPCError4({
+          code: "TOO_MANY_REQUESTS",
+          message: `Too many sign-in attempts. Please try again in about ${minutes} minute${minutes === 1 ? "" : "s"}.`
+        });
+      }
+      const hash = Buffer.from(ENV.adminPasswordHash, "base64").toString(
+        "utf8"
+      );
       const valid = await bcrypt.compare(input.password, hash);
       if (!valid) {
         return { success: false };
       }
-      const token = Buffer.from(hash.slice(-20)).toString("base64");
-      return { success: true, token };
+      return { success: true, ...await createAdminSession() };
     })
   })
 });
@@ -956,7 +1162,7 @@ var ForbiddenError = (msg) => new HttpError(403, msg);
 // server/_core/sdk.ts
 import axios from "axios";
 import { parse as parseCookieHeader } from "cookie";
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT as SignJWT2, jwtVerify as jwtVerify2 } from "jose";
 var isNonEmptyString2 = (value) => typeof value === "string" && value.length > 0;
 var EXCHANGE_TOKEN_PATH = `/webdev.v1.WebDevAuthPublicService/ExchangeToken`;
 var GET_USER_INFO_PATH = `/webdev.v1.WebDevAuthPublicService/GetUserInfo`;
@@ -1082,7 +1288,7 @@ var SDKServer = class {
     const expiresInMs = options.expiresInMs ?? ONE_YEAR_MS;
     const expirationSeconds = Math.floor((issuedAt + expiresInMs) / 1e3);
     const secretKey = this.getSessionSecret();
-    return new SignJWT({
+    return new SignJWT2({
       openId: payload.openId,
       appId: payload.appId,
       name: payload.name
@@ -1095,7 +1301,7 @@ var SDKServer = class {
     }
     try {
       const secretKey = this.getSessionSecret();
-      const { payload } = await jwtVerify(cookieValue, secretKey, {
+      const { payload } = await jwtVerify2(cookieValue, secretKey, {
         algorithms: ["HS256"]
       });
       const { openId, appId, name } = payload;
@@ -1190,8 +1396,12 @@ var app = express();
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.options("*", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT");
+  res.setHeader("Access-Control-Allow-Origin", "https://www.thepplschef.com");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+  );
   res.setHeader(
     "Access-Control-Allow-Headers",
     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, x-admin-token"

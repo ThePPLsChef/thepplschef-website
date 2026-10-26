@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { UNAUTHED_ERR_MSG } from '@shared/const';
+import { UNAUTHED_ERR_MSG } from "@shared/const";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
@@ -20,7 +20,11 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!isUnauthorized) return;
 
   // Don't redirect if we're on the admin page — the password gate handles it
-  if (window.location.pathname.startsWith("/admin-nvz3ufj23jsv")) return;
+  if (window.location.pathname.startsWith("/admin-nvz3ufj23jsv")) {
+    sessionStorage.removeItem(SESSION_KEY);
+    window.dispatchEvent(new Event("admin-session-invalid"));
+    return;
+  }
 
   window.location.href = getLoginUrl();
 };
